@@ -84,7 +84,9 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {
             Ok(ws::Message::Pong(_)) => {
                 self.hb = Instant::now();
             }
-            Ok(ws::Message::Text(text)) => ctx.text(text),
+            Ok(ws::Message::Text(text)) => {
+                ctx.text(text)
+            },
             Ok(ws::Message::Binary(bin)) => ctx.binary(bin),
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
@@ -116,7 +118,7 @@ impl MyWebSocket {
 }
 
 #[get("/websocket")]
-async fn websocket(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, weberror::Error> {
+async fn websocket(r: HttpRequest, stream: web::Payload, redis: web::Data<Addr<RedisActor>>) -> Result<HttpResponse, weberror::Error> {
     let res = ws::start(MyWebSocket::new(), &r, stream);
     res
 }
