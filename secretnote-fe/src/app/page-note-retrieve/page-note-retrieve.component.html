@@ -1,1 +1,14 @@
-<p>page-note-retrieve works!</p>
+<div *ngIf="state == 'loading'">loading</div>
+<div *ngIf="state == 'missing'">This message has already been read (or the URL is invalid).</div>
+<div *ngIf="state == 'error'">error</div>
+<div *ngIf="state == 'ready'">
+    <p>Your message is ready!</p>
+    <p>Remember: it can only be read once, afterwards it will be destructed.</p>
+    <p><small>Identifier: <code>{{ident}}</code></small></p>
+
+    <button (click)="retrieveNote()" class="btn btn-primary">Read Note</button>
+</div>
+<div *ngIf="state == 'decrypted'">
+    <p><small>Identifier: <code>{{ident}}</code></small></p>
+    <pre>{{note.text}}</pre>
+</div>

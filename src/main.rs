@@ -19,7 +19,7 @@ use base64;
 use rand::distributions::Alphanumeric;
 
 
-fn format_redis_result<T>(result: Result<Result<RespValue, T>, MailboxError>) -> String {
+fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
     match result {
         Err(_) => format!("<error 1>"),
         Ok(Err(_)) => format!("<error 2>"),
@@ -47,9 +47,9 @@ async fn front(redis: web::Data<Addr<RedisActor>>) -> impl Responder {
 
     let cmd = redis.send(Command(resp_array!["GET", "testkey"]));
     let result = cmd.await;
-    body += &format_redis_result(result);
+    body += &format_redis_result(&result);
     body += "\n\nclient list = ";
-    body += format_redis_result(redis.send(Command(resp_array!["CLIENT", "LIST"])).await).as_str();
+    body += format_redis_result(&redis.send(Command(resp_array!["CLIENT", "LIST"])).await).as_str();
 
     body
 }
@@ -83,7 +83,7 @@ struct RetrieveNoteRequest { ident: String }
 #[derive(Serialize)]
 struct RetrieveNoteResponse { ident: String, data: String }
 
-#[post("/note/store")]
+#[post("/api/note/store")]
 async fn note_store(note: Json<Note>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
     let ident = random_string();
     let data = base64::decode(&note.data).unwrap_or(vec![]);
@@ -92,17 +92,18 @@ async fn note_store(note: Json<Note>, redis: web::Data<Addr<RedisActor>>) -> imp
         return HttpResponse::InternalServerError().body("Message too long or invalid")
     }
 
-    let cmd = Command(resp_array!["STORE", format!("note:{}", ident), data, "EX", 3600 * 24 * 7]);
+    let cmd = Command(resp_array!["SET", format!("note:{}", ident), data, "EX", format!("{}", 3600 * 24 * 7)]);
+    //let cmd = Command(resp_array!["SET", format!("note:{}", ident), data]);
     let result = redis.send(cmd).await;
-    if let Ok(Ok(_)) = result {
-        HttpResponse::Ok().json(NoteResponse { ident: ident })
+    if let Ok(Ok(RespValue::SimpleString(_))) = result {
+        HttpResponse::Ok().json(NoteResponse { ident })
     } else {
-        println!("{}", format_redis_result(result));
+        println!("{}", format_redis_result(&result));
         HttpResponse::InternalServerError().body("Redis connection error")
     }
 }
 
-#[get("/note/check/{ident}")]
+#[get("/api/note/check/{ident}")]
 async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", ident)])).await;
     if let Ok(Ok(value)) = data {
@@ -112,22 +113,23 @@ async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<R
             _ => HttpResponse::InternalServerError().body("Invalid data type in redis")
         }
     } else {
-        println!("{}", format_redis_result(data));
+        println!("{}", format_redis_result(&data));
         HttpResponse::InternalServerError().body("Redis connection error")
     }
 }
 
-#[post("/note/retrieve")]
+#[post("/api/note/retrieve")]
 async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", &note.ident)])).await;
     if let Ok(Ok(value)) = data {
         if let RespValue::BulkString(vec) = value {
+            redis.do_send(Command(resp_array!["DEL", format!("note:{}", &note.ident)]));
             HttpResponse::Ok().json(RetrieveNoteResponse { ident: note.ident.clone(), data: base64::encode(vec) })
         } else {
             HttpResponse::InternalServerError().body("Invalid data type in redis")
         }
     } else {
-        println!("{}", format_redis_result(data));
+        println!("{}", format_redis_result(&data));
         HttpResponse::InternalServerError().body("Redis connection error")
     }
 }
