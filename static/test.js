@@ -1,4 +1,4 @@
-var webSocket = new WebSocket("ws://localhost:8080/websocket");
+var webSocket = new WebSocket("ws://localhost:8080/websocket/testchannel");
 webSocket.onopen = () => {
     console.log("OPEN");
 };

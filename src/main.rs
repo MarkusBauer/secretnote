@@ -1,3 +1,7 @@
+mod server;
+mod my_redis_actor;
+mod chatbroker;
+
 use std::env;
 use actix_web::{get, web, App, HttpServer, Responder, middleware, HttpRequest, HttpResponse};
 use actix_web::error as weberror;
@@ -8,6 +12,8 @@ use actix_web_actors::ws;
 use redis_async::resp_array;
 use redis_async::resp::RespValue;
 use std::time::{Duration, Instant};
+use chatbroker::ChatMessageBroker;
+use crate::chatbroker::{ConnectCmd, DisconnectCmd, ChatMessage, BroadcastCmd};
 
 /// How often heartbeat pings are sent
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -56,6 +62,8 @@ async fn index(web::Path((id, name)): web::Path<(u32, String)>) -> impl Responde
 /// to handle with an actor
 struct MyWebSocket {
     hb: Instant,
+    channel_name: String,
+    broker: Addr<ChatMessageBroker>,
 }
 
 impl Actor for MyWebSocket {
@@ -64,10 +72,29 @@ impl Actor for MyWebSocket {
     /// Method is called on actor start. We start the heartbeat process here.
     fn started(&mut self, ctx: &mut Self::Context) {
         self.heartbeat(ctx);
+        self.broker.send(ConnectCmd { addr: ctx.address().recipient(), session: self.channel_name.clone() })
+            .into_actor(self)
+            .then(|res, _, ctx| {
+                if let Err(_) = res {
+                    ctx.stop()
+                }
+                fut::ready(())
+            })
+            .wait(ctx);
+
         println!("Websocket connected: {:?}", 0);
     }
 
-    fn stopped(&mut self, _ctx: &mut Self::Context) {
+    fn stopped(&mut self, ctx: &mut Self::Context) {
+        self.broker.send(DisconnectCmd { addr: ctx.address().recipient(), session: self.channel_name.clone() })
+            .into_actor(self)
+            .then(|res, _, ctx| {
+                if let Err(_) = res {
+                    ctx.stop()
+                }
+                fut::ready(())
+            })
+            .wait(ctx);
         println!("Websocket disconnected: {:?}", 0);
     }
 }
@@ -85,8 +112,9 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {
                 self.hb = Instant::now();
             }
             Ok(ws::Message::Text(text)) => {
-                ctx.text(text)
-            },
+                // ctx.text(text)
+                self.broker.do_send(BroadcastCmd { session: self.channel_name.clone(), content: text })
+            }
             Ok(ws::Message::Binary(bin)) => ctx.binary(bin),
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
@@ -97,9 +125,18 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {
     }
 }
 
+impl Handler<ChatMessage> for MyWebSocket {
+    type Result = ();
+
+    fn handle(&mut self, msg: ChatMessage, ctx: &mut Self::Context) -> Self::Result {
+        println!("receive from broker");
+        ctx.text(format!("Test message: {} from {}", msg.content, self.channel_name));
+    }
+}
+
 impl MyWebSocket {
-    fn new() -> Self {
-        Self { hb: Instant::now() }
+    fn new(channel_name: String, broker: Addr<ChatMessageBroker>) -> Self {
+        Self { hb: Instant::now(), channel_name, broker }
     }
 
     /// helper method that sends ping to client every second.
@@ -117,9 +154,9 @@ impl MyWebSocket {
     }
 }
 
-#[get("/websocket")]
-async fn websocket(r: HttpRequest, stream: web::Payload, redis: web::Data<Addr<RedisActor>>) -> Result<HttpResponse, weberror::Error> {
-    let res = ws::start(MyWebSocket::new(), &r, stream);
+#[get("/websocket/{channel}")]
+async fn websocket(r: HttpRequest, web::Path(channel): web::Path<String>, stream: web::Payload, broker: web::Data<Addr<ChatMessageBroker>>) -> Result<HttpResponse, weberror::Error> {
+    let res = ws::start(MyWebSocket::new(channel, broker.get_ref().clone()), &r, stream);
     res
 }
 
@@ -129,10 +166,14 @@ async fn main() -> std::io::Result<()> {
     env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
     env_logger::init();
 
-    HttpServer::new(|| {
+    let broker = ChatMessageBroker::default().start();
+
+    HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())
             .data(RedisActor::start("127.0.0.1:6379"))
+            //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
+            .data(broker.clone())
             .service(front)
             .service(index)
             .service(websocket)
