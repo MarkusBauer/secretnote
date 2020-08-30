@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CryptoService} from "../crypto.service";
 import {BackendService} from "../backend.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-page-note-store',
@@ -11,7 +12,7 @@ export class PageNoteStoreComponent implements OnInit {
 
     text: string = "";
 
-    constructor(private crypto: CryptoService, private backend: BackendService) {
+    constructor(private crypto: CryptoService, private backend: BackendService, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -22,6 +23,7 @@ export class PageNoteStoreComponent implements OnInit {
         let encryptedNote = this.crypto.encryptNote({text: this.text}, key);
         this.backend.storeNote(encryptedNote).subscribe(ident => {
             console.log('ident=', ident, '  key=', key);
+            this.router.navigate(['/note/admin', ident], {fragment: key});
         });
     }
 

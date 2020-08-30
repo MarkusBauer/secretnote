@@ -15,7 +15,7 @@ export class CryptoService {
     }
 
     encryptNote(note: NoteContent, key: string): string {
-        return btoa(JSON.stringify(note));
+        return btoa(JSON.stringify(note) + "               ");
     }
 
     decryptNote(encryptedNote: string, key: string): NoteContent {

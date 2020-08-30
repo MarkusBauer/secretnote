@@ -9,6 +9,7 @@ import {PageNoteRetrieveComponent} from './page-note-retrieve/page-note-retrieve
 import {PageFaqComponent} from './page-faq/page-faq.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
+import { PageNoteAdminComponent } from './page-note-admin/page-note-admin.component';
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import {FormsModule} from "@angular/forms";
         PageNoteStoreComponent,
         PageNoteRetrieveComponent,
         PageFaqComponent,
+        PageNoteAdminComponent,
     ],
     imports: [
         BrowserModule,

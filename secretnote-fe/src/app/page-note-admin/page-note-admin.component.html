@@ -1,0 +1,12 @@
+<div *ngIf="state == 'loading'">loading</div>
+<div *ngIf="state == 'missing'">This message has already been read (or the URL is invalid).</div>
+<div *ngIf="state == 'error'">error</div>
+<div *ngIf="state == 'ready'">
+    <p class="alert alert-success">Your message has been stored!</p>
+    <p>It can be retrieved with the link below - but only once.</p>
+    <form>
+        <div class="form-group">
+            <input type="text" class="form-control" readonly [value]="url" (click)="$event.target.select()">
+        </div>
+    </form>
+</div>

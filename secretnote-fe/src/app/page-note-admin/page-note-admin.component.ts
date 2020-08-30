@@ -1,24 +1,23 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {BackendService} from "../backend.service";
-import {CryptoService, NoteContent} from "../crypto.service";
 
 @Component({
-    selector: 'app-page-note-retrieve',
-    templateUrl: './page-note-retrieve.component.html',
-    styleUrls: ['./page-note-retrieve.component.less']
+    selector: 'app-page-note-admin',
+    templateUrl: './page-note-admin.component.html',
+    styleUrls: ['./page-note-admin.component.less']
 })
-export class PageNoteRetrieveComponent implements OnInit {
+export class PageNoteAdminComponent implements OnInit {
 
     ident: string;
     key: string;
     state: string = "loading";
-    note: NoteContent;
+    url: string;
 
-    constructor(private route: ActivatedRoute, private backend: BackendService, private crypto: CryptoService) {
+    constructor(private route: ActivatedRoute, private backend: BackendService) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.route.paramMap.subscribe(map => {
             this.ident = map.get("ident");
             this.updateIdentKey();
@@ -29,6 +28,7 @@ export class PageNoteRetrieveComponent implements OnInit {
         });
     }
 
+
     updateIdentKey() {
         if (!this.ident || this.ident.length != 24) {
             // TODO report error
@@ -36,18 +36,12 @@ export class PageNoteRetrieveComponent implements OnInit {
         }
         // TODO check key
 
-        this.state = "loading";
+        this.url = this.backend.generatePublicUrl(this.ident, this.key);
+
         this.backend.checkNote(this.ident).subscribe(exists => {
             this.state = exists ? "ready" : "missing";
         });
     }
 
-    retrieveNote() {
-        this.state = "loading";
-        this.backend.retrieveNote(this.ident).subscribe(encryptedNote => {
-            this.note = this.crypto.decryptNote(encryptedNote, this.key);
-            this.state = "decrypted";
-        });
-    }
 
 }
