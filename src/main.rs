@@ -1,5 +1,3 @@
-mod server;
-mod my_redis_actor;
 mod chatbroker;
 mod chat_websocket;
 
@@ -16,7 +14,9 @@ use crate::chatbroker::{ChatMessageBroker};
 use crate::chat_websocket::{ChattingWebSocket};
 use actix_web::web::Json;
 use serde::{Deserialize, Serialize};
-
+use rand::{Rng, thread_rng};
+use base64;
+use rand::distributions::Alphanumeric;
 
 
 fn format_redis_result<T>(result: Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -34,6 +34,10 @@ fn format_redis_result<T>(result: Result<Result<RespValue, T>, MailboxError>) ->
             }
         }
     }
+}
+
+fn random_string() -> String {
+    return thread_rng().sample_iter(&Alphanumeric).take(24).collect();
 }
 
 
@@ -62,21 +66,71 @@ async fn websocket(r: HttpRequest, web::Path(channel): web::Path<String>, stream
 
 
 #[derive(Deserialize)]
-struct Note {}
+struct Note {
+    /// base64-encoded crypted data
+    data: String
+}
 
 #[derive(Serialize)]
 struct NoteResponse { ident: String }
 
+#[derive(Serialize)]
+struct CheckNoteResponse { ident: String, exists: bool }
+
+#[derive(Deserialize)]
+struct RetrieveNoteRequest { ident: String }
+
+#[derive(Serialize)]
+struct RetrieveNoteResponse { ident: String, data: String }
+
 #[post("/note/store")]
 async fn note_store(note: Json<Note>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
-    HttpResponse::Ok().json(NoteResponse { ident: "".to_string() })
+    let ident = random_string();
+    let data = base64::decode(&note.data).unwrap_or(vec![]);
+    // validate note text / impose limits
+    if data.len() < 16 || data.len() > 1 * 1024 * 1024 {
+        return HttpResponse::InternalServerError().body("Message too long or invalid")
+    }
+
+    let cmd = Command(resp_array!["STORE", format!("note:{}", ident), data, "EX", 3600 * 24 * 7]);
+    let result = redis.send(cmd).await;
+    if let Ok(Ok(_)) = result {
+        HttpResponse::Ok().json(NoteResponse { ident: ident })
+    } else {
+        println!("{}", format_redis_result(result));
+        HttpResponse::InternalServerError().body("Redis connection error")
+    }
 }
 
-#[get("/note/check")]
-async fn note_check(redis: web::Data<Addr<RedisActor>>) -> impl Responder {""}
+#[get("/note/check/{ident}")]
+async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+    let data = redis.send(Command(resp_array!["GET", format!("note:{}", ident)])).await;
+    if let Ok(Ok(value)) = data {
+        match value {
+            RespValue::Nil => HttpResponse::Ok().json(CheckNoteResponse { ident: ident, exists: false }),
+            RespValue::BulkString(_) => HttpResponse::Ok().json(CheckNoteResponse { ident: ident, exists: true }),
+            _ => HttpResponse::InternalServerError().body("Invalid data type in redis")
+        }
+    } else {
+        println!("{}", format_redis_result(data));
+        HttpResponse::InternalServerError().body("Redis connection error")
+    }
+}
 
 #[post("/note/retrieve")]
-async fn note_retrieve(redis: web::Data<Addr<RedisActor>>) -> impl Responder {""}
+async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+    let data = redis.send(Command(resp_array!["GET", format!("note:{}", &note.ident)])).await;
+    if let Ok(Ok(value)) = data {
+        if let RespValue::BulkString(vec) = value {
+            HttpResponse::Ok().json(RetrieveNoteResponse { ident: note.ident.clone(), data: base64::encode(vec) })
+        } else {
+            HttpResponse::InternalServerError().body("Invalid data type in redis")
+        }
+    } else {
+        println!("{}", format_redis_result(data));
+        HttpResponse::InternalServerError().body("Redis connection error")
+    }
+}
 
 
 #[actix_web::main]
