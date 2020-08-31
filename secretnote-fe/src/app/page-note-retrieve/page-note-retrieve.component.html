@@ -1,6 +1,8 @@
-<div *ngIf="state == 'loading'">loading</div>
-<div *ngIf="state == 'missing'">This message has already been read (or the URL is invalid).</div>
-<div *ngIf="state == 'error'">error</div>
+<div *ngIf="state == 'loading'">loading ...</div>
+<div *ngIf="state == 'missing'">
+    <p class="alert alert-warning">This message has already been read (or the URL is invalid)</p>
+</div>
+<div *ngIf="state == 'error'">Message could not be read.</div>
 <div *ngIf="state == 'ready'">
     <p>Your message is ready!</p>
     <p>Remember: it can only be read once, afterwards it will be destructed.</p>

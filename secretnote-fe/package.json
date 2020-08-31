@@ -21,8 +21,10 @@
     "@angular/platform-browser-dynamic": "~10.0.14",
     "@angular/router": "~10.0.14",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
-    "bootstrap": "^4.5.0",
+    "@types/sjcl": "^1.0.29",
+    "bootstrap": "^4.5.2",
     "rxjs": "~6.5.5",
+    "sjcl": "^1.0.8",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
   },
@@ -45,5 +47,8 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5"
+  },
+  "browser": {
+    "crypto": false
   }
 }

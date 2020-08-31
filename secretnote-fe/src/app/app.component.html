@@ -19,5 +19,8 @@
 <br/>
 
 <div class="container">
+    <p *ngFor="let alert of ui.alerts">
+        <ngb-alert [type]="alert.type" (close)="ui.close(alert)">{{ alert.message }}</ngb-alert>
+    </p>
     <router-outlet></router-outlet>
 </div>

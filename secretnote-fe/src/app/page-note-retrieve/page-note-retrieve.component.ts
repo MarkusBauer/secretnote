@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {BackendService} from "../backend.service";
 import {CryptoService, NoteContent} from "../crypto.service";
+import {UiService} from "../ui.service";
 
 @Component({
     selector: 'app-page-note-retrieve',
@@ -15,7 +16,7 @@ export class PageNoteRetrieveComponent implements OnInit {
     state: string = "loading";
     note: NoteContent;
 
-    constructor(private route: ActivatedRoute, private backend: BackendService, private crypto: CryptoService) {
+    constructor(private route: ActivatedRoute, private backend: BackendService, private crypto: CryptoService, private ui: UiService) {
     }
 
     ngOnInit() {
@@ -45,8 +46,14 @@ export class PageNoteRetrieveComponent implements OnInit {
     retrieveNote() {
         this.state = "loading";
         this.backend.retrieveNote(this.ident).subscribe(encryptedNote => {
-            this.note = this.crypto.decryptNote(encryptedNote, this.key);
-            this.state = "decrypted";
+            try {
+                this.note = this.crypto.decryptNote(encryptedNote, this.key);
+                this.state = "decrypted";
+            } catch (e) {
+                console.error(e);
+                this.ui.error(e);
+                this.state = "error";
+            }
         });
     }
 

@@ -26,7 +26,7 @@ import { PageChatComponent } from './page-chat/page-chat.component';
         FormsModule,
         HttpClientModule,
         AppRoutingModule,
-        NgbModule
+        NgbModule,
     ],
     providers: [],
     bootstrap: [AppComponent]
