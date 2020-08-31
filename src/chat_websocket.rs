@@ -2,7 +2,7 @@ use actix_web_actors::ws;
 use actix::prelude::*;
 use actix::{Actor, Addr, StreamHandler, Handler, AsyncContext, ActorContext, fut};
 use std::time::{Duration, Instant};
-use crate::chatbroker::{ChatMessageBroker, ConnectCmd, DisconnectCmd, BroadcastCmd, ChatMessage};
+use crate::chatbroker::{ChatMessageBroker, ConnectCmd, DisconnectCmd, BroadcastCmd, ChatMessage, BroadcastBinaryCmd, BinaryChatMessage};
 
 
 /// How often heartbeat pings are sent
@@ -25,7 +25,7 @@ impl Actor for ChattingWebSocket {
     /// Method is called on actor start. We start the heartbeat process here.
     fn started(&mut self, ctx: &mut Self::Context) {
         self.heartbeat(ctx);
-        self.broker.send(ConnectCmd { addr: ctx.address().recipient(), session: self.channel_name.clone() })
+        self.broker.send(ConnectCmd { addr_text: ctx.address().recipient(), addr_binary: ctx.address().recipient(), session: self.channel_name.clone() })
             .into_actor(self)
             .then(|res, _, ctx| {
                 if let Err(_) = res {
@@ -35,11 +35,11 @@ impl Actor for ChattingWebSocket {
             })
             .wait(ctx);
 
-        println!("Websocket connected: {:?}", 0);
+        println!("Websocket connected");
     }
 
     fn stopped(&mut self, ctx: &mut Self::Context) {
-        self.broker.send(DisconnectCmd { addr: ctx.address().recipient(), session: self.channel_name.clone() })
+        self.broker.send(DisconnectCmd { addr_text: ctx.address().recipient(), addr_binary: ctx.address().recipient(), session: self.channel_name.clone() })
             .into_actor(self)
             .then(|res, _, ctx| {
                 if let Err(_) = res {
@@ -48,7 +48,7 @@ impl Actor for ChattingWebSocket {
                 fut::ready(())
             })
             .wait(ctx);
-        println!("Websocket disconnected: {:?}", 0);
+        println!("Websocket disconnected");
     }
 }
 
@@ -68,7 +68,10 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for ChattingWebSocket
                 // ctx.text(text)
                 self.broker.do_send(BroadcastCmd { session: self.channel_name.clone(), content: text })
             }
-            Ok(ws::Message::Binary(bin)) => ctx.binary(bin),
+            Ok(ws::Message::Binary(bin)) => {
+                // ctx.binary(bin)
+                self.broker.do_send(BroadcastBinaryCmd { session: self.channel_name.clone(), content: bin })
+            },
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
                 ctx.stop();
@@ -83,7 +86,16 @@ impl Handler<ChatMessage> for ChattingWebSocket {
 
     fn handle(&mut self, msg: ChatMessage, ctx: &mut Self::Context) -> Self::Result {
         println!("receive from broker");
-        ctx.text(format!("Test message: {} from {}", msg.content, self.channel_name));
+        ctx.text(msg.content);
+    }
+}
+
+impl Handler<BinaryChatMessage> for ChattingWebSocket {
+    type Result = ();
+
+    fn handle(&mut self, msg: BinaryChatMessage, ctx: &mut Self::Context) -> Self::Result {
+        println!("receive from broker");
+        ctx.binary(msg.content);
     }
 }
 
