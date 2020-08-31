@@ -19,6 +19,7 @@ use base64;
 use rand::distributions::Alphanumeric;
 use std::path::PathBuf;
 use actix_files::NamedFile;
+use cached::proc_macro::cached;
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -137,6 +138,7 @@ async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<Re
 }
 
 
+#[cached]
 fn get_base_path() -> PathBuf {
     let pathbuf = std::env::current_exe().unwrap().clone();
     let pathbuf2 = pathbuf.canonicalize().unwrap();
