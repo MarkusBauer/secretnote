@@ -87,7 +87,7 @@ impl Handler<BroadcastBinaryCmd> for ChatMessageBroker {
         if let Some(set) = self.binary_sessions.get(&msg.session) {
             println!("sending message \"{:?}\" to {} addresses", msg.content, set.len());
             for addr in set {
-                addr.do_send(BinaryChatMessage{ content: msg.content.clone() }).expect("could not send chat message!");
+                addr.do_send(BinaryChatMessage{ content: msg.content.clone() });
             }
         }
     }

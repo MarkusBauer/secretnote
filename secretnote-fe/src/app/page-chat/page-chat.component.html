@@ -1,6 +1,6 @@
 <ul>
     <li *ngFor="let msg of messages">
-        <span class="text-info">{{msg.sender}}</span> wrote: {{msg.text}}
+        <i class="text-primary">{{msg.sender}}</i>: {{msg.text}}
     </li>
 </ul>
 <form (submit)="sendMessage(textinput)">

@@ -58,9 +58,10 @@ export class PageChatComponent implements OnInit {
     }
 
     sendMessage(text: string) {
-        let msg: ChatMessage = {sender: this.userPublic, ts: new Date().getTime(), text: text};
+        let msg: ChatMessage = {sender: this.userPublic, ts: new Date().getTime(), text: text.trim()};
         let bin = this.crypto.encryptChatMessage(msg, this.key);
         this.connection.next(bin);
+        this.textinput = '';
     }
 
 }
