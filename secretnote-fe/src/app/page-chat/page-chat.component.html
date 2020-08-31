@@ -1,0 +1,12 @@
+<ul>
+    <li *ngFor="let msg of messages">
+        <span class="text-info">{{msg.sender}}</span> wrote: {{msg.text}}
+    </li>
+</ul>
+<form (submit)="sendMessage(textinput)">
+    <div class="form-group">
+        <label for="messagetext">Your message:</label>
+        <textarea class="form-control" id="messagetext" name="messagetext" name="textinput" [(ngModel)]="textinput"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send message</button>
+</form>

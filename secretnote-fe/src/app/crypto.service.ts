@@ -6,6 +6,13 @@ export interface NoteContent {
 }
 
 
+export interface ChatMessage {
+    sender: string;
+    ts: number;
+    text: string;
+}
+
+
 @Injectable({
     providedIn: 'root'
 })
@@ -24,5 +31,13 @@ export class CryptoService {
 
     generateKey(): string {
         return "TODO";
+    }
+
+    encryptChatMessage(msg: ChatMessage, key: string): ArrayBuffer {
+        return new TextEncoder().encode(JSON.stringify(msg));
+    }
+
+    decryptChatMessage(bin: ArrayBuffer, key: string): ChatMessage {
+        return JSON.parse(new TextDecoder().decode(bin));
     }
 }

@@ -10,6 +10,7 @@ import {PageFaqComponent} from './page-faq/page-faq.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import { PageNoteAdminComponent } from './page-note-admin/page-note-admin.component';
+import { PageChatComponent } from './page-chat/page-chat.component';
 
 @NgModule({
     declarations: [
@@ -18,6 +19,7 @@ import { PageNoteAdminComponent } from './page-note-admin/page-note-admin.compon
         PageNoteRetrieveComponent,
         PageFaqComponent,
         PageNoteAdminComponent,
+        PageChatComponent,
     ],
     imports: [
         BrowserModule,

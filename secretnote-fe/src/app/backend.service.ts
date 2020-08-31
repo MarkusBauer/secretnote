@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {PlatformLocation} from "@angular/common";
 import {Router} from "@angular/router";
+import {webSocket, WebSocketSubject} from "rxjs/webSocket";
 
 interface NoteStoreResponse {
     ident: string;
@@ -25,11 +26,16 @@ interface NoteRetrieveResponse {
 export class BackendService {
 
     base = '/';
+    wsbase = 'ws://localhost:8080/'
 
     constructor(private http: HttpClient, private platformLocation: PlatformLocation, private router: Router) {
     }
 
     generatePublicUrl(ident: string, key: string): string {
+        return window.location.origin + this.router.createUrlTree(['/note', ident], {fragment: key});
+    }
+
+    generatePrivateUrl(ident: string, key: string): string {
         return window.location.origin + this.router.createUrlTree(['/note/admin', ident], {fragment: key});
     }
 
@@ -46,6 +52,17 @@ export class BackendService {
     retrieveNote(ident: string): Observable<string> {
         return this.http.post<NoteRetrieveResponse>(this.base + 'api/note/retrieve', {ident: ident})
             .pipe(map(response => response.data));
+    }
+
+    connectToChat(channel: string): WebSocketSubject<ArrayBuffer> {
+        // let socket = new WebSocket('wss://echo.websocket.org');
+        let ws = webSocket<ArrayBuffer>({
+            url: this.wsbase + "api/websocket/" + channel,
+            binaryType: 'arraybuffer',
+            deserializer: ({data}) => data,
+            serializer: data => data,
+        });
+        return ws;
     }
 
 }

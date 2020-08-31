@@ -62,7 +62,7 @@ async fn index(web::Path((id, name)): web::Path<(u32, String)>) -> impl Responde
     format!("Hello {}! id:{}", name, id)
 }
 
-#[get("/websocket/{channel}")]
+#[get("/api/websocket/{channel}")]
 async fn websocket(r: HttpRequest, web::Path(channel): web::Path<String>, stream: web::Payload, broker: web::Data<Addr<ChatMessageBroker>>) -> Result<HttpResponse, weberror::Error> {
     ws::start(ChattingWebSocket::new(channel, broker.get_ref().clone()), &r, stream)
 }
