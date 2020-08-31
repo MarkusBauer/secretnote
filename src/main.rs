@@ -17,6 +17,8 @@ use serde::{Deserialize, Serialize};
 use rand::{Rng, thread_rng};
 use base64;
 use rand::distributions::Alphanumeric;
+use std::path::PathBuf;
+use actix_files::NamedFile;
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -41,7 +43,7 @@ fn random_string() -> String {
 }
 
 
-#[get("/")]
+#[get("/front")]
 async fn front(redis: web::Data<Addr<RedisActor>>) -> impl Responder {
     let mut body = format!("Hello World!\n");
 
@@ -89,7 +91,7 @@ async fn note_store(note: Json<Note>, redis: web::Data<Addr<RedisActor>>) -> imp
     let data = base64::decode(&note.data).unwrap_or(vec![]);
     // validate note text / impose limits
     if data.len() < 16 || data.len() > 1 * 1024 * 1024 {
-        return HttpResponse::InternalServerError().body("Message too long or invalid")
+        return HttpResponse::InternalServerError().body("Message too long or invalid");
     }
 
     let cmd = Command(resp_array!["SET", format!("note:{}", ident), data, "EX", format!("{}", 3600 * 24 * 7)]);
@@ -135,8 +137,26 @@ async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<Re
 }
 
 
+fn get_base_path() -> PathBuf {
+    let pathbuf = std::env::current_exe().unwrap().clone();
+    let pathbuf2 = pathbuf.canonicalize().unwrap();
+    let base = pathbuf2.parent().unwrap().to_path_buf();
+    if base.file_name().unwrap() == "debug" && base.parent().unwrap().file_name().unwrap() == "target" {
+        base.parent().unwrap().parent().unwrap().to_path_buf()
+    } else {
+        base
+    }
+}
+
+async fn angular_index() -> std::io::Result<NamedFile> {
+    NamedFile::open(get_base_path().join("fe").join("index.html").clone())
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let basepath = get_base_path();
+    println!("base path = \"{}\"", basepath.to_str().unwrap());
+
     env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
     env_logger::init();
 
@@ -153,5 +173,8 @@ async fn main() -> std::io::Result<()> {
             .service(websocket)
             .service(note_store).service(note_check).service(note_retrieve)
             .service(actix_files::Files::new("/static", "/home/markus/Projekte/secretnote/static").show_files_listing())
+            .service(web::resource("/note/*").to(angular_index))
+            .service(web::resource("/faq").to(angular_index))
+            .service(actix_files::Files::new("/", basepath.join("fe")).index_file("index.html"))
     }).bind("127.0.0.1:8080")?.run().await
 }
