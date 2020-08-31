@@ -1,6 +1,7 @@
 <ul>
     <li *ngFor="let msg of messages">
-        <i class="text-primary">{{msg.sender}}</i>: {{msg.text}}
+        <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
+        <i class="text-primary">{{usernameFromSender(msg.sender)}}</i>: {{msg.text}}
     </li>
 </ul>
 <form (submit)="sendMessage(textinput)">

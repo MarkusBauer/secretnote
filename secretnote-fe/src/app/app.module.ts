@@ -11,6 +11,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import { PageNoteAdminComponent } from './page-note-admin/page-note-admin.component';
 import { PageChatComponent } from './page-chat/page-chat.component';
+import { PageChatCreateComponent } from './page-chat-create/page-chat-create.component';
 
 @NgModule({
     declarations: [
@@ -20,6 +21,7 @@ import { PageChatComponent } from './page-chat/page-chat.component';
         PageFaqComponent,
         PageNoteAdminComponent,
         PageChatComponent,
+        PageChatCreateComponent,
     ],
     imports: [
         BrowserModule,

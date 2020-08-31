@@ -29,6 +29,7 @@ impl Actor for ChattingWebSocket {
             .into_actor(self)
             .then(|res, _, ctx| {
                 if let Err(_) = res {
+                    println!("Broker error as response to connect cmd, stopping connection");
                     ctx.stop()
                 }
                 fut::ready(())
