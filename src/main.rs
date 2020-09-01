@@ -20,6 +20,7 @@ use rand::distributions::Alphanumeric;
 use std::path::PathBuf;
 use actix_files::NamedFile;
 use cached::proc_macro::cached;
+use std::sync::Arc;
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -196,18 +197,45 @@ async fn angular_index() -> std::io::Result<NamedFile> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let basepath = get_base_path();
-    println!("base path = \"{}\"", basepath.to_str().unwrap());
+    let matches = clap::App::new("SecretNote Server")
+        //.version("1.0")
+        //.author("...")
+        .about("Hosts SecretNote - a cryptographic note and chat platform")
+        .arg(clap::Arg::with_name("bind")
+            .short('b')
+            .long("bind")
+            .value_name("BIND")
+            .about("Sets which ip/port should be bound")
+            .takes_value(true))
+        .arg(clap::Arg::with_name("redis")
+            .long("redis")
+            .value_name("HOST:PORT")
+            .about("Sets which ip/port should be bound")
+            .takes_value(true))
+        .arg(clap::Arg::with_name("verbose")
+            .long("verbose")
+            .short('v')
+            .about("Set verbose mode (enable request logs)"))
+        .get_matches();
 
-    env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
-    env_logger::init();
+    let basepath = get_base_path();
+    println!("Frontend at \"{}/fe\"", basepath.to_str().unwrap());
+
+    if matches.is_present("verbose") {
+        env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
+        env_logger::init();
+    }
+    let redis: Arc<String> = Arc::new(matches.value_of("redis").unwrap_or("127.0.0.1:6379").into());
+    let bind: String = matches.value_of("bind").unwrap_or("127.0.0.1:8080").into();
+    println!("Using Redis at \"{}\" ...", redis);
+    println!("Binding to \"{}\" ...", bind);
 
     let broker = ChatMessageBroker::default().start();
 
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())
-            .data(RedisActor::start("127.0.0.1:6379"))
+            .data(RedisActor::start((*redis).clone()))
             //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
             .data(broker.clone())
             //.service(front)
@@ -217,9 +245,9 @@ async fn main() -> std::io::Result<()> {
             .service(note_check)
             .service(note_retrieve)
             .service(chat_messages)
-            .service(actix_files::Files::new("/static", "/home/markus/Projekte/secretnote/static").show_files_listing())
+            // .service(actix_files::Files::new("/static", "/home/markus/Projekte/secretnote/static").show_files_listing())
             .service(web::resource("/note/*").to(angular_index))
             .service(web::resource("/faq").to(angular_index))
             .service(actix_files::Files::new("/", basepath.join("fe")).index_file("index.html"))
-    }).bind("127.0.0.1:8080")?.run().await
+    }).bind(bind)?.run().await
 }
