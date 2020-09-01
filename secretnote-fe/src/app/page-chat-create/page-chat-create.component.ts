@@ -19,7 +19,7 @@ export class PageChatCreateComponent implements OnInit {
         let channel = this.crypto.generateChannel();
         let keypair = this.crypto.generatePublicPrivateKeys();
         let key = this.crypto.generateKey();
-        this.router.navigate(['/chat', channel], {fragment: key + '|' + keypair.secret});
+        this.router.navigate(['/chat', channel], {fragment: key + ':' + keypair.secret});
     }
 
 }

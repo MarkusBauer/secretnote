@@ -39,6 +39,15 @@ export class BackendService {
         return window.location.origin + this.router.createUrlTree(['/note/admin', ident], {fragment: key});
     }
 
+
+    generateChatPublicUrl(channel: string, key: string): string {
+        return window.location.origin + this.router.createUrlTree(['/chat/join', channel], {fragment: key});
+    }
+
+    generateChatPrivateUrl(channel: string, key: string, secretKey: string): string {
+        return window.location.origin + this.router.createUrlTree(['/chat', channel], {fragment: key + ':' + secretKey});
+    }
+
     storeNote(text: string): Observable<string> {
         return this.http.post<NoteStoreResponse>(this.base + 'api/note/store', {data: text})
             .pipe(map(response => response.ident));

@@ -1,9 +1,27 @@
+<form>
+    <div class="form-group row" *ngIf="publicUrl && privateUrl">
+        <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-primary" for="publicUrl">Public chat URL:</label>
+        <div class="col-sm-8 col-md-9 col-xl-10">
+            <input class="form-control form-control-sm" type="text" readonly [value]="publicUrl" id="publicUrl" (click)="$event.target.select()">
+        </div>
+    <!--</div>
+    <div class="form-group row" *ngIf="privateUrl">-->
+        <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-danger" for="privateUrl">Personal chat URL:</label>
+        <div class="col-sm-8 col-md-9 col-xl-10">
+            <input class="form-control form-control-sm" type="text" readonly [value]="privateUrl" id="privateUrl" (click)="$event.target.select()">
+        </div>
+    </div>
+</form>
+
 <ul>
     <li *ngFor="let msg of messages">
         <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
         <i class="text-primary">{{usernameFromSender(msg.sender)}}</i>: {{msg.text}}
     </li>
 </ul>
+
+<p class="text-muted" *ngIf="messages.length == 0">Write a message to start this chat!</p>
+
 <form (submit)="sendMessage(textinput)">
     <div class="form-group">
         <label for="messagetext">Your message:</label>

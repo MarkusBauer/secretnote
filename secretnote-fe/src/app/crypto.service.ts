@@ -58,9 +58,14 @@ export class CryptoService {
         return sjcl.codec.base64url.fromBits(sjcl.random.randomWords(4));
     }
 
+    isValidKey(key: string): boolean {
+        //TODO
+        return true;
+    }
+
     generateChannel(): string {
         //24bytes base64 = //6*3 bytes = 4.5 words
-        return sjcl.codec.base64.fromBits(sjcl.random.randomWords(5)).substring(0, 24);
+        return sjcl.codec.base64url.fromBits(sjcl.random.randomWords(5)).substring(0, 24);
     }
 
 

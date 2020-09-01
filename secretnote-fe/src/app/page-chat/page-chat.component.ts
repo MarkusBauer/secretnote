@@ -19,6 +19,9 @@ export class PageChatComponent implements OnInit {
     userPublic: string;
     connection: WebSocketSubject<any>;
 
+    privateUrl: string;
+    publicUrl: string;
+
     messages: Array<ChatMessage> = [];
 
     textinput: string = '';
@@ -35,11 +38,11 @@ export class PageChatComponent implements OnInit {
             this.updateChannelKey();
         });
         this.route.fragment.subscribe(f => {
-            if (!f || !f.includes("|")) {
+            if (!f || !f.includes(":")) {
                 this.ui.error("Invalid key given!");
                 return;
             }
-            let k = f.split("|");
+            let k = f.split(":");
             this.key = k[0];
             this.userPrivate = k[1];
             this.userPublic = this.crypto.getPublicFromSecretKey(this.userPrivate);
@@ -62,6 +65,9 @@ export class PageChatComponent implements OnInit {
             this.ui.error("Invalid key");
             return
         }
+
+        this.publicUrl = this.backend.generateChatPublicUrl(this.channel, this.key);
+        this.privateUrl = this.backend.generateChatPrivateUrl(this.channel, this.key, this.userPrivate);
 
         this.connection = this.backend.connectToChat(this.channel);
         console.log(this.connection);

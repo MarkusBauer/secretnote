@@ -8,6 +8,12 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+                    <a class="nav-link" routerLink="/">New Note</a>
+                </li>
+                <li class="nav-item" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/chat/create">New Chat</a>
+                </li>
                 <li class="nav-item" routerLinkActive="active">
                     <a class="nav-link" routerLink="/faq">F.A.Q</a>
                 </li>
