@@ -1,4 +1,9 @@
-<div *ngIf="state == 'loading'">loading ...</div>
+<div *ngIf="state == 'loading'">
+    <div class="spinner-border spinner-border-sm text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>&nbsp;
+    loading ...
+</div>
 <div *ngIf="state == 'missing'">
     <p class="alert alert-warning">This message has already been read (or the URL is invalid)</p>
 </div>

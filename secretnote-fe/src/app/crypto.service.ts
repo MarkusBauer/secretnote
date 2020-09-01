@@ -114,8 +114,14 @@ export class CryptoService {
         return result;
     }
 
-    decryptChatMessage(bin: ArrayBuffer, key: string): ChatMessage {
-        let signedMessage = CryptoService.decrypt(sjcl.codec.bytes.toBits(new Uint8Array(bin)), key);
+    decryptChatMessage(bin: ArrayBuffer | string, key: string): ChatMessage {
+        let bits;
+        if (typeof bin === "string") {
+            bits = sjcl.codec.base64.toBits(bin);
+        } else {
+            bits = sjcl.codec.bytes.toBits(new Uint8Array(bin));
+        }
+        let signedMessage = CryptoService.decrypt(bits, key);
         let signature = sjcl.bitArray.bitSlice(signedMessage, 0, 512);
         let messageBytes = sjcl.bitArray.bitSlice(signedMessage, 512, sjcl.bitArray.bitLength(signedMessage));
         let chatMessage: ChatMessage = JSON.parse(sjcl.codec.utf8String.fromBits(messageBytes));

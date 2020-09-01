@@ -44,6 +44,7 @@ fn random_string() -> String {
 }
 
 
+/*
 #[get("/front")]
 async fn front(redis: web::Data<Addr<RedisActor>>) -> impl Responder {
     let mut body = format!("Hello World!\n");
@@ -61,10 +62,49 @@ async fn front(redis: web::Data<Addr<RedisActor>>) -> impl Responder {
 async fn index(web::Path((id, name)): web::Path<(u32, String)>) -> impl Responder {
     format!("Hello {}! id:{}", name, id)
 }
+ */
 
-#[get("/api/websocket/{channel}")]
-async fn websocket(r: HttpRequest, web::Path(channel): web::Path<String>, stream: web::Payload, broker: web::Data<Addr<ChatMessageBroker>>) -> Result<HttpResponse, weberror::Error> {
-    ws::start(ChattingWebSocket::new(channel, broker.get_ref().clone()), &r, stream)
+
+#[derive(Deserialize)]
+struct ChatMessagesRequest { offset: isize, total_count: isize, limit: isize }
+
+#[derive(Serialize)]
+struct ChatMessageResponse { len: i64, messages: Vec<String> }
+
+#[get("/api/chat/websocket/{channel}")]
+async fn websocket(r: HttpRequest,
+                   web::Path(channel): web::Path<String>,
+                   stream: web::Payload,
+                   broker: web::Data<Addr<ChatMessageBroker>>,
+                   redis: web::Data<Addr<RedisActor>>) -> Result<HttpResponse, weberror::Error> {
+    ws::start(ChattingWebSocket::new(channel, broker.get_ref().clone(), redis.get_ref().clone()), &r, stream)
+}
+
+#[post("/api/chat/messages/{channel}")]
+async fn chat_messages(web::Path(channel): web::Path<String>, body: Json<ChatMessagesRequest>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+    let start = body.offset - body.total_count;
+    let stop = start + body.limit - 1;
+    let stop = if start < 0 && stop >= 0 { -1 } else { stop };
+    let result = redis.send(Command(resp_array!["LLEN", format!("chat:{}", channel)])).await;
+    if let Ok(Ok(RespValue::Integer(len))) = result {
+        println!("len={}  start={}  stop={}", len, start, stop);
+        let result = redis.send(Command(resp_array!["LRANGE", format!("chat:{}", channel), format!("{}", start), format!("{}", stop)])).await;
+        if let Ok(Ok(RespValue::Array(responses))) = result {
+            let mut response = ChatMessageResponse { len, messages: vec![] };
+            for r in responses {
+                if let RespValue::BulkString(bin) = r {
+                    response.messages.push(base64::encode(bin));
+                } else {
+                    println!("Redis returned response that was not a binary string");
+                }
+            }
+            HttpResponse::Ok().json(response)
+        } else {
+            HttpResponse::InternalServerError().body("LRANGE call failed")
+        }
+    } else {
+        HttpResponse::InternalServerError().body("LLEN call failed")
+    }
 }
 
 
@@ -170,10 +210,13 @@ async fn main() -> std::io::Result<()> {
             .data(RedisActor::start("127.0.0.1:6379"))
             //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
             .data(broker.clone())
-            .service(front)
-            .service(index)
+            //.service(front)
+            //.service(index)
             .service(websocket)
-            .service(note_store).service(note_check).service(note_retrieve)
+            .service(note_store)
+            .service(note_check)
+            .service(note_retrieve)
+            .service(chat_messages)
             .service(actix_files::Files::new("/static", "/home/markus/Projekte/secretnote/static").show_files_listing())
             .service(web::resource("/note/*").to(angular_index))
             .service(web::resource("/faq").to(angular_index))

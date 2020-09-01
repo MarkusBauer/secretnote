@@ -3,6 +3,10 @@ use actix::prelude::*;
 use actix::{Actor, Addr, StreamHandler, Handler, AsyncContext, ActorContext, fut};
 use std::time::{Duration, Instant};
 use crate::chatbroker::{ChatMessageBroker, ConnectCmd, DisconnectCmd, BroadcastCmd, ChatMessage, BroadcastBinaryCmd, BinaryChatMessage};
+use actix_redis::{RedisActor, Command};
+use redis_async::resp_array;
+use crate::format_redis_result;
+use futures::FutureExt;
 
 
 /// How often heartbeat pings are sent
@@ -17,6 +21,7 @@ pub struct ChattingWebSocket {
     hb: Instant,
     channel_name: String,
     broker: Addr<ChatMessageBroker>,
+    redis: Addr<RedisActor>,
 }
 
 impl Actor for ChattingWebSocket {
@@ -71,6 +76,18 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for ChattingWebSocket
             }
             Ok(ws::Message::Binary(bin)) => {
                 // ctx.binary(bin)
+                let vec = bin.to_vec();
+                let channel_name = self.channel_name.clone();
+                let redis = self.redis.clone();
+                let f = self.redis.send(Command(resp_array!["LPUSH", format!("chat:{}", self.channel_name), vec]));
+                let f = f.map(move |r| {
+                    println!("LPUSH {}", format_redis_result(&r));
+                    redis.do_send(Command(resp_array!["EXPIRE", format!("chat:{}", channel_name), format!("{}", 3600 * 24 * 7)]))
+                });
+                /*let f = f.map(|r|{
+                    println!("EXPIRE {}", format_redis_result(&r));
+                });*/
+                ctx.spawn(f.into_actor(self));
                 self.broker.do_send(BroadcastBinaryCmd { session: self.channel_name.clone(), content: bin })
             },
             Ok(ws::Message::Close(reason)) => {
@@ -101,8 +118,8 @@ impl Handler<BinaryChatMessage> for ChattingWebSocket {
 }
 
 impl ChattingWebSocket {
-    pub fn new(channel_name: String, broker: Addr<ChatMessageBroker>) -> Self {
-        Self { hb: Instant::now(), channel_name, broker }
+    pub fn new(channel_name: String, broker: Addr<ChatMessageBroker>, redis: Addr<RedisActor>) -> Self {
+        Self { hb: Instant::now(), channel_name, broker, redis }
     }
 
     /// helper method that sends ping to client every second.

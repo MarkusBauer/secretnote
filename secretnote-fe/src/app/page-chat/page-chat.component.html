@@ -13,6 +13,16 @@
     </div>
 </form>
 
+<div *ngIf="loadMoreMessagesSubscription != null" class="text-muted text-center">
+    <div class="spinner-border spinner-border-sm text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>&nbsp;
+    <small>loading more messages ...</small>
+</div>
+<div *ngIf="loadMoreMessagesSubscription == null && loadedMessages < knownMessageSize" class="text-center">
+    <button class="btn btn-link btn-sm" (click)="loadMoreMessages()">(load {{knownMessageSize - loadedMessages}} more messages ...)</button>
+</div>
+
 <ul>
     <li *ngFor="let msg of messages">
         <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;

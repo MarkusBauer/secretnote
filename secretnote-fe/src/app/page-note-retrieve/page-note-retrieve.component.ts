@@ -54,6 +54,9 @@ export class PageNoteRetrieveComponent implements OnInit {
                 this.ui.error(e);
                 this.state = "error";
             }
+        }, err => {
+            console.error(err);
+            this.ui.error('Could not retrieve note: '+err);
         });
     }
 

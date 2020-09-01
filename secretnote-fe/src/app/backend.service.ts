@@ -20,6 +20,11 @@ interface NoteRetrieveResponse {
     data: string;
 }
 
+export interface ChatMessageResponse {
+    len: number;
+    messages: Array<string>;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -65,13 +70,16 @@ export class BackendService {
 
     connectToChat(channel: string): WebSocketSubject<ArrayBuffer> {
         // let socket = new WebSocket('wss://echo.websocket.org');
-        let ws = webSocket<ArrayBuffer>({
-            url: this.wsbase + "api/websocket/" + channel,
+        return webSocket<ArrayBuffer>({
+            url: this.wsbase + "api/chat/websocket/" + channel,
             binaryType: 'arraybuffer',
             deserializer: ({data}) => data,
             serializer: data => data,
         });
-        return ws;
+    }
+
+    getChatMessages(channel: string, offset: number, total_count: number, limit: number): Observable<ChatMessageResponse> {
+        return this.http.post<ChatMessageResponse>('/api/chat/messages/'+channel, {offset: offset, total_count: total_count, limit: limit});
     }
 
 }

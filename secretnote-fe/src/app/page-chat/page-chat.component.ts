@@ -4,6 +4,7 @@ import {BackendService} from "../backend.service";
 import {WebSocketSubject} from "rxjs/internal-compatibility";
 import {ChatMessage, CryptoService} from "../crypto.service";
 import {UiService} from "../ui.service";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -23,6 +24,9 @@ export class PageChatComponent implements OnInit {
     publicUrl: string;
 
     messages: Array<ChatMessage> = [];
+    knownMessageSize = null;
+    loadedMessages = null;
+    loadMoreMessagesSubscription: Subscription;
 
     textinput: string = '';
 
@@ -70,7 +74,6 @@ export class PageChatComponent implements OnInit {
         this.privateUrl = this.backend.generateChatPrivateUrl(this.channel, this.key, this.userPrivate);
 
         this.connection = this.backend.connectToChat(this.channel);
-        console.log(this.connection);
         this.connection.subscribe(data => {
             try {
                 let msg = this.crypto.decryptChatMessage(data, this.key);
@@ -79,6 +82,7 @@ export class PageChatComponent implements OnInit {
                 this.messages.push({sender: "(system)", text: "Invalid message: " + e, ts: Date.now()});
             }
         });
+        this.loadMoreMessages();
     }
 
     sendMessage(text: string) {
@@ -100,5 +104,28 @@ export class PageChatComponent implements OnInit {
         } else {
             return d.toLocaleString();
         }
+    }
+
+    loadMoreMessages() {
+        let m = this.backend.getChatMessages(this.channel, this.loadedMessages || 0, this.knownMessageSize || 0, 25);
+        this.loadMoreMessagesSubscription = m.subscribe((result) => {
+            if (!this.knownMessageSize) this.knownMessageSize = result.len;
+            let newMessages = [];
+            for (let i = result.messages.length - 1; i >= 0; i--) {
+                try {
+                    let msg = this.crypto.decryptChatMessage(result.messages[i], this.key);
+                    newMessages.push(msg);
+                } catch (e) {
+                    newMessages.push({sender: "(system)", text: "Invalid message: " + e, ts: Date.now()});
+                }
+            }
+            this.messages = newMessages.concat(this.messages);
+            this.loadedMessages += result.messages.length;
+            this.loadMoreMessagesSubscription = null;
+        }, err => {
+            console.error(err);
+            this.ui.error('Error receiving messages: ' + err);
+            this.loadMoreMessagesSubscription = null;
+        });
     }
 }
