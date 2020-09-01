@@ -1,0 +1,13 @@
+<h2>About SecretNote</h2>
+<p>
+    SecretNote is free and open source software.
+</p>
+
+<h4>
+    Version
+    <span class="badge badge-primary" *ngIf="environment.build.version">{{ environment.build.version }}</span>
+</h4>
+<p>
+    Build time: {{environment.build.build_time}}<br/>
+    Git commit: <code>{{environment.build.git_hash}}</code>
+</p>

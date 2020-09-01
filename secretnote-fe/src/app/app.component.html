@@ -17,8 +17,15 @@
                 <li class="nav-item" routerLinkActive="active">
                     <a class="nav-link" routerLink="/faq">F.A.Q</a>
                 </li>
+                <li class="nav-item" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/about">About</a>
+                </li>
             </ul>
         </div>
+
+        <span class="navbar-text" *ngIf="environment.build.version">
+            {{environment.build.version}}
+        </span>
     </div>
 </nav>
 

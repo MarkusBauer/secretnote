@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {UiService} from "./ui.service";
+import {environment} from '../environments/environment';
 
 @Component({
     selector: 'app-root',
@@ -7,7 +8,9 @@ import {UiService} from "./ui.service";
     styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-    title = 'secretnote';
+    title = 'SecretNote';
+
+    environment = environment;
 
     constructor(public ui: UiService) {
     }

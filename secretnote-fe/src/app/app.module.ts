@@ -12,6 +12,7 @@ import {FormsModule} from "@angular/forms";
 import { PageNoteAdminComponent } from './page-note-admin/page-note-admin.component';
 import { PageChatComponent } from './page-chat/page-chat.component';
 import { PageChatCreateComponent } from './page-chat-create/page-chat-create.component';
+import { PageAboutComponent } from './page-about/page-about.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { PageChatCreateComponent } from './page-chat-create/page-chat-create.com
         PageNoteAdminComponent,
         PageChatComponent,
         PageChatCreateComponent,
+        PageAboutComponent,
     ],
     imports: [
         BrowserModule,

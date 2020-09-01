@@ -59,8 +59,14 @@ export class CryptoService {
     }
 
     isValidKey(key: string): boolean {
-        //TODO
-        return true;
+        try {
+            let bits = sjcl.codec.base64url.toBits(key);
+            let bitsize = sjcl.bitArray.bitLength(bits);
+            return bitsize == 128 || bitsize == 192 || bitsize == 256;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     }
 
     generateChannel(): string {

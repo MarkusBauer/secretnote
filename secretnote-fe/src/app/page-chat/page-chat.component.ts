@@ -24,7 +24,8 @@ export class PageChatComponent implements OnInit {
     key: string;
     userPrivate: string;
     userPublic: string;
-    connection: WebSocketSubject<any>;
+    connection: WebSocketSubject<ArrayBuffer>;
+    subscription: Subscription;
 
     privateUrl: string;
     publicUrl: string;
@@ -73,8 +74,12 @@ export class PageChatComponent implements OnInit {
             return
         }
         // TODO check key
-        if (!this.userPrivate || !this.userPublic) {
+        if (!this.crypto.isValidKey(this.key)) {
             this.ui.error("Invalid key");
+            return;
+        }
+        if (!this.userPrivate || !this.userPublic) {
+            this.ui.error("Invalid user key");
             return
         }
 
@@ -82,8 +87,17 @@ export class PageChatComponent implements OnInit {
         this.privateUrl = this.backend.generateChatPrivateUrl(this.channel, this.key, this.userPrivate);
         this.me = this.usernames.getUserInfo(this.userPublic, this.channel);
 
+        if (this.connection && this.subscription) {
+            this.connection.complete();
+            this.subscription.unsubscribe();
+            this.connection = null;
+            this.subscription = null;
+            this.messages = [];
+            this.knownMessageSize = null;
+            this.loadedMessages = null;
+        }
         this.connection = this.backend.connectToChat(this.channel);
-        this.connection.subscribe(data => {
+        this.subscription = this.connection.subscribe(data => {
             this.messages.push(this.readMessage(data));
         });
         this.loadMoreMessages();

@@ -31,7 +31,7 @@ export interface ChatMessageResponse {
 export class BackendService {
 
     base = '/';
-    wsbase = 'ws://localhost:8080/'
+    wsbase = (location.protocol == 'https' ? 'wss://' : 'ws://') + location.host + '/';
 
     constructor(private http: HttpClient, private platformLocation: PlatformLocation, private router: Router) {
     }
@@ -69,7 +69,6 @@ export class BackendService {
     }
 
     connectToChat(channel: string): WebSocketSubject<ArrayBuffer> {
-        // let socket = new WebSocket('wss://echo.websocket.org');
         return webSocket<ArrayBuffer>({
             url: this.wsbase + "api/chat/websocket/" + channel,
             binaryType: 'arraybuffer',

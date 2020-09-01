@@ -7,7 +7,8 @@ export const environment = {
     build: {
         build_time: "(dev mode)",
         build_timestamp: 0,
-        git_hash: "00000000"
+        git_hash: "00000000",
+        version: ""
     }
 };
 

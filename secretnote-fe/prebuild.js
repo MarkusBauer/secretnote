@@ -13,7 +13,7 @@ shell.exec("git rev-parse HEAD", {silent: true}, function (error, stdout, stderr
     } else {
         info.git_hash = stdout.trim();
 
-        shell.exec("git describe --abbrev=0", {silent: true}, function (error, stdout, stderr) {
+        shell.exec("git describe --abbrev=0 --tags", {silent: true}, function (error, stdout, stderr) {
             info.version = error ? "" : stdout.trim()
             console.log(info);
 
