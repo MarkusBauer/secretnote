@@ -4,8 +4,8 @@
         <div class="col-sm-8 col-md-9 col-xl-10">
             <input class="form-control form-control-sm" type="text" readonly [value]="publicUrl" id="publicUrl" (click)="$event.target.select()">
         </div>
-    <!--</div>
-    <div class="form-group row" *ngIf="privateUrl">-->
+        <!--</div>
+        <div class="form-group row" *ngIf="privateUrl">-->
         <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-danger" for="privateUrl">Personal chat URL:</label>
         <div class="col-sm-8 col-md-9 col-xl-10">
             <input class="form-control form-control-sm" type="text" readonly [value]="privateUrl" id="privateUrl" (click)="$event.target.select()">
@@ -13,29 +13,35 @@
     </div>
 </form>
 
-<div *ngIf="loadMoreMessagesSubscription != null" class="text-muted text-center">
-    <div class="spinner-border spinner-border-sm text-secondary" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>&nbsp;
-    <small>loading more messages ...</small>
-</div>
-<div *ngIf="loadMoreMessagesSubscription == null && loadedMessages < knownMessageSize" class="text-center">
-    <button class="btn btn-link btn-sm" (click)="loadMoreMessages()">(load {{knownMessageSize - loadedMessages}} more messages ...)</button>
+<div class="card">
+    <div *ngIf="loadMoreMessagesSubscription != null" class="text-muted text-center card-body">
+        <div class="spinner-border spinner-border-sm text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>&nbsp;
+        <small>loading more messages ...</small>
+    </div>
+    <div *ngIf="loadMoreMessagesSubscription == null && loadedMessages < knownMessageSize" class="text-center card-body">
+        <button class="btn btn-link btn-sm" (click)="loadMoreMessages()">(load {{knownMessageSize - loadedMessages}} more messages ...)</button>
+    </div>
+
+    <ul class="list-group list-group-flush">
+        <li *ngFor="let msg of messages" class="list-group-item">
+            <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
+            <i class="text-primary">{{usernameFromSender(msg.sender)}}</i>: {{msg.text}}
+        </li>
+    </ul>
+
+    <div class="card-body text-muted" *ngIf="messages.length == 0">
+        Write a message to start this chat!
+    </div>
 </div>
 
-<ul>
-    <li *ngFor="let msg of messages">
-        <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
-        <i class="text-primary">{{usernameFromSender(msg.sender)}}</i>: {{msg.text}}
-    </li>
-</ul>
-
-<p class="text-muted" *ngIf="messages.length == 0">Write a message to start this chat!</p>
+<br/>
 
 <form (submit)="sendMessage(textinput)">
     <div class="form-group">
-        <label for="messagetext">Your message:</label>
-        <textarea class="form-control" id="messagetext" name="messagetext" name="textinput" [(ngModel)]="textinput"></textarea>
+        <label for="messagetext" class="sr-only">Your message:</label>
+        <textarea class="form-control" id="messagetext" name="messagetext" name="textinput" [(ngModel)]="textinput" placeholder="write your message ..."></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Send message</button>
 </form>
