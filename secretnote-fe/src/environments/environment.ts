@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    build: {
+        build_time: "(dev mode)",
+        build_timestamp: 0,
+        git_hash: "00000000"
+    }
 };
 
 /*

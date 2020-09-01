@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --subresource-integrity --aot=true --prod=true",
+    "build": "node prebuild.js && ng build --subresource-integrity --aot=true --prod=true",
+    "postinstall": "node prebuild.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -24,7 +24,7 @@
         <button class="btn btn-link btn-sm" (click)="loadMoreMessages()">(load {{knownMessageSize - loadedMessages}} more messages ...)</button>
     </div>
 
-    <ul class="list-group list-group-flush list-group-chat">
+    <ul class="list-group list-group-flush list-group-chat" *ngIf="messages.length > 0">
         <li *ngFor="let msg of messages" class="list-group-item">
             <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
             <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic" [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
