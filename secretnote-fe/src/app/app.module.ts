@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {NgbAlertModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbAlertModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {PageNoteStoreComponent} from './page-note-store/page-note-store.component';
 import {PageNoteRetrieveComponent} from './page-note-retrieve/page-note-retrieve.component';
 import {PageFaqComponent} from './page-faq/page-faq.component';
@@ -29,6 +29,7 @@ import { PageChatCreateComponent } from './page-chat-create/page-chat-create.com
         HttpClientModule,
         AppRoutingModule,
         NgbAlertModule,
+        NgbTooltipModule,
     ],
     providers: [],
     bootstrap: [AppComponent]

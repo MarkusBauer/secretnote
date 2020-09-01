@@ -5,6 +5,12 @@ import {WebSocketSubject} from "rxjs/internal-compatibility";
 import {ChatMessage, CryptoService} from "../crypto.service";
 import {UiService} from "../ui.service";
 import {Subscription} from "rxjs";
+import {UsernamesService, UserInfo} from "../usernames.service";
+
+
+interface ExtendedChatMessage extends ChatMessage {
+    senderInfo: UserInfo;
+}
 
 
 @Component({
@@ -22,8 +28,9 @@ export class PageChatComponent implements OnInit {
 
     privateUrl: string;
     publicUrl: string;
+    me: UserInfo;
 
-    messages: Array<ChatMessage> = [];
+    messages: Array<ExtendedChatMessage> = [];
     knownMessageSize = null;
     loadedMessages = null;
     loadMoreMessagesSubscription: Subscription;
@@ -33,7 +40,8 @@ export class PageChatComponent implements OnInit {
     constructor(private route: ActivatedRoute,
                 private backend: BackendService,
                 private crypto: CryptoService,
-                private ui: UiService) {
+                private ui: UiService,
+                private usernames: UsernamesService) {
     }
 
     ngOnInit(): void {
@@ -72,15 +80,11 @@ export class PageChatComponent implements OnInit {
 
         this.publicUrl = this.backend.generateChatPublicUrl(this.channel, this.key);
         this.privateUrl = this.backend.generateChatPrivateUrl(this.channel, this.key, this.userPrivate);
+        this.me = this.usernames.getUserInfo(this.userPublic, this.channel);
 
         this.connection = this.backend.connectToChat(this.channel);
         this.connection.subscribe(data => {
-            try {
-                let msg = this.crypto.decryptChatMessage(data, this.key);
-                this.messages.push(msg);
-            } catch (e) {
-                this.messages.push({sender: "(system)", text: "Invalid message: " + e, ts: Date.now()});
-            }
+            this.messages.push(this.readMessage(data));
         });
         this.loadMoreMessages();
     }
@@ -94,8 +98,19 @@ export class PageChatComponent implements OnInit {
         this.textinput = '';
     }
 
-    usernameFromSender(sender: string): string {
-        return sender.substring(0, 43);
+    readMessage(data: string|ArrayBuffer): ExtendedChatMessage {
+        try {
+            let msg = this.crypto.decryptChatMessage(data, this.key) as ExtendedChatMessage;
+            msg.senderInfo = this.usernames.getUserInfo(msg.sender, this.channel);
+            return msg;
+        } catch (e) {
+            return {
+                sender: "(system)",
+                text: "Invalid message: " + e,
+                ts: Date.now(),
+                senderInfo: new UserInfo("(system)", 0, "", "#aaaaaa", true)
+            };
+        }
     }
 
     formattedDate(ts: number): string {
@@ -114,12 +129,7 @@ export class PageChatComponent implements OnInit {
             if (!this.knownMessageSize) this.knownMessageSize = result.len;
             let newMessages = [];
             for (let i = result.messages.length - 1; i >= 0; i--) {
-                try {
-                    let msg = this.crypto.decryptChatMessage(result.messages[i], this.key);
-                    newMessages.push(msg);
-                } catch (e) {
-                    newMessages.push({sender: "(system)", text: "Invalid message: " + e, ts: Date.now()});
-                }
+                newMessages.push(this.readMessage(result.messages[i]));
             }
             this.messages = newMessages.concat(this.messages);
             this.loadedMessages += result.messages.length;

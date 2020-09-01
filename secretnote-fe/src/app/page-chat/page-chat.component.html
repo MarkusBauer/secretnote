@@ -24,10 +24,12 @@
         <button class="btn btn-link btn-sm" (click)="loadMoreMessages()">(load {{knownMessageSize - loadedMessages}} more messages ...)</button>
     </div>
 
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush list-group-chat">
         <li *ngFor="let msg of messages" class="list-group-item">
             <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
-            <i class="text-primary">{{usernameFromSender(msg.sender)}}</i>: {{msg.text}}
+            <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic" [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
+            <small *ngIf="msg.senderInfo.number > 0" class="text-muted" ngbTooltip="This name is taken by multiple users. Numbers are provided for disambiguation."> #{{msg.senderInfo.number+1}}</small>
+            <span>: {{msg.text}}</span>
         </li>
     </ul>
 
