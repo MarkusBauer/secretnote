@@ -38,7 +38,7 @@ cp target/armv7-unknown-linux-gnueabihf/release/secretnote ./
 tar -czf releases/secretnote-linux-armhf.tar.gz secretnote fe
 rm ./secretnote
 cp target/x86_64-pc-windows-gnu/release/secretnote.exe ./
-zip releases/secretnote-windows-x64.zip secretnote.exe fe
+zip -r releases/secretnote-windows-x64.zip secretnote.exe fe
 rm secretnote.exe
 
 echo "Build finished!"
