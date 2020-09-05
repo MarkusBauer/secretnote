@@ -31,7 +31,7 @@ export interface ChatMessageResponse {
 export class BackendService {
 
     base = '/';
-    wsbase = (location.protocol == 'https' ? 'wss://' : 'ws://') + location.host + '/';
+    wsbase = (location.protocol == 'https:' ? 'wss://' : 'ws://') + location.host + '/';
 
     constructor(private http: HttpClient, private platformLocation: PlatformLocation, private router: Router) {
     }

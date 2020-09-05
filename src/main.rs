@@ -215,6 +215,16 @@ async fn main() -> std::io::Result<()> {
             .value_name("HOST:PORT")
             .about("Sets which ip/port should be bound")
             .takes_value(true))
+        .arg(clap::Arg::with_name("redis-db")
+            .long("redis-db")
+            .value_name("DB")
+            .about("database number")
+            .takes_value(true))
+        .arg(clap::Arg::with_name("redis-auth")
+            .long("redis-auth")
+            .value_name("PASSWORD")
+            .about("Sets a password for the redis database")
+            .takes_value(true))
         .arg(clap::Arg::with_name("verbose")
             .long("verbose")
             .short('v')
@@ -229,6 +239,8 @@ async fn main() -> std::io::Result<()> {
         env_logger::init();
     }
     let redis: Arc<String> = Arc::new(matches.value_of("redis").unwrap_or("127.0.0.1:6379").into());
+    let redis_db: u32 = matches.value_of_t("redis-db").unwrap_or(0);
+    let redis_auth = Arc::new(if let Some(x) = matches.value_of("redis-auth") { Some(String::from(x)) } else { None });
     let bind: String = matches.value_of("bind").unwrap_or("127.0.0.1:8080").into();
     println!("Using Redis at \"{}\" ...", redis);
     println!("Binding to \"{}\" ...", bind);
@@ -238,7 +250,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())
-            .data(MyRedisActor::start((*redis).clone()))
+            .data(MyRedisActor::start((*redis).clone(), Some(redis_db), (*redis_auth).clone()))
             //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
             .data(broker.clone())
             //.service(front)
@@ -250,6 +262,7 @@ async fn main() -> std::io::Result<()> {
             .service(chat_messages)
             // .service(actix_files::Files::new("/static", "/home/markus/Projekte/secretnote/static").show_files_listing())
             .service(web::resource("/note/*").to(angular_index))
+            .service(web::resource("/chat/*").to(angular_index))
             .service(web::resource("/faq").to(angular_index))
             .service(actix_files::Files::new("/", basepath.join("fe")).index_file("index.html"))
     }).bind(bind)?.run().await

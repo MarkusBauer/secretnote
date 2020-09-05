@@ -10,6 +10,12 @@ export class UserInfo {
     }
 }
 
+function positive_mod(a: number, b: number): number {
+    let c = a % b;
+    if (c < 0) c = (c + b) % b;
+    return c;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -37,18 +43,17 @@ export class UsernamesService {
 
         // username
         let v = seed[0] | (seed[1] << 8) | (seed[2] << 16) | (seed[3] << 24);
-        let name = UsernamesService.ADJECTIVES[v % UsernamesService.ADJECTIVES.length];
+        let name = UsernamesService.ADJECTIVES[positive_mod(v, UsernamesService.ADJECTIVES.length)];
         v = Math.floor(v / UsernamesService.ADJECTIVES.length);
-        name += ' ' + UsernamesService.ANIMALS[v % UsernamesService.ANIMALS.length];
+        name += ' ' + UsernamesService.ANIMALS[positive_mod(v, UsernamesService.ANIMALS.length)];
 
         // number: 0 for first user
         let number = this.nameCounter[name] || 0;
         this.nameCounter[name] = (this.nameCounter[name] || 0) + 1;
-        console.log(this.nameCounter);
 
         // color
         v = seed[4] | (seed[5] << 8) | (seed[6] << 16) | (seed[7] << 24);
-        let color = UsernamesService.COLORS[v % UsernamesService.COLORS.length];
+        let color = UsernamesService.COLORS[positive_mod(v, UsernamesService.COLORS.length)];
 
         let newInfo = new UserInfo(name, number, publickey, color);
         this.cache[key] = newInfo;

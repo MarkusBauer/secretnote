@@ -6,9 +6,10 @@ use actix::prelude::*;
 use actix_utils::oneshot;
 use backoff::backoff::Backoff;
 use backoff::ExponentialBackoff;
-use futures::FutureExt;
+use futures::{FutureExt};
 use redis_async::error::Error as RespError;
 use redis_async::resp::{RespCodec, RespValue};
+use redis_async::resp_array;
 use tokio::io::{split, WriteHalf};
 use tokio::net::TcpStream;
 use tokio_util::codec::FramedRead;
@@ -19,6 +20,8 @@ use log::{info, warn, error};
 /// Redis comminucation actor
 pub struct MyRedisActor {
     addr: String,
+    db: Option<u32>,
+    auth: Option<String>,
     backoff: ExponentialBackoff,
     cell: Option<actix::io::FramedWrite<RespValue, WriteHalf<TcpStream>, RespCodec>>,
     queue: VecDeque<oneshot::Sender<Result<RespValue, Error>>>,
@@ -26,14 +29,16 @@ pub struct MyRedisActor {
 
 impl MyRedisActor {
     /// Start new `Supervisor` with `MyRedisActor`.
-    pub fn start<S: Into<String>>(addr: S) -> Addr<MyRedisActor> {
+    pub fn start<S: Into<String>>(addr: S, db: Option<u32>, auth: Option<String>) -> Addr<MyRedisActor> {
         let addr = addr.into();
 
         let mut backoff = ExponentialBackoff::default();
         backoff.max_elapsed_time = None;
 
-        Supervisor::start(|_| MyRedisActor {
+        Supervisor::start(move |_| MyRedisActor {
             addr,
+            db,
+            auth,
             cell: None,
             backoff,
             queue: VecDeque::new(),
@@ -63,6 +68,13 @@ impl Actor for MyRedisActor {
                         ctx.add_stream(FramedRead::new(r, RespCodec));
 
                         act.backoff.reset();
+
+                        if let Some(a) = &act.auth {
+                            ctx.address().do_send(Command(resp_array!["AUTH", a]));
+                        }
+                        if let Some(db) = act.db {
+                            ctx.address().do_send(Command(resp_array!["SELECT", format!("{}", db)]));
+                        }
                     }
                     Err(err) => {
                         error!("Can not connect to redis server: {}", err);
@@ -81,8 +93,7 @@ impl Actor for MyRedisActor {
                         ctx.run_later(timeout, |_, ctx| ctx.stop());
                     }
                 }
-            })
-            .wait(ctx);
+            }).wait(ctx);
     }
 }
 
