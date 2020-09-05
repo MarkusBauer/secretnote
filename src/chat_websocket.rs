@@ -3,10 +3,11 @@ use actix::prelude::*;
 use actix::{Actor, Addr, StreamHandler, Handler, AsyncContext, ActorContext, fut};
 use std::time::{Duration, Instant};
 use crate::chatbroker::{ChatMessageBroker, ConnectCmd, DisconnectCmd, BroadcastCmd, ChatMessage, BroadcastBinaryCmd, BinaryChatMessage};
-use actix_redis::{RedisActor, Command};
+use actix_redis::{Command};
 use redis_async::resp_array;
 use crate::format_redis_result;
 use futures::FutureExt;
+use crate::my_redis_actor::MyRedisActor;
 
 
 /// How often heartbeat pings are sent
@@ -21,7 +22,7 @@ pub struct ChattingWebSocket {
     hb: Instant,
     channel_name: String,
     broker: Addr<ChatMessageBroker>,
-    redis: Addr<RedisActor>,
+    redis: Addr<MyRedisActor>,
 }
 
 impl Actor for ChattingWebSocket {
@@ -118,7 +119,7 @@ impl Handler<BinaryChatMessage> for ChattingWebSocket {
 }
 
 impl ChattingWebSocket {
-    pub fn new(channel_name: String, broker: Addr<ChatMessageBroker>, redis: Addr<RedisActor>) -> Self {
+    pub fn new(channel_name: String, broker: Addr<ChatMessageBroker>, redis: Addr<MyRedisActor>) -> Self {
         Self { hb: Instant::now(), channel_name, broker, redis }
     }
 

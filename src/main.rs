@@ -1,11 +1,12 @@
 mod chatbroker;
 mod chat_websocket;
+mod my_redis_actor;
 
 use std::env;
 use actix_web::{get, post, web, App, HttpServer, Responder, middleware, HttpRequest, HttpResponse};
 use actix_web::error as weberror;
 use actix_files;
-use actix_redis::{RedisActor, Command};
+use actix_redis::{Command};
 use actix::prelude::*;
 use actix_web_actors::ws;
 use redis_async::resp_array;
@@ -21,6 +22,7 @@ use std::path::PathBuf;
 use actix_files::NamedFile;
 use cached::proc_macro::cached;
 use std::sync::Arc;
+use crate::my_redis_actor::MyRedisActor;
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -47,7 +49,7 @@ fn random_string() -> String {
 
 /*
 #[get("/front")]
-async fn front(redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+async fn front(redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
     let mut body = format!("Hello World!\n");
 
     let cmd = redis.send(Command(resp_array!["GET", "testkey"]));
@@ -77,12 +79,12 @@ async fn websocket(r: HttpRequest,
                    web::Path(channel): web::Path<String>,
                    stream: web::Payload,
                    broker: web::Data<Addr<ChatMessageBroker>>,
-                   redis: web::Data<Addr<RedisActor>>) -> Result<HttpResponse, weberror::Error> {
+                   redis: web::Data<Addr<MyRedisActor>>) -> Result<HttpResponse, weberror::Error> {
     ws::start(ChattingWebSocket::new(channel, broker.get_ref().clone(), redis.get_ref().clone()), &r, stream)
 }
 
 #[post("/api/chat/messages/{channel}")]
-async fn chat_messages(web::Path(channel): web::Path<String>, body: Json<ChatMessagesRequest>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+async fn chat_messages(web::Path(channel): web::Path<String>, body: Json<ChatMessagesRequest>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
     let start = body.offset - body.total_count;
     let stop = start + body.limit - 1;
     let stop = if start < 0 && stop >= 0 { -1 } else { stop };
@@ -128,7 +130,7 @@ struct RetrieveNoteRequest { ident: String }
 struct RetrieveNoteResponse { ident: String, data: String }
 
 #[post("/api/note/store")]
-async fn note_store(note: Json<Note>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+async fn note_store(note: Json<Note>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
     let ident = random_string();
     let data = base64::decode(&note.data).unwrap_or(vec![]);
     // validate note text / impose limits
@@ -148,7 +150,7 @@ async fn note_store(note: Json<Note>, redis: web::Data<Addr<RedisActor>>) -> imp
 }
 
 #[get("/api/note/check/{ident}")]
-async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", ident)])).await;
     if let Ok(Ok(value)) = data {
         match value {
@@ -163,7 +165,7 @@ async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<R
 }
 
 #[post("/api/note/retrieve")]
-async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<RedisActor>>) -> impl Responder {
+async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", &note.ident)])).await;
     if let Ok(Ok(value)) = data {
         if let RespValue::BulkString(vec) = value {
@@ -192,6 +194,7 @@ fn get_base_path() -> PathBuf {
 }
 
 async fn angular_index() -> std::io::Result<NamedFile> {
+    println!("Serving \"{}\"...", get_base_path().join("fe").join("index.html").to_str().unwrap());
     NamedFile::open(get_base_path().join("fe").join("index.html").clone())
 }
 
@@ -235,7 +238,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())
-            .data(RedisActor::start((*redis).clone()))
+            .data(MyRedisActor::start((*redis).clone()))
             //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
             .data(broker.clone())
             //.service(front)
