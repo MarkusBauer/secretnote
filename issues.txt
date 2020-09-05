@@ -1,0 +1,22 @@
+- UI: General
+- UI: Chat
+- UI: Chat send with enter
+- Chat: reconnect on disconnect
+- Write FAQ
+- Write about
+- Show text without JS
+- Investigate page load times etc (Chrome lighthouse)
+- Set caching on static resources
+- Hide error messages after a while
+- Localization: German
+- Datenschutz / Impressum
+- Github: account + link to it
+- Github: build / run instructions
+- Github: automated / trusted build
+- Host it somewhere
+
+- Feature: upload files
+- Feature: upload images
+- Feature: real (authenticated) admin page
+- Feature: read confirmation
+- Feature: password?
