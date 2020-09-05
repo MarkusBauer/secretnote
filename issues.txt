@@ -14,7 +14,6 @@
 - Github: build / run instructions
 - Github: automated / trusted build
 - Host it somewhere
-- Windows: "fe" folder is empty
 
 - Feature: upload files
 - Feature: upload images
