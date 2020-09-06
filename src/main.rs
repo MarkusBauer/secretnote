@@ -2,7 +2,7 @@ mod chatbroker;
 mod chat_websocket;
 mod my_redis_actor;
 
-use std::env;
+use std::{env, fs};
 use actix_web::{get, post, web, App, HttpServer, Responder, middleware, HttpRequest, HttpResponse};
 use actix_web::error as weberror;
 use actix_files;
@@ -19,7 +19,6 @@ use rand::{Rng, thread_rng};
 use base64;
 use rand::distributions::Alphanumeric;
 use std::path::PathBuf;
-use actix_files::NamedFile;
 use cached::proc_macro::cached;
 use std::sync::Arc;
 use crate::my_redis_actor::MyRedisActor;
@@ -101,12 +100,12 @@ async fn chat_messages(web::Path(channel): web::Path<String>, body: Json<ChatMes
                     println!("Redis returned response that was not a binary string");
                 }
             }
-            HttpResponse::Ok().json(response)
+            HttpResponse::Ok().header("Cache-Control", "no-cache, no-store").json(response)
         } else {
-            HttpResponse::InternalServerError().body("LRANGE call failed")
+            HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("LRANGE call failed")
         }
     } else {
-        HttpResponse::InternalServerError().body("LLEN call failed")
+        HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("LLEN call failed")
     }
 }
 
@@ -135,17 +134,18 @@ async fn note_store(note: Json<Note>, redis: web::Data<Addr<MyRedisActor>>) -> i
     let data = base64::decode(&note.data).unwrap_or(vec![]);
     // validate note text / impose limits
     if data.len() < 16 || data.len() > 1 * 1024 * 1024 {
-        return HttpResponse::InternalServerError().body("Message too long or invalid");
+        return HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Message too long or invalid");
     }
 
     let cmd = Command(resp_array!["SET", format!("note:{}", ident), data, "EX", format!("{}", 3600 * 24 * 7)]);
     //let cmd = Command(resp_array!["SET", format!("note:{}", ident), data]);
     let result = redis.send(cmd).await;
     if let Ok(Ok(RespValue::SimpleString(_))) = result {
-        HttpResponse::Ok().json(NoteResponse { ident })
+        HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
+            .json(NoteResponse { ident })
     } else {
         println!("{}", format_redis_result(&result));
-        HttpResponse::InternalServerError().body("Redis connection error")
+        HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")
     }
 }
 
@@ -155,12 +155,13 @@ async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<M
     if let Ok(Ok(value)) = data {
         match value {
             RespValue::Nil => HttpResponse::Ok().json(CheckNoteResponse { ident: ident, exists: false }),
-            RespValue::BulkString(_) => HttpResponse::Ok().json(CheckNoteResponse { ident: ident, exists: true }),
-            _ => HttpResponse::InternalServerError().body("Invalid data type in redis")
+            RespValue::BulkString(_) => HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
+                .json(CheckNoteResponse { ident: ident, exists: true }),
+            _ => HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Invalid data type in redis")
         }
     } else {
         println!("{}", format_redis_result(&data));
-        HttpResponse::InternalServerError().body("Redis connection error")
+        HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")
     }
 }
 
@@ -170,13 +171,14 @@ async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<My
     if let Ok(Ok(value)) = data {
         if let RespValue::BulkString(vec) = value {
             redis.do_send(Command(resp_array!["DEL", format!("note:{}", &note.ident)]));
-            HttpResponse::Ok().json(RetrieveNoteResponse { ident: note.ident.clone(), data: base64::encode(vec) })
+            HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
+                .json(RetrieveNoteResponse { ident: note.ident.clone(), data: base64::encode(vec) })
         } else {
-            HttpResponse::InternalServerError().body("Invalid data type in redis")
+            HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Invalid data type in redis")
         }
     } else {
         println!("{}", format_redis_result(&data));
-        HttpResponse::InternalServerError().body("Redis connection error")
+        HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")
     }
 }
 
@@ -193,9 +195,14 @@ fn get_base_path() -> PathBuf {
     }
 }
 
-async fn angular_index() -> std::io::Result<NamedFile> {
-    println!("Serving \"{}\"...", get_base_path().join("fe").join("index.html").to_str().unwrap());
-    NamedFile::open(get_base_path().join("fe").join("index.html").clone())
+#[cached]
+fn read_index() -> String {
+    fs::read_to_string(get_base_path().join("fe").join("index.html")).unwrap()
+}
+
+async fn angular_index() -> impl Responder {
+    // let f = NamedFile::open(get_base_path().join("fe").join("index.html").clone());
+    HttpResponse::Ok().header("Cache-Control", "must-revalidate, max-age=3600").body(read_index())
 }
 
 #[actix_web::main]
@@ -250,6 +257,8 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())
+            .wrap(middleware::Compress::default())
+            .wrap(middleware::DefaultHeaders::new().header("Cache-Control", "max-age=2592000"))
             .data(MyRedisActor::start((*redis).clone(), Some(redis_db), (*redis_auth).clone()))
             //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
             .data(broker.clone())
@@ -264,6 +273,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/note/*").to(angular_index))
             .service(web::resource("/chat/*").to(angular_index))
             .service(web::resource("/faq").to(angular_index))
-            .service(actix_files::Files::new("/", basepath.join("fe")).index_file("index.html").use_last_modified(true).use_etag(true))
+            .service(web::resource("/").to(angular_index))
+            .service(actix_files::Files::new("/", basepath.join("fe")).use_last_modified(true).use_etag(true))
     }).bind(bind)?.run().await
 }
