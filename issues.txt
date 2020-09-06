@@ -6,7 +6,6 @@
 - Write about
 - Show text without JS
 - Investigate page load times etc (Chrome lighthouse)
-- Set caching on static resources
 - Hide error messages after a while
 - Localization: German
 - Datenschutz / Impressum
