@@ -1,14 +1,28 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>SecretNote</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Store encrypted one-time notes with SecretNote">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+	<meta charset="utf-8">
+	<title>SecretNote</title>
+	<base href="/">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Store encrypted one-time notes with SecretNote">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <app-root></app-root>
+<app-root></app-root>
+<noscript>
+	<nav class="navbar navbar-dark navbar-expand-md bg-dark">
+		<div class="container">
+			<a class="navbar-brand" href="/">SecretNote</a>
+		</div>
+	</nav>
+	<div class="container">
+		<h3>This page requires Javascript.</h3>
+		<p>
+			Javascript is requires to ensure proper client-side encryption of your messages.
+			Without scripting it is not possible to keep your secret key unshared.
+		</p>
+	</div>
+</noscript>
 </body>
 </html>
