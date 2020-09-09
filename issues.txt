@@ -4,7 +4,6 @@
 - Chat: reconnect on disconnect
 - Write FAQ
 - Write about
-- Show text without JS
 - Investigate page load times etc (Chrome lighthouse)
 - Hide error messages after a while
 - Localization: German
