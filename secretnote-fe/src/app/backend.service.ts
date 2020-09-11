@@ -68,12 +68,14 @@ export class BackendService {
             .pipe(map(response => response.data));
     }
 
-    connectToChat(channel: string): WebSocketSubject<ArrayBuffer> {
+    connectToChat(channel: string, onOpen: (Event) => void, onClose: (Event) => void): WebSocketSubject<ArrayBuffer> {
         return webSocket<ArrayBuffer>({
             url: this.wsbase + "api/chat/websocket/" + channel,
             binaryType: 'arraybuffer',
             deserializer: ({data}) => data,
             serializer: data => data,
+            openObserver: {next: onOpen},
+            closeObserver: {next: onClose}
         });
     }
 

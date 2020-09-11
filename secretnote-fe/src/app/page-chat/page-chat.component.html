@@ -14,6 +14,12 @@
 </form>
 
 <div class="card">
+    <div class="connector-item">
+        <strong *ngIf="connected" class="text-success" ngbTooltip="connection established">&#x2713;</strong>
+        <div *ngIf="!connected" class="spinner-border spinner-border-sm text-danger" role="status" ngbTooltip="connection interrupted, reconnecting ...">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <div *ngIf="loadMoreMessagesSubscription != null" class="text-muted text-center card-body">
         <div class="spinner-border spinner-border-sm text-secondary" role="status">
             <span class="sr-only">Loading...</span>

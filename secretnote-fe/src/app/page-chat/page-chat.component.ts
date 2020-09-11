@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {BackendService} from "../backend.service";
 import {WebSocketSubject} from "rxjs/internal-compatibility";
@@ -18,7 +18,7 @@ interface ExtendedChatMessage extends ChatMessage {
     templateUrl: './page-chat.component.html',
     styleUrls: ['./page-chat.component.less']
 })
-export class PageChatComponent implements OnInit {
+export class PageChatComponent implements OnInit, OnDestroy {
 
     channel: string;
     key: string;
@@ -26,6 +26,8 @@ export class PageChatComponent implements OnInit {
     userPublic: string;
     connection: WebSocketSubject<ArrayBuffer>;
     subscription: Subscription;
+    timeout: number = null;
+    connected: boolean = false;
 
     privateUrl: string;
     publicUrl: string;
@@ -66,6 +68,17 @@ export class PageChatComponent implements OnInit {
         // this.crypto.test();
     }
 
+    ngOnDestroy() {
+        if (this.timeout !== null) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+        }
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
+    }
+
     updateChannelKey() {
         if (!this.channel || !this.key) return;
         if (this.channel.length != 24) {
@@ -96,11 +109,25 @@ export class PageChatComponent implements OnInit {
             this.knownMessageSize = null;
             this.loadedMessages = null;
         }
-        this.connection = this.backend.connectToChat(this.channel);
+        this.connection = this.backend.connectToChat(this.channel, (e) => {
+            this.connected = true;
+        }, (e) => {
+            this.connected = false;
+        });
+        this.subscribeWebsocket();
+        this.loadMoreMessages();
+    }
+
+    private subscribeWebsocket() {
+        this.timeout = null;
         this.subscription = this.connection.subscribe(data => {
             this.messages.push(this.readMessage(data));
+        }, err => {
+            console.log('ERROR', err);
+            this.timeout = setTimeout(() => {
+                this.subscribeWebsocket()
+            }, 3000);
         });
-        this.loadMoreMessages();
     }
 
     sendMessage(text: string) {
@@ -112,7 +139,7 @@ export class PageChatComponent implements OnInit {
         this.textinput = '';
     }
 
-    readMessage(data: string|ArrayBuffer): ExtendedChatMessage {
+    readMessage(data: string | ArrayBuffer): ExtendedChatMessage {
         try {
             let msg = this.crypto.decryptChatMessage(data, this.key) as ExtendedChatMessage;
             msg.senderInfo = this.usernames.getUserInfo(msg.sender, this.channel);
