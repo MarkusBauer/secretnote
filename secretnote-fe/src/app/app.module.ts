@@ -13,6 +13,7 @@ import { PageNoteAdminComponent } from './page-note-admin/page-note-admin.compon
 import { PageChatComponent } from './page-chat/page-chat.component';
 import { PageChatCreateComponent } from './page-chat-create/page-chat-create.component';
 import { PageAboutComponent } from './page-about/page-about.component';
+import { OcticonDirective } from './octicon.directive';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import { PageAboutComponent } from './page-about/page-about.component';
         PageChatComponent,
         PageChatCreateComponent,
         PageAboutComponent,
+        OcticonDirective,
     ],
     imports: [
         BrowserModule,

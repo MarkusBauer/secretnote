@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "~10.0.14",
     "@angular/router": "~10.0.14",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
+    "@primer/octicons": "^11.0.0",
     "@types/sjcl": "^1.0.29",
     "bootstrap": "^4.5.2",
     "rxjs": "~6.5.5",

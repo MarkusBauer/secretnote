@@ -16,7 +16,8 @@
 <div class="card">
     <div class="connector-item">
         <strong *ngIf="connected" class="text-success" ngbTooltip="connection established">&#x2713;</strong>
-        <div *ngIf="!connected" class="spinner-border spinner-border-sm text-danger" role="status" ngbTooltip="connection interrupted, reconnecting ...">
+        <div *ngIf="!connected" class="spinner-border spinner-border-sm text-danger" role="status"
+             ngbTooltip="connection interrupted, reconnecting ...">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
@@ -33,8 +34,10 @@
     <ul class="list-group list-group-flush list-group-chat" *ngIf="messages.length > 0">
         <li *ngFor="let msg of messages" class="list-group-item">
             <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
-            <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic" [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
-            <small *ngIf="msg.senderInfo.number > 0" class="text-muted" ngbTooltip="This name is taken by multiple users. Numbers are provided for disambiguation."> #{{msg.senderInfo.number+1}}</small>
+            <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic"
+                  [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
+            <small *ngIf="msg.senderInfo.number > 0" class="text-muted"
+                   ngbTooltip="This name is taken by multiple users. Numbers are provided for disambiguation."> #{{msg.senderInfo.number + 1}}</small>
             <span class="msg-text">: {{msg.text}}</span>
         </li>
     </ul>
@@ -47,11 +50,14 @@
 <br/>
 
 <form (submit)="sendMessage(textinput)">
-    <div class="form-group">
-        <label for="messagetext" class="sr-only">Your message:</label>
+    <div class="input-group mb-3">
         <textarea class="form-control" id="messagetext" name="messagetext" name="textinput"
                   [(ngModel)]="textinput" placeholder="write your message ..."
-        (keydown)="onMessagetextKeydown($event)"></textarea>
+                  (keydown)="onMessagetextKeydown($event)"></textarea>
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary" ngbTooltip="Send message">
+                <span appOcticon octicon="paper-airplane" width="32">Send message</span>
+            </button>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Send message</button>
 </form>
