@@ -35,7 +35,7 @@
             <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
             <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic" [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
             <small *ngIf="msg.senderInfo.number > 0" class="text-muted" ngbTooltip="This name is taken by multiple users. Numbers are provided for disambiguation."> #{{msg.senderInfo.number+1}}</small>
-            <span>: {{msg.text}}</span>
+            <span class="msg-text">: {{msg.text}}</span>
         </li>
     </ul>
 
@@ -49,7 +49,9 @@
 <form (submit)="sendMessage(textinput)">
     <div class="form-group">
         <label for="messagetext" class="sr-only">Your message:</label>
-        <textarea class="form-control" id="messagetext" name="messagetext" name="textinput" [(ngModel)]="textinput" placeholder="write your message ..."></textarea>
+        <textarea class="form-control" id="messagetext" name="messagetext" name="textinput"
+                  [(ngModel)]="textinput" placeholder="write your message ..."
+        (keydown)="onMessagetextKeydown($event)"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Send message</button>
 </form>

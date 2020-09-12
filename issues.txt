@@ -1,6 +1,5 @@
 - UI: General
 - UI: Chat
-- UI: Chat send with enter
 - Write FAQ
 - Write about
 - Investigate page load times etc (Chrome lighthouse)
