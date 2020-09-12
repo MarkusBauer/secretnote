@@ -1,63 +1,65 @@
-<form>
-    <div class="form-group row" *ngIf="publicUrl && privateUrl">
-        <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-primary" for="publicUrl">Public chat URL:</label>
-        <div class="col-sm-8 col-md-9 col-xl-10">
-            <input class="form-control form-control-sm" type="text" readonly [value]="publicUrl" id="publicUrl" (click)="$event.target.select()">
+<div class="chat-container">
+    <form class="link-container">
+        <div class="form-group row" *ngIf="publicUrl && privateUrl">
+            <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-primary" for="publicUrl" ngbTooltip="Share this link with your chat mates">Public chat URL:</label>
+            <div class="col-sm-8 col-md-9 col-xl-10">
+                <input class="form-control form-control-sm" type="text" readonly [value]="publicUrl" id="publicUrl" (click)="$event.target.select()">
+            </div>
+            <!--</div>
+            <div class="form-group row" *ngIf="privateUrl">-->
+            <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-danger" for="privateUrl" ngbTooltip="Save this link for yourself to retain access to your chatname">Personal chat URL:</label>
+            <div class="col-sm-8 col-md-9 col-xl-10">
+                <input class="form-control form-control-sm" type="text" readonly [value]="privateUrl" id="privateUrl"
+                       (click)="$event.target.select()">
+            </div>
         </div>
-        <!--</div>
-        <div class="form-group row" *ngIf="privateUrl">-->
-        <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-danger" for="privateUrl">Personal chat URL:</label>
-        <div class="col-sm-8 col-md-9 col-xl-10">
-            <input class="form-control form-control-sm" type="text" readonly [value]="privateUrl" id="privateUrl" (click)="$event.target.select()">
+    </form>
+
+    <div class="card message-container" #MessageContainer>
+        <div class="connector-item">
+            <span *ngIf="connected" class="text-success connected" ngbTooltip="connection established" container="body" appOcticon octicon="link"></span>
+            <div *ngIf="!connected" class="spinner-border spinner-border-sm text-danger" role="status"
+                 ngbTooltip="connection interrupted, reconnecting ...">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div *ngIf="loadMoreMessagesSubscription != null" class="text-muted text-center card-body">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>&nbsp;
+            <small>loading more messages ...</small>
+        </div>
+        <div *ngIf="loadMoreMessagesSubscription == null && loadedMessages < knownMessageSize" class="text-center card-body">
+            <button class="btn btn-link btn-sm" (click)="loadMoreMessages()">(load {{knownMessageSize - loadedMessages}} more messages ...)</button>
+        </div>
+
+        <ul class="list-group list-group-flush list-group-chat" *ngIf="messages.length > 0">
+            <li *ngFor="let msg of messages" class="list-group-item">
+                <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
+                <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic"
+                      [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
+                <small *ngIf="msg.senderInfo.number > 0" class="text-muted"
+                       ngbTooltip="This name is taken by multiple users. Numbers are provided for disambiguation.">
+                    #{{msg.senderInfo.number + 1}}</small>
+                <span class="msg-text">: {{msg.text}}</span>
+            </li>
+        </ul>
+
+        <div class="card-body text-muted" *ngIf="messages.length == 0">
+            Write a message to start this chat!
         </div>
     </div>
-</form>
 
-<div class="card">
-    <div class="connector-item">
-        <span *ngIf="connected" class="text-success connected" ngbTooltip="connection established" appOcticon octicon="link"></span>
-        <div *ngIf="!connected" class="spinner-border spinner-border-sm text-danger" role="status"
-             ngbTooltip="connection interrupted, reconnecting ...">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <div *ngIf="loadMoreMessagesSubscription != null" class="text-muted text-center card-body">
-        <div class="spinner-border spinner-border-sm text-secondary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>&nbsp;
-        <small>loading more messages ...</small>
-    </div>
-    <div *ngIf="loadMoreMessagesSubscription == null && loadedMessages < knownMessageSize" class="text-center card-body">
-        <button class="btn btn-link btn-sm" (click)="loadMoreMessages()">(load {{knownMessageSize - loadedMessages}} more messages ...)</button>
-    </div>
-
-    <ul class="list-group list-group-flush list-group-chat" *ngIf="messages.length > 0">
-        <li *ngFor="let msg of messages" class="list-group-item">
-            <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
-            <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic"
-                  [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
-            <small *ngIf="msg.senderInfo.number > 0" class="text-muted"
-                   ngbTooltip="This name is taken by multiple users. Numbers are provided for disambiguation."> #{{msg.senderInfo.number + 1}}</small>
-            <span class="msg-text">: {{msg.text}}</span>
-        </li>
-    </ul>
-
-    <div class="card-body text-muted" *ngIf="messages.length == 0">
-        Write a message to start this chat!
-    </div>
-</div>
-
-<br/>
-
-<form (submit)="sendMessage(textinput)">
-    <div class="input-group mb-3">
+    <form (submit)="sendMessage(textinput)" class="chat-send-area">
+        <div class="input-group mb-3">
         <textarea class="form-control" id="messagetext" name="messagetext" name="textinput"
                   [(ngModel)]="textinput" placeholder="write your message ..."
                   (keydown)="onMessagetextKeydown($event)"></textarea>
-        <div class="input-group-append">
-            <button type="submit" class="btn btn-primary" ngbTooltip="Send message">
-                <span appOcticon octicon="paper-airplane" width="32">Send message</span>
-            </button>
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary" ngbTooltip="Send message">
+                    <span appOcticon octicon="paper-airplane" width="32">Send message</span>
+                </button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {BackendService} from "../backend.service";
 import {WebSocketSubject} from "rxjs/internal-compatibility";
@@ -19,6 +19,8 @@ interface ExtendedChatMessage extends ChatMessage {
     styleUrls: ['./page-chat.component.less']
 })
 export class PageChatComponent implements OnInit, OnDestroy {
+
+    @ViewChild('MessageContainer') private messageContainer: ElementRef;
 
     channel: string;
     key: string;
@@ -120,6 +122,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
         this.timeout = null;
         this.subscription = this.connection.subscribe(data => {
             this.messages.push(this.readMessage(data));
+            setTimeout(() => {this.scrollToBottom()}, 1);
         }, err => {
             console.log('ERROR', err);
             this.timeout = setTimeout(() => {
@@ -185,5 +188,11 @@ export class PageChatComponent implements OnInit, OnDestroy {
             $event.preventDefault();
             this.sendMessage(this.textinput);
         }
+    }
+
+    scrollToBottom(): void {
+        try {
+            this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+        } catch(err) { }
     }
 }
