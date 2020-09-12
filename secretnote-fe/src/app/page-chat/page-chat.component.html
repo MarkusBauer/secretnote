@@ -15,7 +15,7 @@
 
 <div class="card">
     <div class="connector-item">
-        <strong *ngIf="connected" class="text-success" ngbTooltip="connection established">&#x2713;</strong>
+        <span *ngIf="connected" class="text-success connected" ngbTooltip="connection established" appOcticon octicon="link"></span>
         <div *ngIf="!connected" class="spinner-border spinner-border-sm text-danger" role="status"
              ngbTooltip="connection interrupted, reconnecting ...">
             <span class="sr-only">Loading...</span>

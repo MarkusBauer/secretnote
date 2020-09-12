@@ -64,8 +64,6 @@ export class PageChatComponent implements OnInit, OnDestroy {
             this.updateChannelKey();
         });
         this.messages = [];
-        // TODO remove that later!
-        // this.crypto.test();
     }
 
     ngOnDestroy() {
