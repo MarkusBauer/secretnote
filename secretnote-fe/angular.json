@@ -32,7 +32,8 @@
               "src/bootstrap.scss",
               "src/styles.less"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["@primer/octicons"]
           },
           "configurations": {
             "production": {

@@ -5,7 +5,6 @@ use std::time::{Duration, Instant};
 use crate::chatbroker::{ChatMessageBroker, ConnectCmd, DisconnectCmd, BroadcastCmd, ChatMessage, BroadcastBinaryCmd, BinaryChatMessage};
 use actix_redis::{Command};
 use redis_async::resp_array;
-use crate::format_redis_result;
 use futures::FutureExt;
 use crate::my_redis_actor::MyRedisActor;
 
@@ -42,7 +41,7 @@ impl Actor for ChattingWebSocket {
             })
             .wait(ctx);
 
-        println!("Websocket connected");
+        // println!("Websocket connected");
     }
 
     fn stopped(&mut self, ctx: &mut Self::Context) {
@@ -55,7 +54,7 @@ impl Actor for ChattingWebSocket {
                 fut::ready(())
             })
             .wait(ctx);
-        println!("Websocket disconnected");
+        // println!("Websocket disconnected");
     }
 }
 
@@ -81,8 +80,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for ChattingWebSocket
                 let channel_name = self.channel_name.clone();
                 let redis = self.redis.clone();
                 let f = self.redis.send(Command(resp_array!["LPUSH", format!("chat:{}", self.channel_name), vec]));
-                let f = f.map(move |r| {
-                    println!("LPUSH {}", format_redis_result(&r));
+                let f = f.map(move |_r| {
                     redis.do_send(Command(resp_array!["EXPIRE", format!("chat:{}", channel_name), format!("{}", 3600 * 24 * 7)]))
                 });
                 /*let f = f.map(|r|{
@@ -104,7 +102,6 @@ impl Handler<ChatMessage> for ChattingWebSocket {
     type Result = ();
 
     fn handle(&mut self, msg: ChatMessage, ctx: &mut Self::Context) -> Self::Result {
-        println!("receive from broker");
         ctx.text(msg.content);
     }
 }
@@ -113,7 +110,6 @@ impl Handler<BinaryChatMessage> for ChattingWebSocket {
     type Result = ();
 
     fn handle(&mut self, msg: BinaryChatMessage, ctx: &mut Self::Context) -> Self::Result {
-        println!("receive from broker");
         ctx.binary(msg.content);
     }
 }

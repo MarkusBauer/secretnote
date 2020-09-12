@@ -181,7 +181,6 @@ export class PageChatComponent implements OnInit, OnDestroy {
     }
 
     onMessagetextKeydown($event: KeyboardEvent) {
-        console.log($event);
         if ($event.key === "Enter" && !$event.shiftKey) {
             $event.preventDefault();
             this.sendMessage(this.textinput);

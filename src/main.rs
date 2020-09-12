@@ -89,7 +89,7 @@ async fn chat_messages(web::Path(channel): web::Path<String>, body: Json<ChatMes
     let stop = if start < 0 && stop >= 0 { -1 } else { stop };
     let result = redis.send(Command(resp_array!["LLEN", format!("chat:{}", channel)])).await;
     if let Ok(Ok(RespValue::Integer(len))) = result {
-        println!("len={}  start={}  stop={}", len, start, stop);
+        // println!("len={}  start={}  stop={}", len, start, stop);
         let result = redis.send(Command(resp_array!["LRANGE", format!("chat:{}", channel), format!("{}", start), format!("{}", stop)])).await;
         if let Ok(Ok(RespValue::Array(responses))) = result {
             let mut response = ChatMessageResponse { len, messages: vec![] };
@@ -202,7 +202,14 @@ fn read_index() -> String {
 
 async fn angular_index() -> impl Responder {
     // let f = NamedFile::open(get_base_path().join("fe").join("index.html").clone());
-    HttpResponse::Ok().header("Cache-Control", "must-revalidate, max-age=3600").body(read_index())
+    HttpResponse::Ok()
+        .content_type("text/html; charset=UTF-8")
+        .header("Cache-Control", "must-revalidate, max-age=3600")
+        .header("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';")
+        .header("X-Content-Type-Options", "nosniff")
+        .header("X-Frame-Options", "SAMEORIGIN")
+        .header("Referrer-Policy", "no-referrer")
+        .body(read_index())
 }
 
 #[actix_web::main]

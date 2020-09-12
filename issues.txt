@@ -6,6 +6,8 @@
 - Hide error messages after a while
 - Localization: German
 - Datenschutz / Impressum
+- Check all those security headers (CSP, Frame policy etc)
+- Minimize bundle size (icons?)
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build

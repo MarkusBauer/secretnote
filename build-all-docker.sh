@@ -10,7 +10,7 @@ cross build --release --target x86_64-pc-windows-gnu
 
 
 # BUILD FRONTEND
-docker run --rm -it -v "$(pwd)":/code node:14 /bin/sh -c 'cd /code/secretnote-fe && npm install && npm run build'
+docker run --user="$(id -u)" --rm -it -v "$(pwd)":/code node:14 /bin/sh -c 'cd /code/secretnote-fe && npm install && npm run build'
 
 
 # PACKAGE STUFF INTO ARCHIVES
