@@ -1,0 +1,86 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    // height: 100vh;
+    // height: calc(~"100vh - 80px");
+    height: calc(100vh - 80px);
+    margin-bottom: -80px;
+
+    //background-color: #fff3cd;
+
+    .chat-send-area {
+        // margin-bottom: -15px;
+    }
+
+    .link-container {
+        //background-color: #ff8080;
+        .card-body {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-group.row {
+            margin-bottom: 0;
+        }
+
+        .collapseButton {
+            @include caret("up");
+            &.iscollapsed {
+                @include caret("down");
+            }
+
+            line-height: 1;
+        }
+    }
+
+    .message-container {
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+}
+
+
+.message-me {
+    font-weight: bold;
+}
+
+.list-group-chat {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+
+    .list-group-item {
+        border: none;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+}
+
+.connector-item {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+
+    .connected {
+        display: inline-block;
+        margin-top: 4px;
+        margin-right: 4px;
+    }
+
+    .spinner-border {
+        margin-right: 4px;
+    }
+}
+
+.msg-text {
+    white-space: pre-wrap;
+}
+
+#messagetext {
+    min-height: 40px;
+}

@@ -1,10 +1,10 @@
 - UI: General
-- UI: Chat
 - Write FAQ
 - Write about
 - Hide error messages after a while
 - Localization: German
 - Datenschutz / Impressum
+- Animations
 - Minimize bundle size (icons?)
 - Github: account + link to it
 - Github: build / run instructions

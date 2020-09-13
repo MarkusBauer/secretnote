@@ -16,7 +16,7 @@ interface ExtendedChatMessage extends ChatMessage {
 @Component({
     selector: 'app-page-chat',
     templateUrl: './page-chat.component.html',
-    styleUrls: ['./page-chat.component.less']
+    styleUrls: ['./page-chat.component.scss']
 })
 export class PageChatComponent implements OnInit, OnDestroy {
 
@@ -41,6 +41,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
     loadMoreMessagesSubscription: Subscription;
 
     textinput: string = '';
+    linksIsCollapsed = false;
 
     constructor(private route: ActivatedRoute,
                 private backend: BackendService,
