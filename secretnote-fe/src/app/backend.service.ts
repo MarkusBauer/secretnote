@@ -8,6 +8,7 @@ import {webSocket, WebSocketSubject} from "rxjs/webSocket";
 
 interface NoteStoreResponse {
     ident: string;
+    admin_ident: string;
 }
 
 interface NoteCheckResponse {
@@ -53,9 +54,8 @@ export class BackendService {
         return window.location.origin + this.router.createUrlTree(['/chat', channel], {fragment: key + ':' + secretKey});
     }
 
-    storeNote(text: string): Observable<string> {
-        return this.http.post<NoteStoreResponse>(this.base + 'api/note/store', {data: text})
-            .pipe(map(response => response.ident));
+    storeNote(text: string): Observable<NoteStoreResponse> {
+        return this.http.post<NoteStoreResponse>(this.base + 'api/note/store', {data: text});
     }
 
     checkNote(ident: string): Observable<boolean> {

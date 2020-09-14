@@ -22,6 +22,8 @@ use std::path::PathBuf;
 use cached::proc_macro::cached;
 use std::sync::Arc;
 use crate::my_redis_actor::MyRedisActor;
+use crypto::sha2::Sha256;
+use crypto::digest::Digest;
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -43,6 +45,17 @@ fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -
 
 fn random_string() -> String {
     return thread_rng().sample_iter(&Alphanumeric).take(24).collect();
+}
+
+fn hash_ident(admin_ident: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.input_str(admin_ident);
+    let mut v: Vec<u8> = Vec::with_capacity(32);
+    v.resize(32, 0u8);
+    hasher.result(&mut v);
+    let s = base64::encode_config(&v, base64::URL_SAFE_NO_PAD);
+    println!("admin_ident = \"{}\"   ident = \"{}\"", &admin_ident, &s[..28]);
+    String::from(&s[..28])
 }
 
 
@@ -117,7 +130,7 @@ struct Note {
 }
 
 #[derive(Serialize)]
-struct NoteResponse { ident: String }
+struct NoteResponse { ident: String, admin_ident: String }
 
 #[derive(Serialize)]
 struct CheckNoteResponse { ident: String, exists: bool }
@@ -130,7 +143,8 @@ struct RetrieveNoteResponse { ident: String, data: String }
 
 #[post("/api/note/store")]
 async fn note_store(note: Json<Note>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
-    let ident = random_string();
+    let admin_ident = random_string();
+    let ident = hash_ident(&admin_ident);
     let data = base64::decode(&note.data).unwrap_or(vec![]);
     // validate note text / impose limits
     if data.len() < 16 || data.len() > 1 * 1024 * 1024 {
@@ -138,11 +152,17 @@ async fn note_store(note: Json<Note>, redis: web::Data<Addr<MyRedisActor>>) -> i
     }
 
     let cmd = Command(resp_array!["SET", format!("note:{}", ident), data, "EX", format!("{}", 3600 * 24 * 7)]);
-    //let cmd = Command(resp_array!["SET", format!("note:{}", ident), data]);
     let result = redis.send(cmd).await;
     if let Ok(Ok(RespValue::SimpleString(_))) = result {
-        HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
-            .json(NoteResponse { ident })
+        let cmd = Command(resp_array!["SET", format!("noteadmin:{}", admin_ident), "{}", "EX", format!("{}", 3600 * 24 * 7)]);
+        let result = redis.send(cmd).await;
+        if let Ok(Ok(RespValue::SimpleString(_))) = result {
+            HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
+                .json(NoteResponse { ident, admin_ident })
+        } else {
+            println!("{}", format_redis_result(&result));
+            HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")
+        }
     } else {
         println!("{}", format_redis_result(&result));
         HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")

@@ -27,9 +27,9 @@ export class PageNoteStoreComponent implements OnInit {
         }
         let key = this.crypto.generateKey();
         let encryptedNote = this.crypto.encryptNote({text: text}, key);
-        this.backend.storeNote(encryptedNote).subscribe(ident => {
-            console.log('ident=', ident, '  key=', key);
-            this.router.navigate(['/note/admin', ident], {fragment: key});
+        this.backend.storeNote(encryptedNote).subscribe(response => {
+            console.log('ident=', response, '  key=', key);
+            this.router.navigate(['/note/admin', response.admin_ident], {fragment: key});
         });
     }
 

@@ -30,7 +30,7 @@ export class CryptoService {
     private static encrypt(p: any, keystring: string): any {
         let key = sjcl.codec.base64url.toBits(keystring);
         let cipher = new sjcl.cipher.aes(key);
-        let iv = sjcl.random.randomWords(4,0);
+        let iv = sjcl.random.randomWords(4, 0);
         let c = sjcl.mode.gcm.encrypt(cipher, p, iv);
         return sjcl.bitArray.concat(iv, c);
     }
@@ -69,11 +69,14 @@ export class CryptoService {
         }
     }
 
+    adminIdentToIdent(adminIdent: string): string {
+        return sjcl.codec.base64url.fromBits(sjcl.hash.sha256.hash(sjcl.codec.utf8String.toBits(adminIdent))).substring(0, 28);
+    }
+
     generateChannel(): string {
         //24bytes base64 = //6*3 bytes = 4.5 words
         return sjcl.codec.base64url.fromBits(sjcl.random.randomWords(5)).substring(0, 24);
     }
-
 
     private static parseEccSecretKey(sec: string): any {
         return new sjcl.ecc.ecdsa.secretKey(sjcl.ecc.curves.c256, sjcl.ecc.curves.c256.field.fromBits(sjcl.codec.base64url.toBits(sec)));
