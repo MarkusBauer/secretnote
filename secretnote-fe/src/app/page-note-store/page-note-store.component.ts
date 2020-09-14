@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {CryptoService} from "../crypto.service";
 import {BackendService} from "../backend.service";
 import {Router} from "@angular/router";
@@ -11,6 +11,7 @@ import {Router} from "@angular/router";
 export class PageNoteStoreComponent implements OnInit {
 
     text: string = "";
+    @ViewChild('textInput') textInput: ElementRef;
 
     constructor(private crypto: CryptoService, private backend: BackendService, private router: Router) {
     }
@@ -19,8 +20,13 @@ export class PageNoteStoreComponent implements OnInit {
     }
 
     store() {
+        let text = this.text.trim();
+        if (!text) {
+            this.textInput.nativeElement.focus();
+            return;
+        }
         let key = this.crypto.generateKey();
-        let encryptedNote = this.crypto.encryptNote({text: this.text}, key);
+        let encryptedNote = this.crypto.encryptNote({text: text}, key);
         this.backend.storeNote(encryptedNote).subscribe(ident => {
             console.log('ident=', ident, '  key=', key);
             this.router.navigate(['/note/admin', ident], {fragment: key});
