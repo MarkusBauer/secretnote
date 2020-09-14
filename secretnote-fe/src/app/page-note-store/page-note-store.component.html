@@ -1,6 +1,6 @@
 <form (submit)="store()">
     <div class="form-group">
-        <label for="storeNoteInput">Store a note here - encrypted!</label>
+        <label for="storeNoteInput">Store a note - encrypted!</label>
         <textarea name="text" class="form-control" id="storeNoteInput" [(ngModel)]="text" #textInput></textarea>
     </div>
     <button type="submit" class="btn btn-primary btn-lg"><span appOcticon octicon="comment" width="24"></span> Store Note</button>
@@ -10,8 +10,9 @@
 <br/>
 <br/>
 <p>
-    For the note you'll get a <span class="text-danger">secret link</span>:
+    For the note you'll get a <span class="text-primary">secret link</span>:
     Only with this link your recipient can decrypt and read the note.
     After your note has been read it will be removed permanently - no one else will be able to see it.
 </p>
+<p>With a second <span class="text-danger">admin link</span> you will be able to see when your note has been read.</p>
 <p><small>Notes are deleted after they have been read one, latest 7 days after creation.</small></p>

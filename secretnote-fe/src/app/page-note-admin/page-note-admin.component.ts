@@ -13,6 +13,7 @@ export class PageNoteAdminComponent implements OnInit {
     key: string;
     state: string = "loading";
     url: string;
+    adminUrl: string;
 
     constructor(private route: ActivatedRoute, private backend: BackendService) {
     }
@@ -37,6 +38,7 @@ export class PageNoteAdminComponent implements OnInit {
         // TODO check key
 
         this.url = this.backend.generatePublicUrl(this.ident, this.key);
+        this.adminUrl = this.backend.generatePrivateUrl(this.ident, this.key);
 
         this.backend.checkNote(this.ident).subscribe(exists => {
             this.state = exists ? "ready" : "missing";

@@ -17,5 +17,7 @@
 </div>
 <div *ngIf="state == 'decrypted'">
     <p><small>Identifier: <code>{{ident}}</code></small></p>
-    <pre>{{note.text}}</pre>
+    <div class="card">
+        <pre class="card-body">{{note.text}}</pre>
+    </div>
 </div>

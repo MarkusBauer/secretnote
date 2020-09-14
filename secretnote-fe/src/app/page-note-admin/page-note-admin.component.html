@@ -1,12 +1,24 @@
 <div *ngIf="state == 'loading'">loading</div>
-<div *ngIf="state == 'missing'">This message has already been read (or the URL is invalid).</div>
+<div *ngIf="state == 'missing'">This note has already been read (or the URL is invalid).</div>
 <div *ngIf="state == 'error'">error</div>
 <div *ngIf="state == 'ready'">
-    <p class="alert alert-success">Your message has been stored!</p>
-    <p>It can be retrieved with the link below - but only once.</p>
+    <p class="alert alert-success">Your note has been stored!</p>
+
+    <br/>
+
     <form>
         <div class="form-group">
-            <input type="text" class="form-control" readonly [value]="url" (click)="$event.target.select()">
+            <label for="url">It can be retrieved with the <span class="text-primary">secret link</span> below - but only once</label>
+            <input type="text" id="url" class="form-control form-control-sm" readonly [value]="url" (click)="$event.target.select()">
+        </div>
+    </form>
+
+    <br/>
+
+    <form>
+        <div class="form-group">
+            <label for="adminUrl">You can check if the note was read using this <span class="text-danger">admin link</span>:</label>
+            <input type="text" id="adminUrl" class="form-control form-control-sm" readonly [value]="adminUrl" (click)="$event.target.select()">
         </div>
     </form>
 </div>
