@@ -1,7 +1,7 @@
 <form (submit)="store()">
     <div class="form-group">
         <label for="storeNoteInput">Store a note - encrypted!</label>
-        <textarea name="text" class="form-control" id="storeNoteInput" [(ngModel)]="text" #textInput></textarea>
+        <textarea name="text" class="form-control" id="storeNoteInput" [(ngModel)]="text" #textInput rows="4"></textarea>
     </div>
     <button type="submit" class="btn btn-primary btn-lg"><span appOcticon octicon="comment" width="24"></span> Store Note</button>
 </form>
