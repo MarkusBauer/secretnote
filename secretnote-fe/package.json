@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "prebuild": "node prebuild-filter-icons.js",
     "build": "node prebuild.js && ng build --subresource-integrity --aot=true --prod=true",
     "postbuild": "html-minifier ../fe/index.html --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --use-short-doctype -o ../fe/index.html",
     "postinstall": "node prebuild.js",

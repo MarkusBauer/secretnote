@@ -4,7 +4,6 @@
 - Localization: German
 - Datenschutz / Impressum
 - Animations
-- Minimize bundle size (icons?)
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build
@@ -12,6 +11,6 @@
 
 - Feature: upload files
 - Feature: upload images
-- Feature: real (authenticated) admin page
+- Feature: better admin page
 - Feature: read confirmation
 - Feature: password?
