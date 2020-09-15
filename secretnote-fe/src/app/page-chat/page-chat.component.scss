@@ -9,8 +9,9 @@
     justify-content: flex-end;
     // height: 100vh;
     // height: calc(~"100vh - 80px");
-    height: calc(100vh - 80px);
     margin-bottom: -80px;
+    height: calc(100vh - 80px);
+    transition: height 0.35s ease;
 
     //background-color: #fff3cd;
 

@@ -2,11 +2,11 @@
     <div class="container">
         <a class="navbar-brand" routerLink="/" routerLinkActive="active">SecretNote</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" (click)="ui.toggleNavbar()">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="navbarCollapsed">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="ui.navbarCollapsed">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
                     <a class="nav-link" routerLink="/"><span appOcticon octicon="comment"></span> New Note</a>

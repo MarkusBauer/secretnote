@@ -1,4 +1,5 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Output, EventEmitter} from '@angular/core';
+import {NavigationEnd, Router} from "@angular/router";
 
 
 interface Alert {
@@ -13,7 +14,17 @@ export class UiService {
 
     alerts: Array<Alert> = [];
 
-    constructor() {
+    navbarCollapsed = true;
+
+    @Output() navbarCollapseEvents = new EventEmitter<boolean>();
+
+
+    constructor(private router: Router) {
+        this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                if (!this.navbarCollapsed) this.navbarCollapsed = true;
+            }
+        });
     }
 
     close(alert: Alert) {
@@ -26,5 +37,10 @@ export class UiService {
 
     error(message: string) {
         this.alert({type: "danger", message: message});
+    }
+
+    toggleNavbar() {
+        this.navbarCollapsed = !this.navbarCollapsed;
+        this.navbarCollapseEvents.emit(this.navbarCollapsed);
     }
 }

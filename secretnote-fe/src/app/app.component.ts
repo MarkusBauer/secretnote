@@ -12,12 +12,6 @@ export class AppComponent {
 
     environment = environment;
 
-    navbarCollapsed = true;
-
     constructor(public ui: UiService) {
-    }
-
-    toggleNavbar() {
-        this.navbarCollapsed = !this.navbarCollapsed;
     }
 }

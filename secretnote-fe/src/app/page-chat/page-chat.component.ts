@@ -21,6 +21,7 @@ interface ExtendedChatMessage extends ChatMessage {
 export class PageChatComponent implements OnInit, OnDestroy {
 
     @ViewChild('MessageContainer') private messageContainer: ElementRef;
+    @ViewChild('ChatContainer') private chatContainer: ElementRef;
 
     channel: string;
     key: string;
@@ -67,6 +68,20 @@ export class PageChatComponent implements OnInit, OnDestroy {
             this.updateChannelKey();
         });
         this.messages = [];
+        this.ui.navbarCollapseEvents.subscribe((collapsed) => {
+            if (collapsed) this.updateLayout(80);
+            else this.updateLayout(176);
+            setTimeout(() => {
+                this.updateLayout();
+            }, 355);
+        });
+        setTimeout(() => {
+            this.updateLayout();
+        }, 1);
+    }
+
+    updateLayout(height = undefined) {
+        this.chatContainer.nativeElement.style.height = 'calc(100vh - ' + (height || this.chatContainer.nativeElement.offsetTop) + 'px)';
     }
 
     ngOnDestroy() {
@@ -123,7 +138,9 @@ export class PageChatComponent implements OnInit, OnDestroy {
         this.timeout = null;
         this.subscription = this.connection.subscribe(data => {
             this.messages.push(this.readMessage(data));
-            setTimeout(() => {this.scrollToBottom()}, 1);
+            setTimeout(() => {
+                this.scrollToBottom()
+            }, 1);
         }, err => {
             console.log('ERROR', err);
             this.timeout = setTimeout(() => {
@@ -194,6 +211,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
     scrollToBottom(): void {
         try {
             this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
-        } catch(err) { }
+        } catch (err) {
+        }
     }
 }
