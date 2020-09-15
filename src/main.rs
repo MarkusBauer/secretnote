@@ -225,7 +225,7 @@ async fn angular_index() -> impl Responder {
     HttpResponse::Ok()
         .content_type("text/html; charset=UTF-8")
         .header("Cache-Control", "must-revalidate, max-age=3600")
-        .header("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none';")
+        .header("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none';")
         .header("X-Content-Type-Options", "nosniff")
         .header("X-Frame-Options", "SAMEORIGIN")
         .header("Referrer-Policy", "no-referrer")

@@ -13,3 +13,5 @@
 - Feature: better admin page
 - Feature: read confirmation
 - Feature: password?
+
+- UI: chat UI is moved out of area by expanding menu
