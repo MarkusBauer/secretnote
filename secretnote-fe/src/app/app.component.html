@@ -6,7 +6,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngClass]="{ 'show': navbarOpen }">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="navbarCollapsed">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
                     <a class="nav-link" routerLink="/"><span appOcticon octicon="comment"></span> New Note</a>
@@ -21,8 +21,8 @@
                     <a class="nav-link" routerLink="/about">About</a>
                 </li>
             </ul>
-            <span class="navbar-text" *ngIf="true || environment.build.version">
-                {{environment.build.version||'Version'}}
+            <span class="navbar-text" *ngIf="environment.build.version">
+                {{environment.build.version}}
             </span>
         </div>
     </div>
