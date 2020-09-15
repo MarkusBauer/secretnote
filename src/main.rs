@@ -300,6 +300,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/note/*").to(angular_index))
             .service(web::resource("/chat/*").to(angular_index))
             .service(web::resource("/faq").to(angular_index))
+            .service(web::resource("/about").to(angular_index))
             .service(web::resource("/").to(angular_index))
             .service(actix_files::Files::new("/", basepath.join("fe")).use_last_modified(true).use_etag(true))
     }).bind(bind)?.run().await

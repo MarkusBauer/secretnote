@@ -1,7 +1,7 @@
 <div class="chat-container">
     <div class="card link-container">
-        <form class="card-body" [ngbCollapse]="linksIsCollapsed">
-            <div class="form-group row" *ngIf="publicUrl && privateUrl">
+        <form class="card-body" [ngbCollapse]="linksIsCollapsed" style="padding-top: 0">
+            <div class="form-group row" *ngIf="publicUrl && privateUrl" style="margin-top: 1.25rem">
                 <label class="col-sm-4 col-md-3 col-xl-2 col-form-label text-primary" for="publicUrl" ngbTooltip="Share this link with your chat mates">Public chat URL:</label>
                 <div class="col-sm-8 col-md-9 col-xl-10">
                     <input class="form-control form-control-sm" type="text" readonly [value]="publicUrl" id="publicUrl" (click)="$event.target.select()">
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </form>
-        <button (click)="linksIsCollapsed = !linksIsCollapsed" class="btn btn-sm btn-link collapseButton" [class.iscollapsed]="linksIsCollapsed"></button>
+        <a (click)="linksIsCollapsed = !linksIsCollapsed" class="btn btn-sm btn-link collapseButton" [class.iscollapsed]="linksIsCollapsed"></a>
     </div>
 
     <div class="card message-container" #MessageContainer>

@@ -3,7 +3,6 @@
 - Hide error messages after a while / Chat UI: Error messages must not change layout
 - Localization: German
 - Datenschutz / Impressum
-- Animations
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build
