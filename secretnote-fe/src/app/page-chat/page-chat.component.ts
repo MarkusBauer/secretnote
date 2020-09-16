@@ -58,7 +58,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
         });
         this.route.fragment.subscribe(f => {
             if (!f || !f.includes(":")) {
-                this.ui.error("Invalid key given!");
+                this.ui.error("Invalid key given!", {header: "Invalid link"});
                 return;
             }
             let k = f.split(":");
@@ -98,17 +98,15 @@ export class PageChatComponent implements OnInit, OnDestroy {
     updateChannelKey() {
         if (!this.channel || !this.key) return;
         if (this.channel.length != 24) {
-            // TODO report error
-            this.ui.error("Invalid channel ID");
+            this.ui.error("Invalid channel ID", {header: "Invalid link"});
             return
         }
-        // TODO check key
         if (!this.crypto.isValidKey(this.key)) {
-            this.ui.error("Invalid key");
+            this.ui.error("Invalid key", {header: "Invalid link"});
             return;
         }
         if (!this.userPrivate || !this.userPublic) {
-            this.ui.error("Invalid user key");
+            this.ui.error("Invalid user key", {header: "Invalid link"});
             return
         }
 
@@ -196,7 +194,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
             this.loadMoreMessagesSubscription = null;
         }, err => {
             console.error(err);
-            this.ui.error('Error receiving messages: ' + err);
+            this.ui.error('Error receiving messages: ' + err, {header: "Connection error"});
             this.loadMoreMessagesSubscription = null;
         });
     }

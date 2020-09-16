@@ -11,8 +11,8 @@ import {UiService} from "../ui.service";
 })
 export class PageNoteRetrieveComponent implements OnInit {
 
-    ident: string;
-    key: string;
+    ident: string = undefined;
+    key: string = undefined;
     state: string = "loading";
     note: NoteContent;
 
@@ -31,16 +31,24 @@ export class PageNoteRetrieveComponent implements OnInit {
     }
 
     updateIdentKey() {
-        if (!this.ident || this.ident.length != 24) {
-            // TODO report error
-            this.state = "error";
+        if (this.ident === undefined || this.key === undefined) {
+            return;
         }
-        // TODO check key
+        if (this.ident.length != 28) {
+            this.ui.error("This link is invalid");
+            this.state = "error";
+            return;
+        }
+        if (!this.crypto.isValidKey(this.key)) {
+            this.ui.error("This link is invalid (encryption key corrupted)");
+            this.state = "error";
+            return;
+        }
 
         this.state = "loading";
         this.backend.checkNote(this.ident).subscribe(exists => {
             this.state = exists ? "ready" : "missing";
-        });
+        }, this.ui.httpErrorHandler);
     }
 
     retrieveNote() {
@@ -51,13 +59,10 @@ export class PageNoteRetrieveComponent implements OnInit {
                 this.state = "decrypted";
             } catch (e) {
                 console.error(e);
-                this.ui.error(e);
+                this.ui.error(e, {header: "Decryption failed!"});
                 this.state = "error";
             }
-        }, err => {
-            console.error(err);
-            this.ui.error('Could not retrieve note: '+err);
-        });
+        }, this.ui.httpErrorHandler);
     }
 
 }

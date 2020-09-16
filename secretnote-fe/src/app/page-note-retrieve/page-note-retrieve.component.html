@@ -5,7 +5,7 @@
     loading ...
 </div>
 <div *ngIf="state == 'missing'">
-    <p class="alert alert-warning">This message has already been read (or the URL is invalid)</p>
+    <p class="text-warning">This message has already been read (or the URL is invalid)</p>
 </div>
 <div *ngIf="state == 'error'">Message could not be read.</div>
 <div *ngIf="state == 'ready'">

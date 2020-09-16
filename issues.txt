@@ -1,6 +1,5 @@
 - Write FAQ
 - Write about
-- Hide error messages after a while / Chat UI: Error messages must not change layout
 - Localization: German
 - Datenschutz / Impressum
 - Github: account + link to it

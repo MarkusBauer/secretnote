@@ -1,8 +1,15 @@
-<div *ngIf="state == 'loading'">loading</div>
-<div *ngIf="state == 'missing'">This note has already been read (or the URL is invalid).</div>
-<div *ngIf="state == 'error'">error</div>
+<div *ngIf="state == 'loading'">
+    <div class="spinner-border spinner-border-sm text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>&nbsp;
+    loading ...
+</div>
+<div *ngIf="state == 'missing'">This note has already been read (or the link is invalid).</div>
+<div *ngIf="state == 'error'">
+    Error.
+</div>
 <div *ngIf="state == 'ready'">
-    <p class="alert alert-success">Your note has been stored!</p>
+    <p>Note <code>{{ident}}</code> has not been read - yet.</p>
 
     <br/>
 

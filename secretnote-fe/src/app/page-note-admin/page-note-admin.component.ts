@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {BackendService} from "../backend.service";
 import {CryptoService} from "../crypto.service";
+import {UiService} from "../ui.service";
 
 @Component({
     selector: 'app-page-note-admin',
@@ -10,21 +11,20 @@ import {CryptoService} from "../crypto.service";
 })
 export class PageNoteAdminComponent implements OnInit {
 
-    ident: string;
-    adminIdent: string;
+    ident: string = undefined;
+    adminIdent: string = undefined;
     key: string;
     state: string = "loading";
     url: string;
     adminUrl: string;
 
-    constructor(private route: ActivatedRoute, private backend: BackendService, private crypto: CryptoService) {
+    constructor(private route: ActivatedRoute, private backend: BackendService, private crypto: CryptoService, private ui: UiService) {
     }
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(map => {
             this.adminIdent = map.get("ident");
             this.ident = this.crypto.adminIdentToIdent(this.adminIdent);
-            console.log(this.adminIdent, "=>", this.ident);
             this.updateIdentKey();
         });
         this.route.fragment.subscribe(f => {
@@ -35,18 +35,24 @@ export class PageNoteAdminComponent implements OnInit {
 
 
     updateIdentKey() {
-        if (!this.ident || this.ident.length != 24) {
-            // TODO report error
+        if (this.ident === undefined || this.key === undefined) return;
+        if (this.ident.length != 28) {
+            this.ui.error("This link is invalid");
             this.state = "error";
+            return;
         }
-        // TODO check key
+        if (!this.crypto.isValidKey(this.key)) {
+            this.ui.error("This link is invalid (encryption key corrupted)");
+            this.state = "error";
+            return;
+        }
 
         this.url = this.backend.generatePublicUrl(this.ident, this.key);
         this.adminUrl = this.backend.generatePrivateUrl(this.adminIdent, this.key);
 
         this.backend.checkNote(this.ident).subscribe(exists => {
             this.state = exists ? "ready" : "missing";
-        });
+        }, this.ui.httpErrorHandler);
     }
 
 
