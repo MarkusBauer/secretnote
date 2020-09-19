@@ -23,7 +23,7 @@ export class PageNoteStoreComponent implements OnInit {
     store() {
         let text = this.text.trim();
         if (!text) {
-            this.ui.warning('Note is empty, please enter a note!');
+            this.ui.warning($localize`:@@warn_noteempty:Note is empty, please enter a note!`);
             this.textInput.nativeElement.focus();
             return;
         }

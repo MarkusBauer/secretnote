@@ -13,6 +13,12 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "de": "src/locale/messages.de.xlf"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -22,6 +28,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "localize": true,
             "aot": true,
             "extractCss": true,
             "assets": [
@@ -63,13 +70,19 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "de": {
+              "localize": ["de"]
+            },
+            "en": {
+              "localize": ["en"]
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "secretnote-fe:build",
+            "browserTarget": "secretnote-fe:build:de",
             "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
