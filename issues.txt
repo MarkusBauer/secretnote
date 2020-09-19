@@ -1,6 +1,9 @@
 - Write FAQ
 - Write about
 - Localization: German
+  - translate
+  - header language detection
+  - language switch
 - Datenschutz / Impressum
 - Github: account + link to it
 - Github: build / run instructions

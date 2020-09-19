@@ -216,11 +216,11 @@ fn get_base_path() -> PathBuf {
 }
 
 #[cached]
-fn read_index() -> String {
-    fs::read_to_string(get_base_path().join("fe").join("index.html")).unwrap()
+fn read_index(language: &'static str) -> String {
+    fs::read_to_string(get_base_path().join("fe").join(language).join("index.html")).unwrap()
 }
 
-async fn angular_index() -> impl Responder {
+async fn angular_index(language: &'static str) -> impl Responder {
     // let f = NamedFile::open(get_base_path().join("fe").join("index.html").clone());
     HttpResponse::Ok()
         .content_type("text/html; charset=UTF-8")
@@ -229,8 +229,22 @@ async fn angular_index() -> impl Responder {
         .header("X-Content-Type-Options", "nosniff")
         .header("X-Frame-Options", "SAMEORIGIN")
         .header("Referrer-Policy", "no-referrer")
-        .body(read_index())
+        .body(read_index(language))
 }
+
+async fn angular_index_de() -> impl Responder {
+    angular_index("de").await
+}
+
+async fn angular_index_en() -> impl Responder {
+    angular_index("en").await
+}
+
+async fn angular_index_any() -> impl Responder {
+    // TODO read header and choose language
+    angular_index("en").await
+}
+
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -297,11 +311,25 @@ async fn main() -> std::io::Result<()> {
             .service(note_retrieve)
             .service(chat_messages)
             // .service(actix_files::Files::new("/static", "/home/markus/Projekte/secretnote/static").show_files_listing())
-            .service(web::resource("/note/*").to(angular_index))
-            .service(web::resource("/chat/*").to(angular_index))
-            .service(web::resource("/faq").to(angular_index))
-            .service(web::resource("/about").to(angular_index))
-            .service(web::resource("/").to(angular_index))
+
+            .service(web::resource("/note/*").to(angular_index_any))
+            .service(web::resource("/chat/*").to(angular_index_any))
+            .service(web::resource("/faq").to(angular_index_any))
+            .service(web::resource("/about").to(angular_index_any))
+            .service(web::resource("/").to(angular_index_any))
+
+            .service(web::resource("/de/note/*").to(angular_index_de))
+            .service(web::resource("/de/chat/*").to(angular_index_de))
+            .service(web::resource("/de/faq").to(angular_index_de))
+            .service(web::resource("/de/about").to(angular_index_de))
+            .service(web::resource("/de/").to(angular_index_de))
+
+            .service(web::resource("/en/note/*").to(angular_index_en))
+            .service(web::resource("/en/chat/*").to(angular_index_en))
+            .service(web::resource("/en/faq").to(angular_index_en))
+            .service(web::resource("/en/about").to(angular_index_en))
+            .service(web::resource("/en/").to(angular_index_en))
+
             .service(actix_files::Files::new("/", basepath.join("fe")).use_last_modified(true).use_etag(true))
     }).bind(bind)?.run().await
 }
