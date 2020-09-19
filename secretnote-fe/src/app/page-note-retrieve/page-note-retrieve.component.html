@@ -1,22 +1,22 @@
 <div *ngIf="state == 'loading'">
     <div class="spinner-border spinner-border-sm text-secondary" role="status">
-        <span class="sr-only">Loading...</span>
+        <span class="sr-only" i18n="@@loading">Loading...</span>
     </div>&nbsp;
-    loading ...
+    <ng-container i18n>loading ...</ng-container>
 </div>
 <div *ngIf="state == 'missing'">
-    <p class="text-warning">This message has already been read (or the URL is invalid)</p>
+    <p class="text-warning" i18n>This message has already been read (or the URL is invalid)</p>
 </div>
-<div *ngIf="state == 'error'">Message could not be read.</div>
+<div *ngIf="state == 'error'" i18n>Message could not be read.</div>
 <div *ngIf="state == 'ready'">
-    <p>Your message is ready!</p>
-    <p>Remember: it can only be read once, afterwards it will be destructed.</p>
-    <p><small>Identifier: <code>{{ident}}</code></small></p>
+    <p i18n>Your message is ready!</p>
+    <p i18n>Remember: it can only be read once, afterwards it will be destructed.</p>
+    <p><small><ng-container i18n>Identifier</ng-container>: <code>{{ident}}</code></small></p>
 
-    <button (click)="retrieveNote()" class="btn btn-primary">Read Note</button>
+    <button (click)="retrieveNote()" class="btn btn-primary" i18n>Read Note</button>
 </div>
 <div *ngIf="state == 'decrypted'">
-    <p><small>Identifier: <code>{{ident}}</code></small></p>
+    <p><small><ng-container i18n>Identifier</ng-container>: <code>{{ident}}</code></small></p>
     <div class="card">
         <div class="card-body"><pre class="note-text">{{note.text}}</pre></div>
     </div>

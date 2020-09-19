@@ -9,16 +9,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="ui.navbarCollapsed">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-                    <a class="nav-link" routerLink="/"><span appOcticon octicon="comment"></span> New Note</a>
+                    <a class="nav-link" routerLink="/"><span appOcticon octicon="comment"></span>&nbsp;<ng-container i18n>New Note</ng-container></a>
                 </li>
                 <li class="nav-item" routerLinkActive="active">
-                    <a class="nav-link" routerLink="/chat/create"><span appOcticon octicon="comment-discussion"></span> New Chat</a>
+                    <a class="nav-link" routerLink="/chat/create"><span appOcticon octicon="comment-discussion"></span>&nbsp;<ng-container i18n>New Chat</ng-container></a>
                 </li>
                 <li class="nav-item" routerLinkActive="active">
-                    <a class="nav-link" routerLink="/faq">F.A.Q</a>
+                    <a class="nav-link" routerLink="/faq" i18n>F.A.Q</a>
                 </li>
                 <li class="nav-item" routerLinkActive="active">
-                    <a class="nav-link" routerLink="/about">About</a>
+                    <a class="nav-link" routerLink="/about" i18n>About</a>
                 </li>
             </ul>
             <span class="navbar-text" *ngIf="environment.build.version">

@@ -11,9 +11,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.carousel.slide-number" datatype="html">
-        <source>
-          Slide <x id="INTERPOLATION" equiv-text="{{i + 1}}"/> of <x id="INTERPOLATION_1" equiv-text="{{c}}"/>
-        </source>
+        <source>Slide <x id="INTERPOLATION" equiv-text="{{i + 1}}"/> of <x id="INTERPOLATION_1" equiv-text="{{c}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/@ng-bootstrap/ng-bootstrap/carousel/carousel.d.ts</context>
           <context context-type="linenumber">10</context>
@@ -87,6 +85,7 @@
       </trans-unit>
       <trans-unit id="ngb.pagination.previous" datatype="html">
         <source>«</source>
+        <target>«</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">3</context>
@@ -94,6 +93,7 @@
       </trans-unit>
       <trans-unit id="ngb.pagination.next" datatype="html">
         <source>»</source>
+        <target>»</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">4</context>
@@ -101,6 +101,7 @@
       </trans-unit>
       <trans-unit id="ngb.pagination.last" datatype="html">
         <source>»»</source>
+        <target>»»</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">5</context>
@@ -279,6 +280,14 @@
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="e4116a79faccb3c204dd016baca28eb71e5e734b" datatype="html">
+        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> you will be able to see when your note has been read.</source>
+        <target>Mit einem <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>administrativen Link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> können Sie feststellen wenn Ihre Nachricht gelesen wird.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="9c701192ad93130adeba8667f991ad56562536cf" datatype="html">
         <source>Notes are deleted after they have been read one, latest 7 days after creation.</source>
         <target>Nachrichten werden nach einmaligem Lesen zerstört, spätestens aber nach 7 Tagen.</target>
@@ -286,6 +295,46 @@
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="aa2f2ae558a4df97d9ecd72205f30b05e0968abc" datatype="html">
+        <source>Public chat URL:</source>
+        <target>Öffentliche URL:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="65bc6ee7e82729b2bfafb86e4c17c721e41b5236" datatype="html">
+        <source>Share this link with your chat mates</source>
+        <target>Teilen Sie diesen Link mit ihren Chat-Partnern</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7e5fcfea9434f8aafc94c37e3f4c769e235f7c80" datatype="html">
+        <source>Personal chat URL:</source>
+        <target>Persönliche URL:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="936ea0c9b6e19ca44ca00b7ad2311d429bcf0fc7" datatype="html">
+        <source>Save this link for yourself to retain access to your chatname</source>
+        <target>Speichern Sie diesen Link, um ihren Chat-Namen zu behalten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+  <file source-language="en" target-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="warn_noteempty" datatype="html">
+        <source>Note is empty, please enter a note!</source>
+        <target>Nachricht ist leer, bitte geben Sie eine Nachricht ein!</target>
       </trans-unit>
     </body>
   </file>

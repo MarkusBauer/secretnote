@@ -11,6 +11,9 @@ trim_trailing_whitespace = true
 [*.json]
 indent_size = 2
 
+[*.xlf]
+indent_size = 2
+
 [*.ts]
 quote_type = single
 

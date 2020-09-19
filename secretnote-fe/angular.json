@@ -76,6 +76,11 @@
             },
             "en": {
               "localize": ["en"]
+            },
+            "all": {
+              "localize": false,
+              "aot": true,
+              "outputPath": "./tmp"
             }
           }
         },

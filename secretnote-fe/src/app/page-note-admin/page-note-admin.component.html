@@ -1,21 +1,21 @@
 <div *ngIf="state == 'loading'">
     <div class="spinner-border spinner-border-sm text-secondary" role="status">
-        <span class="sr-only">Loading...</span>
+        <span class="sr-only" i18n="@@loading">Loading...</span>
     </div>&nbsp;
     loading ...
 </div>
-<div *ngIf="state == 'missing'">This note has already been read (or the link is invalid).</div>
+<div *ngIf="state == 'missing'" i18n>This note has already been read (or the link is invalid).</div>
 <div *ngIf="state == 'error'">
     Error.
 </div>
 <div *ngIf="state == 'ready'">
-    <p>Note <code>{{ident}}</code> has not been read - yet.</p>
+    <p i18n>Note <code>{{ident}}</code> has not been read - yet.</p>
 
     <br/>
 
     <form>
         <div class="form-group">
-            <label for="url">It can be retrieved with the <span class="text-primary">secret link</span> below - but only once</label>
+            <label for="url" i18n>It can be retrieved with the <span class="text-primary">secret link</span> below - but only once</label>
             <input type="text" id="url" class="form-control form-control-sm" readonly [value]="url" (click)="$event.target.select()">
         </div>
     </form>
@@ -24,7 +24,7 @@
 
     <form>
         <div class="form-group">
-            <label for="adminUrl">You can check if the note was read using this <span class="text-danger">admin link</span>:</label>
+            <label for="adminUrl" i18n>You can check if the note was read using this <span class="text-danger">admin link</span>:</label>
             <input type="text" id="adminUrl" class="form-control form-control-sm" readonly [value]="adminUrl" (click)="$event.target.select()">
         </div>
     </form>

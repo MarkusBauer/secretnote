@@ -1,14 +1,14 @@
-<p>Create a new chat, secret and anonymous.</p>
+<p i18n>Create a new chat, secret and anonymous.</p>
 <p>
     <button class="btn btn-primary btn-lg" (click)="createChat()">
-        <span appOcticon octicon="comment-discussion" width="24"></span> New Chat
+        <span appOcticon octicon="comment-discussion" width="24"></span> <ng-container i18n>New Chat</ng-container>
     </button>
 </p>
 
 <br/>
-<p>For a chat you'll get two links:</p>
+<p i18n>For a chat you'll get two links:</p>
 <ul>
-    <li>A <span class="text-primary">public link</span> to share with others. With this link they can read the chat and write with new names.</li>
-    <li>A <span class="text-danger">personal link</span> only for you, <strong>save this link</strong> to keep your chat name.</li>
+    <li i18n>A <span class="text-primary">public link</span> to share with others. With this link they can read the chat and write with new names.</li>
+    <li i18n>A <span class="text-danger">personal link</span> only for you, <strong>save this link</strong> to keep your chat name.</li>
 </ul>
-<p><small>Chats will vanish after 7 days without interaction.</small></p>
+<p><small i18n>Chats will vanish after 7 days without interaction.</small></p>

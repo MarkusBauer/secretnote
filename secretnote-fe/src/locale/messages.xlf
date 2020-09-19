@@ -245,6 +245,34 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="e0f3bad114491f3fc3b2daec3e240ec8e2a32fd8" datatype="html">
+        <source>New Note</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0d480477ea5aa8a02ba9b2f6dc1373bfac36b240" datatype="html">
+        <source>New Chat</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b9d1a0ac9a5dd48f52663fb9e6eea4b86ff3d7dd" datatype="html">
+        <source>F.A.Q</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="004b222ff9ef9dd4771b777950ca1d0e4cd4348a" datatype="html">
+        <source>About</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="f44297b1ba9a9b96dca3389692847a880bc266d7" datatype="html">
         <source>Store a note - encrypted!</source>
         <context-group purpose="location">
@@ -259,15 +287,19 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3544ecdddc030495166e585b66831eecdb571d6f" datatype="html">
-        <source>secret link</source>
+      <trans-unit id="aacd1aee1f8408c6051e3487bb19ae4e51682092" datatype="html">
+        <source>
+    For the note you&apos;ll get a <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>:
+    Only with this link your recipient can decrypt and read the note.
+    After your note has been read it will be removed permanently - no one else will be able to see it.
+</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="fde969e0db622157773c4a4c75f449cd19464d2f" datatype="html">
-        <source>admin link</source>
+      <trans-unit id="e4116a79faccb3c204dd016baca28eb71e5e734b" datatype="html">
+        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> you will be able to see when your note has been read.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">20</context>
@@ -278,6 +310,41 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aa2f2ae558a4df97d9ecd72205f30b05e0968abc" datatype="html">
+        <source>Public chat URL:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="65bc6ee7e82729b2bfafb86e4c17c721e41b5236" datatype="html">
+        <source>Share this link with your chat mates</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7e5fcfea9434f8aafc94c37e3f4c769e235f7c80" datatype="html">
+        <source>Personal chat URL:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="936ea0c9b6e19ca44ca00b7ad2311d429bcf0fc7" datatype="html">
+        <source>Save this link for yourself to retain access to your chatname</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6bae92a18c0d9656da356a37138356d4b255f274" datatype="html">
+        <source>About SecretNote</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
     </body>
