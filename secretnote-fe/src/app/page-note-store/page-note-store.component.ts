@@ -30,7 +30,7 @@ export class PageNoteStoreComponent implements OnInit {
         let key = this.crypto.generateKey();
         let encryptedNote = this.crypto.encryptNote({text: text}, key);
         this.backend.storeNote(encryptedNote).subscribe(response => {
-            this.ui.success('You can save the links now', {header: 'Note has been created!'});
+            this.ui.success($localize`:@@success_note:You can save the links now`, {header: $localize`:@@success_note_header:Note has been created!`});
             this.router.navigate(['/note/admin', response.admin_ident], {fragment: key});
         }, err => {
             console.error(err);

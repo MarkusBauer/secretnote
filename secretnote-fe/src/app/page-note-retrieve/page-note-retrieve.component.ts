@@ -35,12 +35,12 @@ export class PageNoteRetrieveComponent implements OnInit {
             return;
         }
         if (this.ident.length != 28) {
-            this.ui.error("This link is invalid");
+            this.ui.error($localize`:@@error_link_invalid:This link is invalid`);
             this.state = "error";
             return;
         }
         if (!this.crypto.isValidKey(this.key)) {
-            this.ui.error("This link is invalid (encryption key corrupted)");
+            this.ui.error($localize`:@@error_link_invalid_key:This link is invalid (encryption key corrupted)`);
             this.state = "error";
             return;
         }

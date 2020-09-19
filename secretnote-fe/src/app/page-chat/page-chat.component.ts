@@ -58,7 +58,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
         });
         this.route.fragment.subscribe(f => {
             if (!f || !f.includes(":")) {
-                this.ui.error("Invalid key given!", {header: "Invalid link"});
+                this.ui.error($localize`:@@error_link_invalid_key:This link is invalid (encryption key corrupted)`);
                 return;
             }
             let k = f.split(":");
@@ -98,15 +98,15 @@ export class PageChatComponent implements OnInit, OnDestroy {
     updateChannelKey() {
         if (!this.channel || !this.key) return;
         if (this.channel.length != 24) {
-            this.ui.error("Invalid channel ID", {header: "Invalid link"});
+            this.ui.error($localize`:@@error_invalid_channelid:Invalid channel ID`, {header: $localize`:@@error_invalid_link_header:Invalid link`});
             return
         }
         if (!this.crypto.isValidKey(this.key)) {
-            this.ui.error("Invalid key", {header: "Invalid link"});
+            this.ui.error($localize`:@@error_invalid_key:Invalid key`, {header: $localize`:@@error_invalid_link_header:Invalid link`});
             return;
         }
         if (!this.userPrivate || !this.userPublic) {
-            this.ui.error("Invalid user key", {header: "Invalid link"});
+            this.ui.error($localize`:@@error_invalid_user_key:Invalid user key`, {header: $localize`:@@error_invalid_link_header:Invalid link`});
             return
         }
 
@@ -164,7 +164,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
         } catch (e) {
             return {
                 sender: "(system)",
-                text: "Invalid message: " + e,
+                text: $localize`:@@error_invalid_message:Invalid message` + ": " + e,
                 ts: Date.now(),
                 senderInfo: new UserInfo("(system)", 0, "", "#aaaaaa", true)
             };
