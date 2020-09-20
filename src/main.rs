@@ -209,7 +209,7 @@ fn get_base_path() -> PathBuf {
     let pathbuf = std::env::current_exe().unwrap().clone();
     let pathbuf2 = pathbuf.canonicalize().unwrap();
     let base = pathbuf2.parent().unwrap().to_path_buf();
-    if base.file_name().unwrap() == "debug" && base.parent().unwrap().file_name().unwrap() == "target" {
+    if (base.file_name().unwrap() == "debug" || base.file_name().unwrap() == "release") && base.parent().unwrap().file_name().unwrap() == "target" {
         base.parent().unwrap().parent().unwrap().to_path_buf()
     } else {
         base
