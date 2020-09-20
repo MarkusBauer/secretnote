@@ -29,7 +29,7 @@ export class PageChatComponent implements OnInit, OnDestroy {
     userPublic: string;
     connection: WebSocketSubject<ArrayBuffer>;
     subscription: Subscription;
-    timeout: number = null;
+    timeout = null;
     connected: boolean = false;
 
     privateUrl: string;

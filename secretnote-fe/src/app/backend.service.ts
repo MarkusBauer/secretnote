@@ -32,7 +32,6 @@ export interface ChatMessageResponse {
 export class BackendService {
 
     base = '/';
-    wsbase = (location.protocol == 'https:' ? 'wss://' : 'ws://') + location.host + '/';
 
     constructor(private http: HttpClient, private platformLocation: PlatformLocation, private router: Router) {
     }
@@ -69,8 +68,9 @@ export class BackendService {
     }
 
     connectToChat(channel: string, onOpen: (Event) => void, onClose: (Event) => void): WebSocketSubject<ArrayBuffer> {
+        let wsbase = (location.protocol == 'https:' ? 'wss://' : 'ws://') + location.host + '/';
         return webSocket<ArrayBuffer>({
-            url: this.wsbase + "api/chat/websocket/" + channel,
+            url: wsbase + "api/chat/websocket/" + channel,
             binaryType: 'arraybuffer',
             deserializer: ({data}) => data,
             serializer: data => data,
