@@ -5,14 +5,19 @@ function minify_file(fname) {
     let text = fs.readFileSync(fname).toString();
     // html-minifier ../fe/de/index.html --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --use-short-doctype -o ../fe/de/index.html
     // html-minifier ../fe/en/index.html --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --use-short-doctype -o ../fe/en/index.html
+    //*
     text = minify(text, {
         collapseWhitespace: true,
         removeComments: true,
         removeOptionalTags: true,
         removeRedundantAttributes: true,
         removeScriptTypeAttributes: true,
-        useShortDoctype: true
-    });
+        useShortDoctype: true,
+        // ignoreCustomFragments: [/<app-root[\s\S]*?<\/app-root>/]
+    }); // */
+    // Additional patches
+    text = text.replace('class="collapse navbar-collapse show"', 'class="collapse navbar-collapse"');
+    // Additional patches end
     fs.writeFileSync(fname, text);
     console.log('Compressed ' + fname);
 }
@@ -38,8 +43,6 @@ function postbuild_language(dir) {
 //minify_file("../fe/de/index.html");
 postbuild_language("../fe/en");
 postbuild_language("../fe/de");
-
-// TODO SSR
 
 // Favicon
 fs.copyFileSync("../fe/en/favicon.ico", "../fe/favicon.ico");
