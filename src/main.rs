@@ -240,8 +240,16 @@ async fn angular_index_en() -> impl Responder {
     angular_index("en").await
 }
 
-async fn angular_index_any() -> impl Responder {
-    // TODO read header and choose language
+async fn angular_index_any(req: HttpRequest) -> impl Responder {
+    if let Some(header) = req.headers().get("Accept-Language") {
+        if let Some(lang) = header.to_str().ok() {
+            let en = lang.find("en").unwrap_or(usize::max_value() - 1);
+            let de = lang.find("de").unwrap_or(usize::max_value());
+            if de < en {
+                return angular_index("de").await;
+            }
+        }
+    }
     angular_index("en").await
 }
 

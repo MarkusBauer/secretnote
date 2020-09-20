@@ -2,9 +2,10 @@
 - Write about
 - Localization: German
   - translate
-  - header language detection
   - language switch
 - Datenschutz / Impressum
+- 404 page
+- SSR
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build
