@@ -14,6 +14,7 @@ import { PageChatComponent } from './page-chat/page-chat.component';
 import { PageChatCreateComponent } from './page-chat-create/page-chat-create.component';
 import { PageAboutComponent } from './page-about/page-about.component';
 import { OcticonDirective } from './octicon.directive';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { OcticonDirective } from './octicon.directive';
         PageChatCreateComponent,
         PageAboutComponent,
         OcticonDirective,
+        PageNotFoundComponent,
     ],
     imports: [
         BrowserModule,

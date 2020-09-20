@@ -4,7 +4,6 @@
   - translate
   - language switch
 - Datenschutz / Impressum
-- 404 page
 - SSR
 - Github: account + link to it
 - Github: build / run instructions

@@ -8,6 +8,7 @@ import {PageChatComponent} from "./page-chat/page-chat.component";
 import {PageChatCreateComponent} from "./page-chat-create/page-chat-create.component";
 import {ChatJoinGuard} from "./chat-join.guard";
 import {PageAboutComponent} from "./page-about/page-about.component";
+import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 
 const routes: Routes = [
     {path: '', component: PageNoteStoreComponent},
@@ -18,6 +19,7 @@ const routes: Routes = [
     {path: 'chat/:channel', component: PageChatComponent},
     {path: 'faq', component: PageFaqComponent},
     {path: 'about', component: PageAboutComponent},
+    {path: '**', component: PageNotFoundComponent}
 ];
 
 @NgModule({
