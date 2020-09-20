@@ -1,6 +1,5 @@
-- Write FAQ
-- Write about
-- Localization: German
+- Write FAQ (+german)
+- Write about (+german)
 - Datenschutz / Impressum
 - SSR
 - Add etag / last-modified header to html
