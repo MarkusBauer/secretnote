@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {NgbCollapseModule, NgbToastModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbCollapseModule, NgbDropdownModule, NgbToastModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {PageNoteStoreComponent} from './page-note-store/page-note-store.component';
 import {PageNoteRetrieveComponent} from './page-note-retrieve/page-note-retrieve.component';
 import {PageFaqComponent} from './page-faq/page-faq.component';
@@ -37,6 +37,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
         NgbTooltipModule,
         NgbCollapseModule,
         NgbToastModule,
+        NgbDropdownModule,
     ],
     providers: [],
     bootstrap: [AppComponent]

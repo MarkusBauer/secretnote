@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {UiService} from "./ui.service";
 import {environment} from '../environments/environment';
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-root',
@@ -12,6 +13,6 @@ export class AppComponent {
 
     environment = environment;
 
-    constructor(public ui: UiService) {
+    constructor(public ui: UiService, public router: Router) {
     }
 }
