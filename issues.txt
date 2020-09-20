@@ -1,7 +1,6 @@
 - Write FAQ (+german)
 - Write about (+german)
 - Datenschutz / Impressum
-- SSR
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build
