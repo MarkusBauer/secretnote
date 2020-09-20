@@ -12,6 +12,7 @@ import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 
 const routes: Routes = [
     {path: '', component: PageNoteStoreComponent},
+    {path: 'note/store', component: PageNoteStoreComponent},
     {path: 'note/admin/:ident', component: PageNoteAdminComponent},
     {path: 'note/:ident', component: PageNoteRetrieveComponent},
     {path: 'chat/create', component: PageChatCreateComponent},
@@ -23,7 +24,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(routes, {
+    initialNavigation: 'enabled'
+})],
     exports: [RouterModule]
 })
 export class AppRoutingModule {

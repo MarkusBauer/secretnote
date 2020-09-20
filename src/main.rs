@@ -217,14 +217,31 @@ fn get_base_path() -> PathBuf {
 }
 
 #[cached]
-fn read_index(language: &'static str) -> (String, SystemTime) {
-    let path = get_base_path().join("fe").join(language).join("index.html");
-    let meta = fs::metadata(&path).unwrap();
-    (fs::read_to_string(path).unwrap(), meta.modified().unwrap())
+fn read_index(language: &'static str, path: String) -> (String, SystemTime) {
+    let mut filepath = get_base_path().join("fe").join(language);
+
+    // Check if a matching path exists
+    // Folder structure is like: URL "/about" => FILE "/about/index.html"
+    let candidate_path = filepath.join(&path[1..]).join("index.html");
+    let meta = fs::metadata(&candidate_path);
+    if let Ok(meta) = meta {
+        return (fs::read_to_string(candidate_path).unwrap(), meta.modified().unwrap());
+    }
+
+    // Fallback - this file works with every page.
+    // It contains only the AppComponent (e.g. main menu), router-outlet is empty.
+    filepath = filepath.join("index.all.html");
+    let meta = fs::metadata(&filepath).unwrap();
+    (fs::read_to_string(filepath).unwrap(), meta.modified().unwrap())
 }
 
 async fn angular_index(req: &HttpRequest, language: &'static str) -> impl Responder {
-    let (content, mtime) = read_index(language);
+    // Select which file to use
+    let mut path = req.uri().path();
+    if path.starts_with(&format!("/{}/", language)) {
+        path = &path[language.len() + 1..];
+    }
+    let (content, mtime) = read_index(language, path.into());
     let epoch = mtime.duration_since(UNIX_EPOCH).unwrap().as_millis();
     let etag = format!("\"{}S{}\"", epoch, content.len());
 
@@ -240,6 +257,7 @@ async fn angular_index(req: &HttpRequest, language: &'static str) -> impl Respon
     }
     response
         .header("Cache-Control", "must-revalidate, max-age=3600")
+        //.header("Cache-Control", "no-cache")
         .header("ETag", etag)
         .header("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none';")
         .header("X-Content-Type-Options", "nosniff")
@@ -331,16 +349,12 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(middleware::DefaultHeaders::new().header("Cache-Control", "max-age=5184000"))
             .data(MyRedisActor::start((*redis).clone(), Some(redis_db), (*redis_auth).clone()))
-            //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
             .data(broker.clone())
-            //.service(front)
-            //.service(index)
             .service(websocket)
             .service(note_store)
             .service(note_check)
             .service(note_retrieve)
             .service(chat_messages)
-            // .service(actix_files::Files::new("/static", "/home/markus/Projekte/secretnote/static").show_files_listing())
 
             .service(web::resource("/note/*").to(angular_index_any))
             .service(web::resource("/chat/*").to(angular_index_any))
