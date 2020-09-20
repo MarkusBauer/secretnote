@@ -2,7 +2,6 @@
 - Write about (+german)
 - Datenschutz / Impressum
 - SSR
-- Add etag / last-modified header to html
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build

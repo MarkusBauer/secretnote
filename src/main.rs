@@ -24,6 +24,7 @@ use std::sync::Arc;
 use crate::my_redis_actor::MyRedisActor;
 use crypto::sha2::Sha256;
 use crypto::digest::Digest;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -216,28 +217,49 @@ fn get_base_path() -> PathBuf {
 }
 
 #[cached]
-fn read_index(language: &'static str) -> String {
-    fs::read_to_string(get_base_path().join("fe").join(language).join("index.html")).unwrap()
+fn read_index(language: &'static str) -> (String, SystemTime) {
+    let path = get_base_path().join("fe").join(language).join("index.html");
+    let meta = fs::metadata(&path).unwrap();
+    (fs::read_to_string(path).unwrap(), meta.modified().unwrap())
 }
 
-async fn angular_index(language: &'static str) -> impl Responder {
-    // let f = NamedFile::open(get_base_path().join("fe").join("index.html").clone());
-    HttpResponse::Ok()
-        .content_type("text/html; charset=UTF-8")
+async fn angular_index(req: &HttpRequest, language: &'static str) -> impl Responder {
+    let (content, mtime) = read_index(language);
+    let epoch = mtime.duration_since(UNIX_EPOCH).unwrap().as_millis();
+    let etag = format!("\"{}S{}\"", epoch, content.len());
+
+    let mut response = HttpResponse::Ok();
+    let mut need_content = true;
+    if let Some(ifmatch_hdr) = req.headers().get("If-None-Match") {
+        if let Ok(ifmatch) = ifmatch_hdr.to_str() {
+            if ifmatch == etag {
+                response = HttpResponse::NotModified();
+                need_content = false;
+            }
+        }
+    }
+    response
         .header("Cache-Control", "must-revalidate, max-age=3600")
+        .header("ETag", etag)
         .header("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none';")
         .header("X-Content-Type-Options", "nosniff")
         .header("X-Frame-Options", "SAMEORIGIN")
-        .header("Referrer-Policy", "no-referrer")
-        .body(read_index(language))
+        .header("Referrer-Policy", "no-referrer");
+
+    if need_content {
+        response.content_type("text/html; charset=UTF-8")
+            .body(content)
+    } else {
+        response.body("")
+    }
 }
 
-async fn angular_index_de() -> impl Responder {
-    angular_index("de").await
+async fn angular_index_de(req: HttpRequest) -> impl Responder {
+    angular_index(&req, "de").await
 }
 
-async fn angular_index_en() -> impl Responder {
-    angular_index("en").await
+async fn angular_index_en(req: HttpRequest) -> impl Responder {
+    angular_index(&req, "en").await
 }
 
 async fn angular_index_any(req: HttpRequest) -> impl Responder {
@@ -246,11 +268,11 @@ async fn angular_index_any(req: HttpRequest) -> impl Responder {
             let en = lang.find("en").unwrap_or(usize::max_value() - 1);
             let de = lang.find("de").unwrap_or(usize::max_value());
             if de < en {
-                return angular_index("de").await;
+                return angular_index(&req, "de").await;
             }
         }
     }
-    angular_index("en").await
+    angular_index(&req, "en").await
 }
 
 
