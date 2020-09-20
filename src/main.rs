@@ -307,7 +307,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(middleware::Logger::default())
             .wrap(middleware::Compress::default())
-            .wrap(middleware::DefaultHeaders::new().header("Cache-Control", "max-age=2592000"))
+            .wrap(middleware::DefaultHeaders::new().header("Cache-Control", "max-age=5184000"))
             .data(MyRedisActor::start((*redis).clone(), Some(redis_db), (*redis_auth).clone()))
             //.data(RedisPubsubActorV2::start("127.0.0.1:6379"))
             .data(broker.clone())

@@ -30,7 +30,7 @@
 
 <br/>
 
-<div class="container">
+<main class="container">
     <div class="toast-container" aria-live="polite" aria-atomic="true" >
         <ngb-toast *ngFor="let alert of ui.alerts"
                    [autohide]="true" [delay]="alert.delay || 5000" [class]="alert.class"
@@ -38,7 +38,7 @@
                    (hide)="ui.close(alert)">{{alert.message}}</ngb-toast>
     </div>
     <router-outlet></router-outlet>
-</div>
+</main>
 
 <br/>
 <br/>
