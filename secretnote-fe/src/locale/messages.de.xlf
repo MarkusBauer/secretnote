@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
@@ -247,6 +247,30 @@
           <context context-type="sourcefile">node_modules/@ng-bootstrap/ng-bootstrap/toast/toast.d.ts</context>
           <context context-type="linenumber">8</context>
         </context-group>
+      </trans-unit><trans-unit id="e0f3bad114491f3fc3b2daec3e240ec8e2a32fd8" datatype="html">
+        <source>New Note</source><target state="new">New Note</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit><trans-unit id="0d480477ea5aa8a02ba9b2f6dc1373bfac36b240" datatype="html">
+        <source>New Chat</source><target state="new">New Chat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit><trans-unit id="b9d1a0ac9a5dd48f52663fb9e6eea4b86ff3d7dd" datatype="html">
+        <source>F.A.Q</source><target state="new">F.A.Q</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit><trans-unit id="004b222ff9ef9dd4771b777950ca1d0e4cd4348a" datatype="html">
+        <source>About</source><target state="new">About</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="f44297b1ba9a9b96dca3389692847a880bc266d7" datatype="html">
         <source>Store a note - encrypted!</source>
@@ -263,26 +287,26 @@
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
-      </trans-unit>
-      <trans-unit id="3544ecdddc030495166e585b66831eecdb571d6f" datatype="html">
-        <source>secret link</source>
-        <target>geheimer Link</target>
+      </trans-unit><trans-unit id="aacd1aee1f8408c6051e3487bb19ae4e51682092" datatype="html">
+        <source>
+    For the note you'll get a <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>:
+    Only with this link your recipient can decrypt and read the note.
+    After your note has been read it will be removed permanently - no one else will be able to see it.
+</source><target state="new">
+    For the note you'll get a <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>:
+    Only with this link your recipient can decrypt and read the note.
+    After your note has been read it will be removed permanently - no one else will be able to see it.
+</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="fde969e0db622157773c4a4c75f449cd19464d2f" datatype="html">
-        <source>admin link</source>
-        <target>administrativer Link</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
-      </trans-unit>
+      
+      
       <trans-unit id="e4116a79faccb3c204dd016baca28eb71e5e734b" datatype="html">
-        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> you will be able to see when your note has been read.</source>
-        <target>Mit einem <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>administrativen Link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> können Sie feststellen wenn Ihre Nachricht gelesen wird.</target>
+        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/> you will be able to see when your note has been read.</source>
+        <target>Mit einem <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>administrativen Link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/> können Sie feststellen wenn Ihre Nachricht gelesen wird.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">20</context>
@@ -326,6 +350,12 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
           <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit><trans-unit id="6bae92a18c0d9656da356a37138356d4b255f274" datatype="html">
+        <source>About SecretNote</source><target state="new">About SecretNote</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
     </body>

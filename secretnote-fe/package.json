@@ -12,7 +12,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "i18n-extract-components": "ng build --configuration=all && locl extract -s=\"../fe/*.js\" -f xlf -o src/locale",
-    "i18n-extract-templates": "ng xi18n --output-path src/locale"
+    "i18n-extract-templates": "ng xi18n --output-path src/locale",
+    "extract-i18n": "ng xi18n secretnote-fe --i18n-format xlf --output-path i18n --i18n-locale en && ng run secretnote-fe:xliffmerge",
+    "start-de": "ng serve --configuration=de"
   },
   "private": true,
   "dependencies": {
@@ -26,6 +28,7 @@
     "@angular/platform-browser-dynamic": "~10.0.14",
     "@angular/router": "~10.0.14",
     "@ng-bootstrap/ng-bootstrap": "^8.0.0-beta.1",
+    "@ngx-i18nsupport/tooling": "^8.0.3",
     "@primer/octicons": "^11.0.0",
     "@types/sjcl": "^1.0.29",
     "bootstrap": "^4.5.2",
@@ -38,6 +41,7 @@
     "@angular/cli": "~10.0.8",
     "@angular/compiler-cli": "~10.0.14",
     "@locl/cli": "^1.0.0",
+    "@ngx-i18nsupport/ngx-i18nsupport": "^1.1.6",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",

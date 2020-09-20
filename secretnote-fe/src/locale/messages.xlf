@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="ngb.alert.close" datatype="html">
         <source>Close</source>
@@ -289,7 +289,7 @@
       </trans-unit>
       <trans-unit id="aacd1aee1f8408c6051e3487bb19ae4e51682092" datatype="html">
         <source>
-    For the note you&apos;ll get a <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>:
+    For the note you'll get a <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>:
     Only with this link your recipient can decrypt and read the note.
     After your note has been read it will be removed permanently - no one else will be able to see it.
 </source>
@@ -299,7 +299,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="e4116a79faccb3c204dd016baca28eb71e5e734b" datatype="html">
-        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> you will be able to see when your note has been read.</source>
+        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/> you will be able to see when your note has been read.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">20</context>

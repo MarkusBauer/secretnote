@@ -42,7 +42,9 @@
               "src/styles.less"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["@primer/octicons"]
+            "allowedCommonJsDependencies": [
+              "@primer/octicons"
+            ]
           },
           "configurations": {
             "production": {
@@ -74,10 +76,15 @@
               ]
             },
             "de": {
-              "localize": ["de"]
+              "aot": true,
+              "outputPath": "dist/secretnote-fe-de",
+              "i18nFile": "src/locale/messages.de.xlf",
+              "i18nLocale": "de"
             },
             "en": {
-              "localize": ["en"]
+              "localize": [
+                "en"
+              ]
             },
             "all": {
               "localize": false,
@@ -95,6 +102,9 @@
           "configurations": {
             "production": {
               "browserTarget": "secretnote-fe:build:production"
+            },
+            "de": {
+              "browserTarget": "secretnote-fe:build:de"
             }
           }
         },
@@ -145,8 +155,24 @@
               "devServerTarget": "secretnote-fe:serve:production"
             }
           }
+        },
+        "xliffmerge": {
+          "builder": "@ngx-i18nsupport/tooling:xliffmerge",
+          "options": {
+            "xliffmergeOptions": {
+              "format": "xlf",
+              "srcDir": "src/locale",
+              "genDir": "src/locale",
+              "defaultLanguage": "en",
+              "languages": [
+                "en",
+                "de"
+              ]
+            }
+          }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "secretnote-fe"
 }
