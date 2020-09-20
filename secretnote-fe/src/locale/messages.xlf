@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
@@ -258,6 +258,10 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat-create/page-chat-create.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="b9d1a0ac9a5dd48f52663fb9e6eea4b86ff3d7dd" datatype="html">
         <source>F.A.Q</source>
@@ -289,7 +293,7 @@
       </trans-unit>
       <trans-unit id="aacd1aee1f8408c6051e3487bb19ae4e51682092" datatype="html">
         <source>
-    For the note you'll get a <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>:
+    For the note you&apos;ll get a <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>:
     Only with this link your recipient can decrypt and read the note.
     After your note has been read it will be removed permanently - no one else will be able to see it.
 </source>
@@ -299,7 +303,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="e4116a79faccb3c204dd016baca28eb71e5e734b" datatype="html">
-        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/> you will be able to see when your note has been read.</source>
+        <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> you will be able to see when your note has been read.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">20</context>
@@ -310,6 +314,113 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-store/page-note-store.component.html</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="loading" datatype="html">
+        <source>Loading...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5f1cf8e902957b4040bd7cad87cf36a7cbb1bc1f" datatype="html">
+        <source>loading ...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fdd31b29f4a6b83d05a9584b3e3b02b5265b45df" datatype="html">
+        <source>This message has already been read (or the URL is invalid)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5cfc0d67970db20d9a3472c23a183fde07fd5960" datatype="html">
+        <source>Message could not be read.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="581cc1d78a8033a173ecf689d7ddd0c6db9c7f3b" datatype="html">
+        <source>Your message is ready!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a9fbb0a2717dc861f7045957945b5fc8bff998cc" datatype="html">
+        <source>Remember: it can only be read once, afterwards it will be destructed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4e2591df099ddac796cda401c5f282da779d45f2" datatype="html">
+        <source>Identifier</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4d4051d87b922612ff500dc52eeac993c7c35008" datatype="html">
+        <source>Read Note</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-retrieve/page-note-retrieve.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="816a6c102d20df08262fd3c0527c7ff05e383233" datatype="html">
+        <source>Frequently Asked Questions</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2180bcc3bae1faf66c6cf6d9f6adfecb904aedbc" datatype="html">
+        <source>This note has already been read (or the link is invalid).</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6d34e5a409ee399147ced1a5705c4ee1068e377b" datatype="html">
+        <source>Note <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/><x id="INTERPOLATION" equiv-text="{{ident}}"/><x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/> has not been read - yet.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b843cc4ce42f7a977725ad73f9ae45048bfd1065" datatype="html">
+        <source>It can be retrieved with the <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>secret link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> below - but only once</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bd1947f07ccabdf52e88636be8d443a415e71470" datatype="html">
+        <source>You can check if the note was read using this <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="aa2f2ae558a4df97d9ecd72205f30b05e0968abc" datatype="html">
@@ -340,11 +451,104 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="f8ff2b3cb64c2b0db1a2458aa0ac46cfb2ce4edc" datatype="html">
+        <source>connection established</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="27afa44bc93ce0c58ec5a11a683601ea94805da8" datatype="html">
+        <source>connection interrupted, reconnecting ...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="be377eee12a30e734892322aead694d7554447d2" datatype="html">
+        <source>loading more messages ...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="98bd5e8b6f672ea1ac6fa3faa93a990732a7672e" datatype="html">
+        <source>(load <x id="INTERPOLATION" equiv-text="{{knownMessageSize - loadedMessages}}"/> more messages ...)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="86306f522c617cce79bd233e231d7845e61984e7" datatype="html">
+        <source>
+            Write a message to start this chat!
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d783df2b02043f825bd743beae5cd3bd5e3e2e29" datatype="html">
+        <source>write your message ...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat/page-chat.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ce433d3e018653f3399119887bf842070834f5e7" datatype="html">
+        <source>Create a new chat, secret and anonymous.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat-create/page-chat-create.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bdfbc695fd8f1137d4ce94185aef536cd4314989" datatype="html">
+        <source>For a chat you&apos;ll get two links:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat-create/page-chat-create.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2ea8db40004e742a5a75ae9147cc2479eaf8c664" datatype="html">
+        <source>A <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>public link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> to share with others. With this link they can read the chat and write with new names.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat-create/page-chat-create.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="07960c06913bf155c038b149282e371bc07baff5" datatype="html">
+        <source>A <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>personal link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> only for you, <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>save this link<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> to keep your chat name.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat-create/page-chat-create.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e2f8eb3fdec60ee47bb498670db1f8aef5171e18" datatype="html">
+        <source>Chats will vanish after 7 days without interaction.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-chat-create/page-chat-create.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="6bae92a18c0d9656da356a37138356d4b255f274" datatype="html">
         <source>About SecretNote</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
           <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e941d6a03d83e2a059842217226b6d314e05f303" datatype="html">
+        <source>Not found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-not-found/page-not-found.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e64c941f4b879d5025d3d7f406d028f258720db7" datatype="html">
+        <source>This page does not exist.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-not-found/page-not-found.component.html</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
     </body>

@@ -20,9 +20,9 @@
 
     <div class="card message-container" #MessageContainer>
         <div class="connector-item">
-            <span *ngIf="connected" class="text-success connected" ngbTooltip="connection established" container="body" appOcticon octicon="link"></span>
+            <span *ngIf="connected" class="text-success connected" i18n-ngbTooltip ngbTooltip="connection established" container="body" appOcticon octicon="link"></span>
             <div *ngIf="!connected" class="spinner-border spinner-border-sm text-danger" role="status"
-                 ngbTooltip="connection interrupted, reconnecting ...">
+                 ngbTooltip="connection interrupted, reconnecting ..." i18n-ngbTooltip>
                 <span class="sr-only" i18n="@@loading">Loading...</span>
             </div>
         </div>
@@ -39,7 +39,7 @@
         <ul class="list-group list-group-flush list-group-chat" *ngIf="messages.length > 0">
             <li *ngFor="let msg of messages" class="list-group-item">
                 <small class="text-muted">{{formattedDate(msg.ts)}}</small>&nbsp;
-                <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic"
+                <span [style.color]="msg.senderInfo.color" [class.message-me]="msg.sender == userPublic" container="body"
                       [ngbTooltip]="(msg.sender == userPublic ? 'That\'s me. ' : '') + 'UserID: '+msg.senderInfo.shortkey">{{msg.senderInfo.name}}</span>
                 <small *ngIf="msg.senderInfo.number > 0" class="text-muted"
                        ngbTooltip="This name is taken by multiple users. Numbers are provided for disambiguation.">

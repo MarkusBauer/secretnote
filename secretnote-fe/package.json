@@ -11,9 +11,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "i18n-extract-components": "ng build --configuration=all && locl extract -s=\"../fe/*.js\" -f xlf -o src/locale",
+    "i18n-extract-components": "ng build --configuration=all && locl extract -s=\"./tmp/*.js\" -f xlf -o src/locale",
     "i18n-extract-templates": "ng xi18n --output-path src/locale",
-    "extract-i18n": "ng xi18n secretnote-fe --i18n-format xlf --output-path i18n --i18n-locale en && ng run secretnote-fe:xliffmerge",
     "start-de": "ng serve --configuration=de"
   },
   "private": true,
