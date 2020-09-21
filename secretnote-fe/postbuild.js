@@ -17,6 +17,7 @@ function minify_file(fname) {
     }); // */
     // Additional patches
     text = text.replace('class="collapse navbar-collapse show"', 'class="collapse navbar-collapse"');
+    text = text.replace(' defer="" ', ' defer ');
     // Additional patches end
     fs.writeFileSync(fname, text);
     console.log('Compressed ' + fname);

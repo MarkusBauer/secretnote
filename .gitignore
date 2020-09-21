@@ -2,3 +2,6 @@
 /fe/
 /releases/
 /cache/
+/node_modules/
+*.report.html
+/package-lock.json
