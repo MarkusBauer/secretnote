@@ -1,0 +1,8 @@
+/cache
+/fe
+/node_modules
+/releases
+/target
+/secretnote-fe/tmp*
+Dockerfile
+.dockerignore
