@@ -93,7 +93,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "secretnote-fe:build:de",
+            "browserTarget": "secretnote-fe:build:en",
             "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
