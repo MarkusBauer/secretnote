@@ -321,6 +321,12 @@ async fn main() -> std::io::Result<()> {
             .value_name("PASSWORD")
             .about("Sets a password for the redis database")
             .takes_value(true))
+        .arg(clap::Arg::with_name("threads")
+            .long("threads")
+            .short('t')
+            .value_name("NUM_THREADS")
+            .about("Number of worker threads to use")
+            .takes_value(true))
         .arg(clap::Arg::with_name("verbose")
             .long("verbose")
             .short('v')
@@ -338,6 +344,7 @@ async fn main() -> std::io::Result<()> {
     let redis_db: u32 = matches.value_of_t("redis-db").unwrap_or(0);
     let redis_auth = Arc::new(if let Some(x) = matches.value_of("redis-auth") { Some(String::from(x)) } else { None });
     let bind: String = matches.value_of("bind").unwrap_or("127.0.0.1:8080").into();
+    let threads: usize = matches.value_of_t("threads").unwrap_or(num_cpus::get());
     println!("Using Redis at \"{}\" ...", redis);
     println!("Binding to \"{}\" ...", bind);
 
@@ -375,5 +382,5 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/en/").to(angular_index_en))
 
             .service(actix_files::Files::new("/", basepath.join("fe")).use_last_modified(true).use_etag(true))
-    }).bind(bind)?.run().await
+    }).workers(threads).bind(bind)?.run().await
 }
