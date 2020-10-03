@@ -1,6 +1,4 @@
 - Write FAQ (+german)
-- Write about (+german)
-- Datenschutz / Impressum
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build

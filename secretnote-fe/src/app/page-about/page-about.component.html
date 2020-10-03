@@ -1,7 +1,7 @@
 <h1 i18n>About SecretNote</h1>
 <p>
-    SecretNote is free and open source software, powered by Rust, Redis and Angular.
-    Anyone is free to host custom instances free of charge.
+    <ng-container i18n="@@about-text1">SecretNote is free and open source software, powered by Rust, Redis, Angular and Typescript.
+        Anyone is free to host custom instances free of charge.</ng-container>
 </p>
 
 <h5>
@@ -9,7 +9,7 @@
     <span class="badge badge-primary" *ngIf="environment.build.version">{{ environment.build.version }}</span>
 </h5>
 <p>
-    Build time: {{environment.build.build_time}}<br/>
+    <ng-container i18n>Build time</ng-container>: {{environment.build.build_time}}<br/>
     Git commit: <code>{{environment.build.git_hash}}</code>
 </p>
 

@@ -537,6 +537,21 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="about-text1" datatype="html">
+        <source>SecretNote is free and open source software, powered by Rust, Redis and Angular and Typescript.
+        Anyone is free to host custom instances free of charge.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5d527dec8178544cac539fef57220a3b6cabb7ae" datatype="html">
+        <source>Build time</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="b8d10cd55fae4e4ad4f87d28e18251694f159bf7" datatype="html">
         <source>Privacy Policy</source>
         <context-group purpose="location">
