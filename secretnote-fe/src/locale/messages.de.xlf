@@ -615,6 +615,133 @@
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="b8d10cd55fae4e4ad4f87d28e18251694f159bf7" datatype="html">
+        <source>Privacy Policy</source>
+        <target>Datenschutzerklärung</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="153f8ab0bb5d7be411521f9a0a947c2082b1aa6f" datatype="html">
+        <source>Scope: </source>
+        <target>Gültigkeitsbereich: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="gdpr-responsibility" datatype="html">
+        <source><x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Responsibility:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          For questions or requests regarding personal data contact
+          <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/>secretnote AT mk-bauer DOT de<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/>.
+          This website is hosted by <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Uberspace<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> which process data for us.
+          We signed a data processing contract with Uberspace.
+        </source>
+        <target><x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Verantwortung:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          Bei Fragen oder Anfragen zur Nutzung persönlicher Daten wenden Sie sich bitte an
+          <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/>secretnote AT mk-bauer DOT de<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/>.
+          Diese Website wird bei <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Uberspace<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> gehostet, die Daten verarbeiten.
+          Wir haben mit Uberspace einen Vertrag zur Auftragsdatenverarbeitung geschlossen.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="gdpr-security" datatype="html">
+        <source>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Security:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          We use modern methods to protect transfer and storage of personal information, including TLS encryption of all connections.
+        </source>
+        <target>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Sicherheit:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          Wir sichern ihre Daten auf dem aktuellen Stand der Technik, einschließlich TLS-Transportverschlüsselung aller Verbindungen.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="gdpr-data" datatype="html">
+        <source>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Processed data:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          We process two types of personal data:
+          User&apos;s encrypted messages and technical information about website access, including IP addresses.
+        </source>
+        <target>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Verarbeitete Daten:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          Wir verarbeiten zwei Arten von persönlichen Daten:
+          Verschlüsselte Nachrichten und technische Daten über Zugriffe auf die Website, einschließlich IP-Addressen.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="gdpr-rights" datatype="html">
+        <source>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Your rights:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          According to the GDPR, users have the right of access, correction or removal of personal information,
+          or limitation of processing.
+          We do not store data based on consent, as defined in Article 6 1a) GDPR.
+        </source>
+        <target>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Ihre Rechte:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          Nach der DSGVO haben Nutzer den Anspruch auf Auskunft, Berichtigung und Löschung der gespeicherten Daten, Einschränkung und Widerspruch der Verarbeitung der Daten.
+          Wir speichern keine Daten basierend auf Einwilligung nach Artikel 6 1a) DSGVO.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="gdpr-usermessages" datatype="html">
+        <source>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Processing of user messages:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          We process written messages solely in encrypted form, it is technically not possible for us to access this personal data.
+          Processing is legally based on Article 6 1b) GDPR.
+          The current retention period for messages is stated when storing new messages.
+        </source>
+        <target>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Verarbeitung von Nachrichten:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          Wir verarbeiten Nachrichten ausschließlich in verschlüsselter Form, es ist uns technisch nicht möglich auf den Inhalt dieser Nachrichten zuzugreifen.
+          Die Verarbeitung stützt sich auf Artikel 6 1b) DSGVO.
+          Die aktuelle Aufbewahrungsfrist wird vor dem Speichern der Nachrichten angezeigt.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="gdpr-serverdata" datatype="html">
+        <source>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Processing of server data:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          We preserve the right to store server logs, containing your IP address and statistical information about your system (operating system and browser version).
+          We use these logs for administrative purposes only, to keep up reliability, usability and security of this website.
+          Processing is legally based on Article 6 1f) GDPR.
+          Stored information are erased once we don&apos;t need them for the named purposes.
+        </source>
+        <target>
+          <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Verarbeitung von Server-Daten:<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>
+          Wir behalten uns vor, Server-Logs zu speichern, die allgemeine Informationen über Zugriffe auf die Website enthalten (einschließlich IP-Addresse, Betriebssystem und Browser-Version).
+          Wir benutzen diese Server-Logs nur zu administrativen Zwecken, um den reibungslosen Betrieb, Stabilität und Sicherheit dieser Website sicherzustellen.
+          Die Verarbeitung stützt sich auf Artikel 6 1f) DSGVO.
+          Die gespeicherten Daten werden gelöscht, sobald sie nicht mehr für die genannten Zwecke benötigt werden.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="gdpr-changes" datatype="html">
+        <source>We reserve the right to change or update this privacy policy at any point in time.</source>
+        <target>Wir behalten uns vor, diese Datenschutzerklärung jederzeit anzupassen.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
   <file source-language="en" target-language="en" datatype="plaintext">
