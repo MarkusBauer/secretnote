@@ -1,17 +1,29 @@
 <h1 i18n>Frequently Asked Questions</h1>
 
-<h5>Do I know when the note has been read?</h5>
-<p>After creating a note you'll get an admin link. With this link you can check if your note has been read.</p>
+<h5 i18n>Why?</h5>
+<p i18n="@@faq-why-1">
+    Imagine you want to send someone a password over messenger.
+    Years later someone could go back in your message history and reveal the password!
+    But if you put it in a secret note and send the link, it will not be recoverable.
+</p>
+<p i18n="@@faq-why-2">
+    Imagine you want to send something private to your friend, but he has the feeling that his parents/wife/boss occasionally read his mails (which they of course disclaim).
+    If you put your messages in a secret note, the intruder cannot use the link and read the message without revealing that he's sniffing.
+    If your friend wants uses the secret link and it has already been invalidated, it's obvious that it was sniffed.
+</p>
 
-<h5>How are notes protected?</h5>
-<p>
+<h5 i18n>Do I know when the note has been read?</h5>
+<p i18n="@@faq-read">After creating a note you'll get an admin link. With this link you can check if your note has been read.</p>
+
+<h5 i18n>How are notes protected?</h5>
+<p i18n="@@faq-protected">
     Your notes are protected using state-of-the-art end-to-end encryption (AES-GCM-128 with authentication).
     The communication to the server is again encrypted using TLS.
     Your encryption keys are never send over network.
 </p>
 
-<h5>Why is Javascript required?</h5>
-<p>
+<h5 i18n>Why is Javascript required?</h5>
+<p i18n="@@faq-js">
     Without scripting it is not possible to keep your message secret, because someone else would have to carry out encryption for you.
     Your note should be secret to you and the recipient, right?
     Your note is secret as long as only you and your recipient have its <em>encryption key</em>.
@@ -20,16 +32,16 @@
     But if the server would get the encryption key, he could (in theory) decrypt and read your secret note, and you wouldn't even notice.
     But <strong>with javascript, your note is safe</strong> even from rogue servers, because your encryption key is never sent.
 </p>
-<h5>How is the encryption key transmitted to the recipient?</h5>
-<p>
+<h5 i18n>How is the encryption key transmitted to the recipient?</h5>
+<p i18n="@@faq-key">
     The key is encoded in the <em>fragment</em> part of your secret url.
     This part of the url is kept local to your browser and never transmitted over network.
 </p>
-<h5>Can I check if the javascript is trustworthy?</h5>
-<p>
-    The source code of this service is available on Github (TODO link), anyone can read and check it.
+<h5 i18n>Can I check if the javascript is trustworthy?</h5>
+<p i18n="@@faq-jstrust">
+    The source code of this service is available on Github (<a href="https://github.com/MarkusBauer/secretnote" rel="nofollow">https://github.com/MarkusBauer/secretnote</a>), anyone can read and check it.
     To ensure this service uses unaltered javascript code, you can check the <em>integrity</em> hashes of the three javascript files.
     You find the hashes of this service when viewing the source code of this page.
     You find the hashes of the open source code when inspecting the current release.
-    These releases are built by TODO, so not even the service operators could interfere with the build process.
+    These releases are built by <a href="TODO" rel="nofollow">TODO</a>, so not even the service operators could interfere with the build process.
 </p>
