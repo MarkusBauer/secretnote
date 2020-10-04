@@ -1,6 +1,6 @@
 - Nicer noscript message
-- Github: account + link to it
 - Github: build / run instructions
+- Github: account/upload
 - Github: automated / trusted build
 - Host it somewhere
 
