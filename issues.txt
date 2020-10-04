@@ -1,4 +1,4 @@
-- Write FAQ (+german)
+- Nicer noscript message
 - Github: account + link to it
 - Github: build / run instructions
 - Github: automated / trusted build

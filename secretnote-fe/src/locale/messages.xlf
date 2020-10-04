@@ -395,6 +395,126 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="87ec049f4a1d2bacebbaac18b15f70e370fab54e" datatype="html">
+        <source>Why?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-why-1" datatype="html">
+        <source>
+    Imagine you want to send someone a password over messenger.
+    Years later someone could go back in your message history and reveal the password!
+    But if you put it in a secret note and send the link, it will not be recoverable.
+</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-why-2" datatype="html">
+        <source>
+    Imagine you want to send something private to your friend, but he has the feeling that his parents/wife/boss occasionally read his mails (which they of course disclaim).
+    If you put your messages in a secret note, the intruder cannot use the link and read the message without revealing that he&apos;s sniffing.
+    If your friend wants uses the secret link and it has already been invalidated, it&apos;s obvious that it was sniffed.
+</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e3c6b67d23c57476804138bab7d14b580ba8671f" datatype="html">
+        <source>Do I know when the note has been read?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-read" datatype="html">
+        <source>After creating a note you&apos;ll get an admin link. With this link you can check if your note has been read.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="59d1250f85a4666eeb58102efd2c963885416275" datatype="html">
+        <source>How are notes protected?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-protected" datatype="html">
+        <source>
+    Your notes are protected using state-of-the-art end-to-end encryption (AES-GCM-128 with authentication).
+    The communication to the server is again encrypted using TLS.
+    Your encryption keys are never send over network.
+</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7971cdf84ef695565a7cf9f474b890bacadb3f2f" datatype="html">
+        <source>Why is Javascript required?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-js" datatype="html">
+        <source>
+    Without scripting it is not possible to keep your message secret, because someone else would have to carry out encryption for you.
+    Your note should be secret to you and the recipient, right?
+    Your note is secret as long as only you and your recipient have its <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>encryption key<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.
+    And here we need Javascript: Browser-side scripting is the only way to keep the encryption key in your browser -
+    without scripting, the server would have to carry out encryption (and therefore need the encryption key).
+    But if the server would get the encryption key, he could (in theory) decrypt and read your secret note, and you wouldn&apos;t even notice.
+    But <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>with javascript, your note is safe<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> even from rogue servers, because your encryption key is never sent.
+</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6d37e0c93bf0819977bc09b19524e5e77552381a" datatype="html">
+        <source>How is the encryption key transmitted to the recipient?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-key" datatype="html">
+        <source>
+    The key is encoded in the <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>fragment<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> part of your secret url.
+    This part of the url is kept local to your browser and never transmitted over network.
+</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5f1a62c24b269c65786d085cf59d8bd90a8eb8aa" datatype="html">
+        <source>Can I check if the javascript is trustworthy?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-jstrust" datatype="html">
+        <source>
+    The source code of this service is available on Github (<x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>https://github.com/MarkusBauer/secretnote<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>), anyone can read and check it.
+    To ensure this service uses unaltered javascript code, you can check the <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>integrity<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> hashes of the three javascript files.
+    You find the hashes of this service when viewing the source code of this page.
+    You find the hashes of the open source code when inspecting the current release.
+    These releases are built by <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>TODO<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>, so not even the service operators could interfere with the build process.
+</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="2180bcc3bae1faf66c6cf6d9f6adfecb904aedbc" datatype="html">
         <source>This note has already been read (or the link is invalid).</source>
         <context-group purpose="location">
@@ -538,7 +658,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="about-text1" datatype="html">
-        <source>SecretNote is free and open source software, powered by Rust, Redis and Angular and Typescript.
+        <source>SecretNote is free and open source software, powered by Rust, Redis, Angular and Typescript.
         Anyone is free to host custom instances free of charge.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
