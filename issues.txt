@@ -1,7 +1,8 @@
-- Nicer noscript message
 - Github: build / run instructions
 - Github: account/upload
 - Github: automated / trusted build
+- Statistics
+- License
 - Host it somewhere
 
 - Feature: upload files

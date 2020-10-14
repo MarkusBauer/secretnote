@@ -303,6 +303,68 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="780dfdaaf2aebeb6438c782eecced1e6d8fec805" datatype="html">
+        <source>Secret communication requires Javascript</source>
+        <target>Sichere Kommunikation erfordert Javascript</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noscript-intro" datatype="html">
+        <source>
+          We all know that Javascript is not commonly associated with security.
+          But Javascript is required to ensure proper client-side encryption of your messages.
+          Without scripting it is not possible to keep your message secret, because someone else would have to carry out encryption for you.
+        </source>
+        <target>
+          Javascript wird oft nicht gerade mit Sicherheit in Verbindung gebracht.
+          Aber Javascript ist notwendig, um Nachrichten richtig und sicher im Browser zu verschlüsseln.
+          Ohne Scripts ist es nicht möglich deine Nachricht geheim zu halten, weil dann jemand Anderes die Verschlüsslung für Dich übernehmen müsste.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8ec1d2702c0c9a6dda25deed7a0735ee77f13295" datatype="html">
+        <source>Why Javascript?</source>
+        <target>Warum Javascript?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noscript-js" datatype="html">
+        <source>
+          Your note should be secret to you and the recipient, right?
+          Your note is secret as long as only you and your recipient have its <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>encryption key<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.
+          And here we need Javascript: Browser-side scripting is the only way to keep the encryption key in your browser -
+          without scripting, the server would have to carry out encryption (and therefore need the encryption key).
+          But if the server would get the encryption key, he could (in theory) decrypt and read your secret note, and you wouldn&apos;t even notice.
+          But <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>with javascript, your note is safe<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> even from rogue servers, because your encryption key is never sent.
+        </source>
+        <target>
+          Deine Nachricht sollte nur von Dir und dem Empfänger gelesen werden können.
+          Aber deine Nachricht ist nur sicher so lange nur Du und der Empfänger den <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>kryptographischen Schlüssel<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> kennen.
+          Hierzu brauchen wir Javascript: Ein Script das dein Browser ausführt ist die einzige Möglichkeit den Schlüssel nur in deinem Browser zu lassen -
+          ohne Scripts müsste der Server die Verschlüsselung für Dich berechnen (und dafür den Schlüssel bekommen).
+          Wenn aber der Server den Schlüssel bekommt, könnte der Server-Betreiber (in der Theorie) deine Nachricht entschlüsseln und lesen, und Du könntest das nicht einmal feststellen.
+          Aber <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>mit Javascript ist deine Nachricht sicher<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>, selbst vor bösartigen Servern, weil dein Schlüssel niemals versendet wird.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7d15144d9f7bf550ee7a73ff7d750c3683d5411e" datatype="html">
+        <source>Read more in the F.A.Q</source>
+        <target>Mehr dazu in den F.A.Q</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="f44297b1ba9a9b96dca3389692847a880bc266d7" datatype="html">
         <source>Store a note - encrypted!</source>
         <target>Speichern Sie Ihre Nachricht - verschlüsselt!</target>
