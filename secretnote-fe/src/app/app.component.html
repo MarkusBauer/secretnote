@@ -41,6 +41,32 @@
     </div>
 </nav>
 
+<xnoscript>
+    <br/>
+    <div class="container">
+        <div class="card border-danger">
+            <h3 class="card-header bg-danger text-white" i18n>Secret communication requires Javascript</h3>
+            <div class="card-body">
+                <p class="card-text" i18n="@@noscript-intro">
+                    We all know that Javascript is not commonly associated with security.
+                    But Javascript is requires to ensure proper client-side encryption of your messages.
+                    Without scripting it is not possible to keep your message secret, because someone else would have to carry out encryption for you.
+                </p>
+                <h5 class="card-title text-danger" i18n>Why Javascript?</h5>
+                <p class="card-text" i18n="@@noscript-js">
+                    Your note should be secret to you and the recipient, right?
+                    Your note is secret as long as only you and your recipient have its <em>encryption key</em>.
+                    And here we need Javascript: Browser-side scripting is the only way to keep the encryption key in your browser -
+                    without scripting, the server would have to carry out encryption (and therefore need the encryption key).
+                    But if the server would get the encryption key, he could (in theory) decrypt and read your secret note, and you wouldn't even notice.
+                    But <strong>with javascript, your note is safe</strong> even from rogue servers, because your encryption key is never sent.
+                </p>
+                <a routerLink="/faq" class="card-link text-danger" i18n>Read more in the F.A.Q</a>
+            </div>
+        </div>
+    </div>
+</xnoscript>
+
 <br/>
 
 <main class="container">
