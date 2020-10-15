@@ -22,11 +22,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
-            
+        
+    # Caches for npm / cargo / rustup
     - name: Cache Node Modules
       uses: actions/cache@v2
       with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
         path: ~/.npm
         key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
@@ -44,23 +44,27 @@ jobs:
         path: ~/.rustup
         key: ${{ runner.os }}-rustup
 
-    #- run: cd secretnote-fe && npm ci
-    #  name: Install Frontend Dependencies
-    #- run: cd secretnote-fe && npm run build
-    #  name: Build Frontend
+    # Build frontend / Angular app
+    - run: cd secretnote-fe && npm ci
+      name: Install Frontend Dependencies
+    - run: cd secretnote-fe && npm run build
+      name: Build Frontend
     
+    # Build server / Rust part
     - name: Install Rust Build Dependencies
       run: sudo apt-get install -y musl-tools
     - name: RustUp
-      run: "rustup target add x86_64-unknown-linux-musl"
+      run: rustup target add x86_64-unknown-linux-musl
     - name: Build Server
       run: cargo build --release --target x86_64-unknown-linux-musl
-    
+      
+    # Upload build results
+    - run: cp target/x86_64-unknown-linux-musl/release/secretnote ./ && strip ./secretnote
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
-        name: release
+        name: "SecretNote for Linux/amd64"
         path: |
-          fe
-          target/x86_64-unknown-linux-musl/release/secretnote
+          ./fe
+          ./secretnote
         retention-days: 365
