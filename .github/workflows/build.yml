@@ -16,13 +16,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      name: Checkout
       
     - name: Use Node.js 14.x
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
-        
-    - name: Cache node modules
+            
+    - name: Cache Node Modules
       uses: actions/cache@v2
       with:
         # npm cache files are stored in `~/.npm` on Linux/macOS
@@ -30,18 +31,27 @@ jobs:
         key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-npm-
-    - name: Cache Rust dependencies
+    - name: Cache Rust Dependencies
       uses: actions/cache@v2
       with:
         path: target
         key: ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: |
           ${{ runner.OS }}-rust-
+    - name: Cache RustUp Toolchains
+      uses: actions/cache@v2
+      with:
+        path: ~/.rustup
+        key: ${{ runner.os }}-rustup
 
     - run: cd secretnote-fe && npm ci
+      name: Install Frontend Dependencies
     - run: cd secretnote-fe && npm run build
-    
-    - name: Build server
+      name: Build Frontend
+      
+    - name: RustUp
+      run: "rustup target add x86_64-unknown-linux-musl"
+    - name: Build Server
       run: cargo build --release --target x86_64-unknown-linux-musl
     
     - name: Upload
