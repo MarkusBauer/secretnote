@@ -44,11 +44,13 @@ jobs:
         path: ~/.rustup
         key: ${{ runner.os }}-rustup
 
-    - run: cd secretnote-fe && npm ci
-      name: Install Frontend Dependencies
-    - run: cd secretnote-fe && npm run build
-      name: Build Frontend
-      
+    #- run: cd secretnote-fe && npm ci
+    #  name: Install Frontend Dependencies
+    #- run: cd secretnote-fe && npm run build
+    #  name: Build Frontend
+    
+    - name: Install Rust Build Dependencies
+      run: apt-get install -y musl-tools
     - name: RustUp
       run: "rustup target add x86_64-unknown-linux-musl"
     - name: Build Server
