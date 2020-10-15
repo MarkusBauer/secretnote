@@ -28,3 +28,10 @@ rust-crypto = "^0.2"
 serde = "^1.0.117"
 tokio = "^0.2.22"
 tokio-util = "^0.3.1"
+
+
+[profile.release]
+panic = 'abort' # 8,6MB => 7.6MB
+lto = true  # 13MB => 8,6MB
+opt-level = 'z' # 8.6MB => 8.6MB
+#codegen-units = 1 # 8.6MB => 8.2MB, compile times x2
