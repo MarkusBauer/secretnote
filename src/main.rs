@@ -334,19 +334,20 @@ async fn main() -> std::io::Result<()> {
         .get_matches();
 
     let basepath = get_base_path();
-    println!("Frontend at \"{}/fe\"", basepath.to_str().unwrap());
+    println!("Frontend at \"{}\"", basepath.join("fe").to_str().unwrap());
 
     if matches.is_present("verbose") {
         env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
         env_logger::init();
     }
-    let redis: Arc<String> = Arc::new(matches.value_of("redis").unwrap_or("127.0.0.1:6379").into());
-    let redis_db: u32 = matches.value_of_t("redis-db").unwrap_or(0);
-    let redis_auth = Arc::new(if let Some(x) = matches.value_of("redis-auth") { Some(String::from(x)) } else { None });
-    let bind: String = matches.value_of("bind").unwrap_or("127.0.0.1:8080").into();
-    let threads: usize = matches.value_of_t("threads").unwrap_or(num_cpus::get());
-    println!("Using Redis at \"{}\" ...", redis);
+    let redis: Arc<String> = Arc::new(matches.value_of("redis").unwrap_or(&env::var("SECRETNOTE_REDIS").unwrap_or("127.0.0.1:6379".into())).into());
+    let redis_db: u32 = matches.value_of_t("redis-db").unwrap_or(env::var("SECRETNOTE_REDIS_DB").unwrap_or("0".into()).parse().expect("Redis database must be a number"));
+    let redis_auth = Arc::new(if let Some(x) = matches.value_of("redis-auth") { Some(String::from(x)) } else { env::var("SECRETNOTE_REDIS_AUTH").ok() });
+    let bind: String = matches.value_of("bind").unwrap_or(&env::var("SECRETNOTE_BIND").unwrap_or("127.0.0.1:8080".into())).into();
+    let threads: usize = matches.value_of_t("threads").unwrap_or(env::var("SECRETNOTE_THREADS").unwrap_or("".into()).parse().unwrap_or(num_cpus::get()));
+    println!("Using Redis at \"{}\", database {} ...", redis, redis_db);
     println!("Binding to \"{}\" ...", bind);
+    println!("Starting {} threads ...", threads);
 
     let broker = ChatMessageBroker::default().start();
 

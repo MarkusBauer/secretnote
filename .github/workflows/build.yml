@@ -53,6 +53,13 @@ jobs:
       with:
         path: ~/.rustup
         key: ${{ runner.os }}-rustup
+    - name: Cache Cargo
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.OS }}-cargo-
 
     # Build frontend / Angular app
     - run: cd secretnote-fe && npm ci
@@ -88,7 +95,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: ./Dockerfile
+        file: ./CI.Dockerfile
         platforms: linux/amd64
         push: true
         tags: markusbauer/secretnote:latest

@@ -13,7 +13,33 @@ Website: [https://secretnote.mk-bauer.de](https://secretnote.mk-bauer.de)
 
 Host your own instance
 ----------------------
-`TODO`
+Either download a release bundle, or use our Docker images. In any case you need a Redis server.
+
+Docker example: `docker run --name secretnote -p 8080:8080 markusbauer/secretnote --redis 1.2.3.4`
+
+For configuration SecretNote accepts commandline parameters or environment variables:
+
+- `--bind 127.0.0.1:8080` / `SECRETNOTE_BIND=...` Address and port to listen on
+- `--redis 127.0.0.1` / `SECRETNOTE_REDIS=...` Redis server address/port
+- `--redis-db 0` / `SECRETNOTE_REDIS_DB=...` Redis server database number
+- `--redis-auth <...>` / `SECRETNOTE_REDIS_AUTH=...` Redis server AUTH password (optional)
+- `--threads <number of cpus>` / `SECRETNOTE_THREADS=...` Number of worker threads to use
+
+Example configuration for docker-compose: 
+```
+---
+version: "2.1"
+services:
+  redis:
+    image: redis:alpine
+    volumes:
+      - ./redis-data:/data
+  secretnote:
+    image: markusbauer/secretnote
+    ports:
+      - 8080:127.0.0.1:8080  # use a TLS frontend for this port
+    depends_on: [redis]
+```
 
 
 For developers
