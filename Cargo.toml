@@ -35,3 +35,8 @@ panic = 'abort' # 8,6MB => 7.6MB
 lto = true  # 13MB => 8,6MB
 opt-level = 'z' # 8.6MB => 8.6MB
 #codegen-units = 1 # 8.6MB => 8.2MB, compile times x2
+
+
+[[bin]]
+name = "secretnote-statistics-exporter"
+path = "src/statistics/statistics.rs"
