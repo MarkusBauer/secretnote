@@ -77,11 +77,14 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for ChattingWebSocket
             Ok(ws::Message::Binary(bin)) => {
                 // ctx.binary(bin)
                 let vec = bin.to_vec();
+                let bytes = vec.len();
                 let channel_name = self.channel_name.clone();
                 let redis = self.redis.clone();
                 let f = self.redis.send(Command(resp_array!["LPUSH", format!("chat:{}", self.channel_name), vec]));
                 let f = f.map(move |_r| {
-                    redis.do_send(Command(resp_array!["EXPIRE", format!("chat:{}", channel_name), format!("{}", 3600 * 24 * 7)]))
+                    redis.do_send(Command(resp_array!["INCR", "secretnote-stats:chat-message-count"]));
+                    redis.do_send(Command(resp_array!["INCRBY", "secretnote-stats:chat-message-bytes", format!("{}", bytes)]));
+                    redis.do_send(Command(resp_array!["EXPIRE", format!("chat:{}", channel_name), format!("{}", 3600 * 24 * 7)]));
                 });
                 /*let f = f.map(|r|{
                     println!("EXPIRE {}", format_redis_result(&r));

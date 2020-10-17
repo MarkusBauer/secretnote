@@ -152,12 +152,15 @@ async fn note_store(note: Json<Note>, redis: web::Data<Addr<MyRedisActor>>) -> i
         return HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Message too long or invalid");
     }
 
+    let bytes = data.len();
     let cmd = Command(resp_array!["SET", format!("note:{}", ident), data, "EX", format!("{}", 3600 * 24 * 7)]);
     let result = redis.send(cmd).await;
     if let Ok(Ok(RespValue::SimpleString(_))) = result {
         let cmd = Command(resp_array!["SET", format!("noteadmin:{}", admin_ident), "{}", "EX", format!("{}", 3600 * 24 * 7)]);
         let result = redis.send(cmd).await;
         if let Ok(Ok(RespValue::SimpleString(_))) = result {
+            redis.do_send(Command(resp_array!["INCR", "secretnote-stats:note-store-count"]));
+            redis.do_send(Command(resp_array!["INCRBY", "secretnote-stats:note-store-bytes", format!("{}", bytes)]));
             HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
                 .json(NoteResponse { ident, admin_ident })
         } else {
@@ -192,6 +195,7 @@ async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<My
     if let Ok(Ok(value)) = data {
         if let RespValue::BulkString(vec) = value {
             redis.do_send(Command(resp_array!["DEL", format!("note:{}", &note.ident)]));
+            redis.do_send(Command(resp_array!["INCR", "secretnote-stats:note-retrieve-count"]));
             HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
                 .json(RetrieveNoteResponse { ident: note.ident.clone(), data: base64::encode(vec) })
         } else {
