@@ -1,3 +1,21 @@
+$blue:    #007bff !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #e83e8c !default;
+$red:     #dc3545 !default;
+$orange:  #fd7e14 !default;
+$yellow:  #ffc107 !default;
+$green:   #28a745 !default;
+$teal:    #20c997 !default;
+$cyan:    #17a2b8 !default;
+
+
+
 
 //$primary: #6f42c1;
-$primary: darken(#6f42c1, 12%);
+$primary: darken($purple, 12%);
+$code-color: darken($pink, 30%);
+
+
+$font-size-base: 1rem !default;
+$h2-font-size: $font-size-base * 1.25;

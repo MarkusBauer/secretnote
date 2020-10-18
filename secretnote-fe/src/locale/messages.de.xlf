@@ -857,6 +857,14 @@
           <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="1bec8edeef24331bc81449e7624fe20d72cb31ad" datatype="html">
+        <source>Commit time</source>
+        <target>Commit-Zeitstempel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
 
       <trans-unit id="b8d10cd55fae4e4ad4f87d28e18251694f159bf7" datatype="html">
         <source>Privacy Policy</source>

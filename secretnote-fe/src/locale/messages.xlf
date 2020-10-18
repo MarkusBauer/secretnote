@@ -256,7 +256,7 @@
         <source>New Chat</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">17</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-chat-create/page-chat-create.component.html</context>
@@ -267,60 +267,62 @@
         <source>F.A.Q</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="004b222ff9ef9dd4771b777950ca1d0e4cd4348a" datatype="html">
         <source>About</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="780dfdaaf2aebeb6438c782eecced1e6d8fec805" datatype="html">
         <source>Secret communication requires Javascript</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noscript-intro" datatype="html">
         <source>
-                    We all know that Javascript is not commonly associated with security.
-                    But Javascript is requires to ensure proper client-side encryption of your messages.
-                    Without scripting it is not possible to keep your message secret, because someone else would have to carry out encryption for you.
-                </source>
+                        We all know that Javascript is not commonly associated with security.
+                        But Javascript is required to ensure proper client-side encryption of your messages.
+                        Without scripting it is not possible to keep your message secret, because someone else would have to carry out encryption for
+                        you.
+                    </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8ec1d2702c0c9a6dda25deed7a0735ee77f13295" datatype="html">
         <source>Why Javascript?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noscript-js" datatype="html">
         <source>
-                    Your note should be secret to you and the recipient, right?
-                    Your note is secret as long as only you and your recipient have its <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>encryption key<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.
-                    And here we need Javascript: Browser-side scripting is the only way to keep the encryption key in your browser -
-                    without scripting, the server would have to carry out encryption (and therefore need the encryption key).
-                    But if the server would get the encryption key, he could (in theory) decrypt and read your secret note, and you wouldn&apos;t even notice.
-                    But <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>with javascript, your note is safe<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> even from rogue servers, because your encryption key is never sent.
-                </source>
+                        Your note should be secret to you and the recipient, right?
+                        Your note is secret as long as only you and your recipient have its <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>encryption key<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.
+                        And here we need Javascript: Browser-side scripting is the only way to keep the encryption key in your browser -
+                        without scripting, the server would have to carry out encryption (and therefore need the encryption key).
+                        But if the server would get the encryption key, he could (in theory) decrypt and read your secret note, and you wouldn&apos;t even
+                        notice.
+                        But <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>with javascript, your note is safe<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> even from rogue servers, because your encryption key is never sent.
+                    </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7d15144d9f7bf550ee7a73ff7d750c3683d5411e" datatype="html">
         <source>Read more in the F.A.Q</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f44297b1ba9a9b96dca3389692847a880bc266d7" datatype="html">
@@ -711,25 +713,25 @@
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5d527dec8178544cac539fef57220a3b6cabb7ae" datatype="html">
-        <source>Build time</source>
+      <trans-unit id="1bec8edeef24331bc81449e7624fe20d72cb31ad" datatype="html">
+        <source>Commit time</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b8d10cd55fae4e4ad4f87d28e18251694f159bf7" datatype="html">
         <source>Privacy Policy</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="153f8ab0bb5d7be411521f9a0a947c2082b1aa6f" datatype="html">
         <source>Scope: </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="gdpr-responsibility" datatype="html">
@@ -741,7 +743,7 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="gdpr-security" datatype="html">
@@ -751,7 +753,7 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="gdpr-data" datatype="html">
@@ -762,7 +764,7 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="gdpr-rights" datatype="html">
@@ -774,7 +776,7 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="gdpr-usermessages" datatype="html">
@@ -786,7 +788,7 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="gdpr-serverdata" datatype="html">
@@ -799,14 +801,14 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="gdpr-changes" datatype="html">
         <source>We reserve the right to change or update this privacy policy at any point in time.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-about/page-about.component.html</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e941d6a03d83e2a059842217226b6d314e05f303" datatype="html">
