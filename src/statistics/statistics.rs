@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::str;
 use redis_async::{client, resp_array};
 use redis_async::resp::RespValue;
 use serde::{Deserialize, Serialize};
@@ -9,6 +10,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 fn to_int(rv: RespValue) -> i64 {
     match rv {
         RespValue::Integer(x) => x,
+        RespValue::BulkString(x) => str::from_utf8(&x).unwrap().parse().unwrap_or(0),
         _ => 0
     }
 }
@@ -95,7 +97,8 @@ async fn main() {
     }
 
     // Write out
-    let json = serde_json::to_string(&entry).expect("json failed");
+    // let json = serde_json::to_string(&entry).expect("json failed");
+    let json = serde_json::to_string_pretty(&entry).expect("json failed");
     println!("{}", json);
     fs::write("statistics_current.json", json).expect("Could not save json file!");
 }
