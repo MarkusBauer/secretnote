@@ -1,6 +1,6 @@
 [package]
 name = "secretnote"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Markus Bauer <secretnote@mk-bauer.de>"]
 edition = "2018"
 

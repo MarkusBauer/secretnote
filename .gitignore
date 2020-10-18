@@ -3,6 +3,7 @@
 /releases/
 /cache/
 /node_modules/
+/secretnote-fe/node_modules/
 *.report.html
 /package-lock.json
 /secretnote

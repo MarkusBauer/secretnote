@@ -301,7 +301,7 @@ async fn angular_index_any(req: HttpRequest) -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let matches = clap::App::new("SecretNote Server")
-        //.version("1.0")
+        .version("1.0.0")
         //.author("...")
         .about("Hosts SecretNote - a cryptographic note and chat platform")
         .arg(clap::Arg::new("bind")

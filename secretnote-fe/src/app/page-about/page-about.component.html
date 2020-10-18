@@ -10,8 +10,8 @@
     <span class="badge badge-primary" *ngIf="environment.build.version">{{ environment.build.version }}</span>
 </h5>
 <p>
-    <ng-container i18n>Build time</ng-container>: {{environment.build.build_time}}<br/>
-    Git commit: <code>{{environment.build.git_hash}}</code>
+    Git commit: <code>{{environment.build.git_hash}}</code><br/>
+    <ng-container i18n>Commit time</ng-container>: {{environment.build.build_time}}
 </p>
 
 <br/>
