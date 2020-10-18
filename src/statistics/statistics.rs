@@ -5,6 +5,9 @@ use redis_async::{client, resp_array};
 use redis_async::resp::RespValue;
 use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::cmp::max;
+use std::fs::OpenOptions;
+use std::io::Write;
 
 
 fn to_int(rv: RespValue) -> i64 {
@@ -30,6 +33,16 @@ struct StatisticsEntry {
     note_retrieve_count: i64,
     chat_message_count: i64,
     chat_message_bytes: i64,
+
+    stored_notes_count: i64,
+    stored_notes_size: i64,
+    stored_notes_max_size: i64,
+
+    stored_chats_count: i64,
+    stored_chats_message_count: i64,
+    stored_chats_max_message_count: i64,
+    stored_chats_bytes: i64,
+    stored_chats_max_bytes: i64,
 }
 
 
@@ -96,9 +109,44 @@ async fn main() {
         eprintln!("File statistics_current.json not found");
     }
 
-    // Write out
-    // let json = serde_json::to_string(&entry).expect("json failed");
-    let json = serde_json::to_string_pretty(&entry).expect("json failed");
+    // Get current database stats - notes
+    let notes = connection.send::<RespValue>(resp_array!["KEYS", "note:*"]).await.expect("KEYS note:*");
+    if let RespValue::Array(notes) = notes {
+        for note in notes {
+            if let RespValue::BulkString(note) = note {
+                let key = str::from_utf8(&note).unwrap();
+                let size = to_int(connection.send::<RespValue>(resp_array!["STRLEN", key]).await.expect("STRLEN"));
+                entry.stored_notes_count += 1;
+                entry.stored_notes_size += size;
+                entry.stored_notes_max_size = max(entry.stored_notes_max_size, size);
+            }
+        }
+    }
+
+    // Get current database stats - chats
+    let chats = connection.send::<RespValue>(resp_array!["KEYS", "chat:*"]).await.expect("KEYS chat:*");
+    if let RespValue::Array(chats) = chats {
+        for chat in chats {
+            if let RespValue::BulkString(chat) = chat {
+                let key = str::from_utf8(&chat).unwrap();
+                let count = to_int(connection.send::<RespValue>(resp_array!["LLEN", key]).await.expect("LLEN"));
+                entry.stored_chats_count += 1;
+                entry.stored_chats_message_count += count;
+                entry.stored_chats_max_message_count = max(entry.stored_chats_max_message_count, count);
+                let size = to_int(connection.send::<RespValue>(resp_array!["MEMORY", "USAGE", key]).await.expect("MEMORY USAGE"));
+                entry.stored_chats_bytes += size;
+                entry.stored_chats_max_bytes = max(entry.stored_chats_max_bytes, size);
+            }
+        }
+    }
+
+    // Write to stdout
+    let json = serde_json::to_string(&entry).expect("json failed");
+    // let json = serde_json::to_string_pretty(&entry).expect("json failed");
     println!("{}", json);
-    fs::write("statistics_current.json", json).expect("Could not save json file!");
+
+    // Write to files
+    fs::write("statistics_current.json", json.as_str()).expect("Could not save json file!");
+    let mut file = OpenOptions::new().create(true).append(true).open("statistics.json.txt").unwrap();
+    writeln!(file, "{}", json.as_str()).expect("Could not write statistics.json");
 }
