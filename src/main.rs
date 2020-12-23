@@ -1,6 +1,7 @@
 mod chatbroker;
 mod chat_websocket;
 mod my_redis_actor;
+mod telegram_api;
 
 use std::{env, fs};
 use actix_web::{get, post, web, App, HttpServer, Responder, middleware, HttpRequest, HttpResponse};
@@ -25,9 +26,7 @@ use crate::my_redis_actor::MyRedisActor;
 use crypto::sha2::Sha256;
 use crypto::digest::Digest;
 use std::time::{SystemTime, UNIX_EPOCH};
-use serde_json::Value;
-use serde_json::value::Value::Object;
-use bytes::Bytes;
+use crate::telegram_api::{TelegramActor, telegram_message};
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -181,9 +180,9 @@ async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<M
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", ident)])).await;
     if let Ok(Ok(value)) = data {
         match value {
-            RespValue::Nil => HttpResponse::Ok().json(CheckNoteResponse { ident: ident, exists: false }),
+            RespValue::Nil => HttpResponse::Ok().json(CheckNoteResponse { ident, exists: false }),
             RespValue::BulkString(_) => HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")
-                .json(CheckNoteResponse { ident: ident, exists: true }),
+                .json(CheckNoteResponse { ident, exists: true }),
             _ => HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Invalid data type in redis")
         }
     } else {
@@ -208,45 +207,6 @@ async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<My
         println!("{}", format_redis_result(&data));
         HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")
     }
-}
-
-
-#[derive(Serialize)]
-struct TelegramWebhookMessageResponse {
-    method: String, chat_id: i64, text: String, parse_mode: String
-}
-
-
-async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
-    let request = match serde_json::from_slice(body.as_ref()) {
-        Ok(Object(ok)) => ok,
-        _ => {
-            return HttpResponse::InternalServerError().body("Invalid JSON");
-        }
-    };
-    if let Some(message) = request.get("message") {
-        // handle incoming telegram messages
-        let chat_id = message.get("chat").and_then(|chat| chat.get("id")).and_then(|id| id.as_i64()).unwrap_or(0);
-        let username = message.get("chat").and_then(|chat| chat.get("username")).and_then(|username| username.as_str());
-        if let Some(username) = username {
-            println!("Received message from @{} in chat {}", username, chat_id);
-            redis.do_send(Command(resp_array!["SET", format!("telegram.user_to_chat:{}", username), format!("{}", chat_id)]));
-        }
-
-        let text = message.get("text").and_then(|txt| txt.as_str()).unwrap_or("");
-        if text == "/start" {
-            let msg = format!("Welcome to SecretNoteBot - you can now receive read notifications for your messages!\n\
-                               Please use your *chat ID {}* or your *username* \"@{}\" after storing a message.\n\
-                               You can also send your admin links to this bot.",
-                chat_id, username.unwrap_or("???")
-            );
-            return HttpResponse::Ok().json(TelegramWebhookMessageResponse{
-                method: "sendMessage".into(), chat_id, text: msg, parse_mode: "MarkdownV2".into()
-            });
-        }
-        // TODO parse other messages
-    }
-    HttpResponse::Ok().body("ok")
 }
 
 
@@ -402,6 +362,7 @@ async fn main() -> std::io::Result<()> {
     println!("Starting {} threads ...", threads);
 
     let broker = ChatMessageBroker::default().start();
+    let telegram = TelegramActor::new(&**telegram_token).start();
 
     HttpServer::new(move || {
         let mut app = App::new()
@@ -410,6 +371,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::DefaultHeaders::new().header("Cache-Control", "max-age=5184000"))
             .data(MyRedisActor::start((*redis).clone(), Some(redis_db), (*redis_auth).clone()))
             .data(broker.clone())
+            .data(telegram.clone())
             .service(websocket)
             .service(note_store)
             .service(note_check)
