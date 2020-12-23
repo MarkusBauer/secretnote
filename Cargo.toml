@@ -10,6 +10,7 @@ edition = "2018"
 actix = "^0.10.0"
 actix-files = "^0.4.0"
 actix-redis = "^0.9.1"
+actix-http = "2.2.0"
 actix-utils = "^2.0.0"
 actix-web = { version = "^3.3.2", features = ["rustls"] }
 actix-web-actors = "^3.0.0"

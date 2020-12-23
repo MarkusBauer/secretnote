@@ -342,6 +342,11 @@ async fn main() -> std::io::Result<()> {
             .about("Set the API token of the telegram bot")
             .value_name("TELEGRAM_TOKEN")
             .takes_value(true))
+        .arg(clap::Arg::new("base-url")
+            .long("base-url")
+            .about("The full base URL of this server")
+            .value_name("BASE_URL")
+            .takes_value(true))
         .get_matches();
 
     let basepath = get_base_path();
@@ -357,12 +362,20 @@ async fn main() -> std::io::Result<()> {
     let bind: String = matches.value_of("bind").unwrap_or(&env::var("SECRETNOTE_BIND").unwrap_or("127.0.0.1:8080".into())).into();
     let threads: usize = matches.value_of_t("threads").unwrap_or(env::var("SECRETNOTE_THREADS").unwrap_or("".into()).parse().unwrap_or(num_cpus::get()));
     let telegram_token: Arc<String> = Arc::new(matches.value_of("telegram-token").unwrap_or(&env::var("SECRETNOTE_TELEGRAM_TOKEN").unwrap_or("".into())).into());
+    let base_url: Arc<String> = Arc::new(matches.value_of("base-url").unwrap_or(&env::var("SECRETNOTE_BASE_URL").unwrap_or("".into())).trim_end_matches("/").into());
+    println!("Base URL: \"{}\"", base_url);
     println!("Using Redis at \"{}\", database {} ...", redis, redis_db);
     println!("Binding to \"{}\" ...", bind);
     println!("Starting {} threads ...", threads);
 
+    let base_url_2: &str = &**base_url;
+    let mut webhook_url: String = base_url_2.into();
+    if !base_url.is_empty() {
+        webhook_url.push_str("/api/telegram/webhook/");
+        webhook_url.push_str(telegram_token.as_str());
+    }
+    let telegram = TelegramActor::new(&**telegram_token, &webhook_url).start();
     let broker = ChatMessageBroker::default().start();
-    let telegram = TelegramActor::new(&**telegram_token).start();
 
     HttpServer::new(move || {
         let mut app = App::new()
