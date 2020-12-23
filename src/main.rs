@@ -25,6 +25,9 @@ use crate::my_redis_actor::MyRedisActor;
 use crypto::sha2::Sha256;
 use crypto::digest::Digest;
 use std::time::{SystemTime, UNIX_EPOCH};
+use serde_json::Value;
+use serde_json::value::Value::Object;
+use bytes::Bytes;
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -208,6 +211,45 @@ async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<My
 }
 
 
+#[derive(Serialize)]
+struct TelegramWebhookMessageResponse {
+    method: String, chat_id: i64, text: String, parse_mode: String
+}
+
+
+async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
+    let request = match serde_json::from_slice(body.as_ref()) {
+        Ok(Object(ok)) => ok,
+        _ => {
+            return HttpResponse::InternalServerError().body("Invalid JSON");
+        }
+    };
+    if let Some(message) = request.get("message") {
+        // handle incoming telegram messages
+        let chat_id = message.get("chat").and_then(|chat| chat.get("id")).and_then(|id| id.as_i64()).unwrap_or(0);
+        let username = message.get("chat").and_then(|chat| chat.get("username")).and_then(|username| username.as_str());
+        if let Some(username) = username {
+            println!("Received message from @{} in chat {}", username, chat_id);
+            redis.do_send(Command(resp_array!["SET", format!("telegram.user_to_chat:{}", username), format!("{}", chat_id)]));
+        }
+
+        let text = message.get("text").and_then(|txt| txt.as_str()).unwrap_or("");
+        if text == "/start" {
+            let msg = format!("Welcome to SecretNoteBot - you can now receive read notifications for your messages!\n\
+                               Please use your *chat ID {}* or your *username* \"@{}\" after storing a message.\n\
+                               You can also send your admin links to this bot.",
+                chat_id, username.unwrap_or("???")
+            );
+            return HttpResponse::Ok().json(TelegramWebhookMessageResponse{
+                method: "sendMessage".into(), chat_id, text: msg, parse_mode: "MarkdownV2".into()
+            });
+        }
+        // TODO parse other messages
+    }
+    HttpResponse::Ok().body("ok")
+}
+
+
 #[cached]
 fn get_base_path() -> PathBuf {
     let pathbuf = std::env::current_exe().unwrap().clone();
@@ -335,12 +377,17 @@ async fn main() -> std::io::Result<()> {
             .long("verbose")
             .short('v')
             .about("Set verbose mode (enable request logs)"))
+        .arg(clap::Arg::new("telegram-token")
+            .long("telegram-token")
+            .about("Set the API token of the telegram bot")
+            .value_name("TELEGRAM_TOKEN")
+            .takes_value(true))
         .get_matches();
 
     let basepath = get_base_path();
     println!("Frontend at \"{}\"", basepath.join("fe").to_str().unwrap());
 
-    if matches.is_present("verbose") {
+    if matches.is_present("verbose") || env::var("SECRETNOTE_VERBOSE").is_ok() {
         env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
         env_logger::init();
     }
@@ -349,6 +396,7 @@ async fn main() -> std::io::Result<()> {
     let redis_auth = Arc::new(if let Some(x) = matches.value_of("redis-auth") { Some(String::from(x)) } else { env::var("SECRETNOTE_REDIS_AUTH").ok() });
     let bind: String = matches.value_of("bind").unwrap_or(&env::var("SECRETNOTE_BIND").unwrap_or("127.0.0.1:8080".into())).into();
     let threads: usize = matches.value_of_t("threads").unwrap_or(env::var("SECRETNOTE_THREADS").unwrap_or("".into()).parse().unwrap_or(num_cpus::get()));
+    let telegram_token: Arc<String> = Arc::new(matches.value_of("telegram-token").unwrap_or(&env::var("SECRETNOTE_TELEGRAM_TOKEN").unwrap_or("".into())).into());
     println!("Using Redis at \"{}\", database {} ...", redis, redis_db);
     println!("Binding to \"{}\" ...", bind);
     println!("Starting {} threads ...", threads);
@@ -356,7 +404,7 @@ async fn main() -> std::io::Result<()> {
     let broker = ChatMessageBroker::default().start();
 
     HttpServer::new(move || {
-        App::new()
+        let mut app = App::new()
             .wrap(middleware::Logger::default())
             .wrap(middleware::Compress::default())
             .wrap(middleware::DefaultHeaders::new().header("Cache-Control", "max-age=5184000"))
@@ -366,8 +414,15 @@ async fn main() -> std::io::Result<()> {
             .service(note_store)
             .service(note_check)
             .service(note_retrieve)
-            .service(chat_messages)
+            .service(chat_messages);
 
+        if !telegram_token.is_empty() {
+            let mut s: String = "/api/telegram/webhook/".to_owned();
+            s.push_str(telegram_token.as_str());
+            app = app.service(web::resource(s).route(web::post().to(telegram_message)));
+        }
+
+        app = app
             .service(web::resource("/note/*").to(angular_index_any))
             .service(web::resource("/chat/*").to(angular_index_any))
             .service(web::resource("/faq").to(angular_index_any))
@@ -386,6 +441,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/en/about").to(angular_index_en))
             .service(web::resource("/en/").to(angular_index_en))
 
-            .service(actix_files::Files::new("/", basepath.join("fe")).use_last_modified(true).use_etag(true))
+            .service(actix_files::Files::new("/", basepath.join("fe")).use_last_modified(true).use_etag(true));
+        app
     }).workers(threads).bind(bind)?.run().await
 }
