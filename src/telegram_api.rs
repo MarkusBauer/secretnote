@@ -32,10 +32,6 @@ pub async fn send_read_confirmation(config: &str, ident: &str, redis: &Addr<MyRe
     }
 }
 
-pub fn store_telegram_read_notification(ident: &str, chat: &str, redis: &Addr<MyRedisActor>) {
-    redis.do_send(Command(resp_array!["SET", format!("note_settings:read_confirmation:{}", ident), format!("telegram:{}", chat)]));
-}
-
 fn escape_markdown(s: &str) -> String {
     let mut s: String = s.into();
     s = s.replace("\\", "\\\\");
@@ -225,7 +221,6 @@ impl Handler<Initialize> for TelegramActor {
         println!("Telegram Bot: Trying to initialize bot ...");
         let req = Client::default().post(self.get_url("getMe")).send();
         self.send_api_request(req, ctx, |response, act, ctx| {
-            println!("Response: {:?}", response);
             if !response.ok {
                 println!("Telegram Bot: Request /getMe failed! Bot is disabled.");
                 return;

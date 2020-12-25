@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {BackendService} from "../backend.service";
+import {BackendService, NoteAdminCheckResponse} from "../backend.service";
 import {CryptoService} from "../crypto.service";
 import {UiService} from "../ui.service";
 
@@ -17,6 +17,9 @@ export class PageNoteAdminComponent implements OnInit {
     state: string = "loading";
     url: string;
     adminUrl: string;
+    noteStatus: NoteAdminCheckResponse;
+
+    telegramNotification: string;
 
     constructor(private route: ActivatedRoute, private backend: BackendService, private crypto: CryptoService, private ui: UiService) {
     }
@@ -50,10 +53,29 @@ export class PageNoteAdminComponent implements OnInit {
         this.url = this.backend.generatePublicUrl(this.ident, this.key);
         this.adminUrl = this.backend.generatePrivateUrl(this.adminIdent, this.key);
 
-        this.backend.checkNote(this.ident).subscribe(exists => {
-            this.state = exists ? "ready" : "missing";
+        this.refresh();
+    }
+
+    refresh() {
+        this.backend.checkNoteAdmin(this.adminIdent).subscribe(status => {
+            this.state = status.exists ? "ready" : "missing";
+            this.noteStatus = status;
+            this.telegramNotification = this.noteStatus.notify == "telegram" ? this.noteStatus.notify_to : "";
         }, this.ui.httpErrorHandler);
     }
 
+    addTelegramReadNotification(addr: string) {
+        // check if addr is valid
+        if (!addr) addr = null;
+        else addr = addr.trim();
+        if (addr !== null && !addr.match(/^\d+/) && !addr.match(/^@[A-Za-z0-9_]{5,}$/)) {
+            this.ui.error("Invalid telegram username! Use either your Chat ID or your username in the form \"@username\"");
+            return;
+        }
+        // save
+        this.backend.setNoteNotification(this.adminIdent, "telegram", addr).subscribe(() => {
+            this.refresh();
+        }, this.ui.httpErrorHandler);
+    }
 
 }

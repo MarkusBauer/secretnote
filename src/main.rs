@@ -57,7 +57,7 @@ fn hash_ident(admin_ident: &str) -> String {
     v.resize(32, 0u8);
     hasher.result(&mut v);
     let s = base64::encode_config(&v, base64::URL_SAFE_NO_PAD);
-    println!("admin_ident = \"{}\"   ident = \"{}\"", &admin_ident, &s[..28]);
+    // println!("admin_ident = \"{}\"   ident = \"{}\"", &admin_ident, &s[..28]);
     String::from(&s[..28])
 }
 
@@ -139,6 +139,12 @@ struct NoteResponse { ident: String, admin_ident: String }
 struct CheckNoteResponse { ident: String, exists: bool }
 
 #[derive(Deserialize)]
+struct AdminNoteRequest { admin_ident: String, command: String, notify: Option<String>, notify_to: Option<String> }
+
+#[derive(Serialize)]
+struct AdminNoteResponse { ident: String, exists: bool, notify: Option<String>, notify_to: Option<String> }
+
+#[derive(Deserialize)]
 struct RetrieveNoteRequest { ident: String }
 
 #[derive(Serialize)]
@@ -210,6 +216,65 @@ async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<My
     } else {
         println!("{}", format_redis_result(&data));
         HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")
+    }
+}
+
+#[get("/api/note/admin/{admin_ident}")]
+async fn note_admin_status(web::Path(admin_ident): web::Path<String>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
+    let ident = hash_ident(&admin_ident);
+    let data = redis.send(Command(resp_array!["GET", format!("note:{}", &ident)])).await;
+    if let Ok(Ok(value)) = data {
+        let mut response = AdminNoteResponse { ident: ident.clone(), exists: false, notify: None, notify_to: None };
+        match value {
+            RespValue::Nil => {}
+            RespValue::BulkString(_) => {
+                response.exists = true;
+                let notify = redis.send(Command(resp_array!["GET", format!("note_settings:read_confirmation:{}", &ident)])).await;
+                if let Ok(Ok(RespValue::BulkString(vec))) = notify {
+                    let notify = std::str::from_utf8(&vec).unwrap_or("");
+                    if let Some(pos) = notify.find(':') {
+                        response.notify = Some(notify[..pos].into());
+                        response.notify_to = Some(notify[pos + 1..].into());
+                    }
+                }
+            }
+            _ => return HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Invalid data type in redis")
+        }
+        HttpResponse::Ok().header("Cache-Control", "no-cache, no-store").json(response)
+    } else {
+        println!("{}", format_redis_result(&data));
+        HttpResponse::InternalServerError().header("Cache-Control", "no-cache, no-store").body("Redis connection error")
+    }
+}
+
+#[post("/api/note/admin")]
+async fn note_admin_action(req: Json<AdminNoteRequest>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
+    let ident = hash_ident(&req.admin_ident);
+    let data = redis.send(Command(resp_array!["GET", format!("note:{}", ident)])).await;
+    if let Ok(Ok(RespValue::BulkString(_))) = data {
+        match req.command.as_str() {
+            "notify" => {
+                let redis_cmd = if req.notify.is_some() && req.notify_to.is_some() && !req.notify.as_ref().unwrap().is_empty() {
+                    if req.notify.as_ref().unwrap().as_str() != "telegram" {
+                        return HttpResponse::InternalServerError().body("Invalid notify type");
+                    }
+                    redis.send(Command(resp_array!["SET", format!("note_settings:read_confirmation:{}", ident), format!("{}:{}", req.notify.as_ref().unwrap(), req.notify_to.as_ref().unwrap()), "EX", format!("{}", 3600 * 24 * 7)])).await
+                } else {
+                    redis.send(Command(resp_array!["DEL", format!("note_settings:read_confirmation:{}", ident)])).await
+                };
+                if let Ok(Ok(_)) = redis_cmd {
+                    HttpResponse::Ok().header("Cache-Control", "no-cache, no-store").json(true)
+                } else {
+                    return HttpResponse::InternalServerError().body("Redis error")
+                }
+            }
+            _ => {
+                HttpResponse::InternalServerError().body("Invalid command")
+            }
+        }
+    } else {
+        println!("{}", format_redis_result(&data));
+        HttpResponse::InternalServerError().body("Redis connection error")
     }
 }
 
@@ -393,6 +458,8 @@ async fn main() -> std::io::Result<()> {
             .service(note_store)
             .service(note_check)
             .service(note_retrieve)
+            .service(note_admin_status)
+            .service(note_admin_action)
             .service(chat_messages);
 
         if !telegram_token.is_empty() {

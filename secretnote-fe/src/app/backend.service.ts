@@ -21,6 +21,13 @@ interface NoteRetrieveResponse {
     data: string;
 }
 
+export interface NoteAdminCheckResponse {
+    ident: string;
+    exists: boolean;
+    notify: string;
+    notify_to: string;
+}
+
 export interface ChatMessageResponse {
     len: number;
     messages: Array<string>;
@@ -65,6 +72,14 @@ export class BackendService {
     retrieveNote(ident: string): Observable<string> {
         return this.http.post<NoteRetrieveResponse>(this.base + 'api/note/retrieve', {ident: ident})
             .pipe(map(response => response.data));
+    }
+
+    checkNoteAdmin(adminIdent: string): Observable<NoteAdminCheckResponse> {
+        return this.http.get<NoteAdminCheckResponse>(this.base + 'api/note/admin/' + adminIdent);
+    }
+
+    setNoteNotification(adminIdent: string, notifyType: string, notifyTarget: string): Observable<boolean> {
+        return this.http.post<boolean>(this.base + 'api/note/admin', {admin_ident: adminIdent, command: "notify", notify: notifyType, notify_to: notifyTarget});
     }
 
     connectToChat(channel: string, onOpen: (Event) => void, onClose: (Event) => void): WebSocketSubject<ArrayBuffer> {

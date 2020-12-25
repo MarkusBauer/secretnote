@@ -28,4 +28,20 @@
             <input type="text" id="adminUrl" class="form-control form-control-sm" readonly [value]="adminUrl" (click)="$event.target.select()">
         </div>
     </form>
+
+    <br/>
+
+    <p *ngIf="!noteStatus.notify" class="text-muted" i18n>Telegram read notifications have not been configured.</p>
+    <p *ngIf="noteStatus.notify" class="text-muted" i18n>Read notifications will be delivered to Telegram user <em>{{noteStatus.notify_to}}</em>.</p>
+    <form (submit)="addTelegramReadNotification(telegramNotification)">
+        <div class="form-group">
+            <label for="notifyTo" i18n>Enter your Telegram username or chat id to receive read notifications:</label>
+            <div class="input-group input-group-sm">
+                <input type="text" name="notifyTo" id="notifyTo" class="form-control" [(ngModel)]="telegramNotification">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Request Notification</button>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
