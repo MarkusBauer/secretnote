@@ -8,7 +8,7 @@ import {environment} from "../../environments/environment";
 @Component({
     selector: 'app-page-note-admin',
     templateUrl: './page-note-admin.component.html',
-    styleUrls: ['./page-note-admin.component.less']
+    styleUrls: ['./page-note-admin.component.scss']
 })
 export class PageNoteAdminComponent implements OnInit {
 

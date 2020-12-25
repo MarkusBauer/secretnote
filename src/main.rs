@@ -240,7 +240,7 @@ async fn note_admin_status(web::Path(admin_ident): web::Path<String>, redis: web
                     if let Some(pos) = notify.find(':') {
                         response.notify = Some(notify[..pos].into());
                         response.notify_to = Some(notify[pos + 1..].into());
-                        response.notify_to_valid = check_user_chat_known(&notify[pos + 1..], &*redis);
+                        response.notify_to_valid = check_user_chat_known(&notify[pos + 1..], &*redis).await;
                     }
                 }
             }

@@ -33,17 +33,21 @@
     <br/>
 
     <p *ngIf="!noteStatus.notify" class="text-muted" i18n>Telegram read notifications have not been configured.</p>
-    <p *ngIf="noteStatus.notify && noteStatus.notify_to_valid" class="text-muted" i18n>Read notifications will be delivered to Telegram user <em>{{noteStatus.notify_to}}</em>.</p>
-    <p *ngIf="noteStatus.notify && !noteStatus.notify_to_valid"><strong class="text-danger" i18n>Warning: </strong>
-        <ng-container i18n>Read notifications configured for Telegram user <em>{{noteStatus.notify_to}}</em>, but user has not started the <a [href]="'https://t.me/'+telegramBotName" rel="noreferrer" target="_blank">SecretNote Bot</a>.</ng-container>
-    </p>
     <form (submit)="addTelegramReadNotification(telegramNotification)">
         <div class="form-group">
-            <label for="notifyTo" i18n>Enter your Telegram username or chat id to receive read notifications:</label>
+            <label for="notifyTo" i18n>Enter your Telegram username or chat ID to receive read notifications:</label>
             <div class="input-group input-group-sm">
-                <input type="text" name="notifyTo" id="notifyTo" class="form-control" [(ngModel)]="telegramNotification">
+                <input type="text" name="notifyTo" id="notifyTo" class="form-control" [(ngModel)]="telegramNotification" [class.is-valid]="noteStatus.notify && noteStatus.notify_to_valid" [class.is-invalid]="noteStatus.notify_to && !noteStatus.notify_to_valid">
                 <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary">Request Notification</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="noteStatus.notify">Update</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="!noteStatus.notify">Request Notification</button>
+                </div>
+                <div class="valid-feedback" i18n>
+                    Telegram user <em>{{noteStatus.notify_to}}</em> will receive a read notification.
+                </div>
+                <div class="invalid-feedback" i18n>
+                    Telegram user <em>{{noteStatus.notify_to}}</em> has not started the <a [href]="'https://t.me/'+telegramBotName" rel="noreferrer" target="_blank">SecretNote Telegram Bot</a>.
+                    Connect with the bot now: <a [href]="'https://t.me/'+telegramBotName" rel="noreferrer" target="_blank">https://t.me/{{telegramBotName}}</a>
                 </div>
             </div>
         </div>

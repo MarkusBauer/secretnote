@@ -17,8 +17,10 @@ use serde_json::json;
 
 pub async fn send_read_confirmation(config: &str, ident: &str, redis: &Addr<MyRedisActor>, telegram: &Addr<TelegramActor>) {
     if config.starts_with("telegram:") {
-        let chat_id = get_chat_id(&config[9..], redis);
-        telegram.do_send(SendMessage { chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", ident), parse_mode: "MarkdownV2".into() });
+        let chat_id = get_chat_id(&config[9..], redis).await;
+        if let Some(chat_id) = chat_id {
+            telegram.do_send(SendMessage { chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", ident), parse_mode: "MarkdownV2".into() });
+        }
     }
 }
 
@@ -27,7 +29,7 @@ async fn get_chat_id(recipient: &str, redis: &Addr<MyRedisActor>) -> Option<i64>
         Ok(x) => Some(x),
         _ => {
             if recipient.starts_with("@") {
-                let result = redis.send(Command(resp_array!["GET", format!("telegram:user_to_chat:{}", &config[10..])])).await;
+                let result = redis.send(Command(resp_array!["GET", format!("telegram:user_to_chat:{}", &recipient[1..])])).await;
                 if let Ok(Ok(RespValue::BulkString(vec))) = result {
                     std::str::from_utf8(&vec).unwrap_or("").parse::<i64>().ok()
                 } else { None }
@@ -37,8 +39,8 @@ async fn get_chat_id(recipient: &str, redis: &Addr<MyRedisActor>) -> Option<i64>
 }
 
 pub async fn check_user_chat_known(recipient: &str, redis: &Addr<MyRedisActor>) -> bool {
-    let chat_id = get_chat_id(recipient, redis);
-    if let chat_id = Ok(chat_id) {
+    let chat_id = get_chat_id(recipient, redis).await;
+    if let Some(chat_id) = chat_id {
         let result = redis.send(Command(resp_array!["SISMEMBER", "telegram:known_chats", format!("{}", chat_id)])).await;
         if let Ok(Ok(RespValue::Integer(result))) = result {
             return result == 1;
@@ -93,7 +95,7 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
         let chat_id = message.get("chat").and_then(|chat| chat.get("id")).and_then(|id| id.as_i64()).unwrap_or(0);
         let username = message.get("chat").and_then(|chat| chat.get("username")).and_then(|username| username.as_str());
         if let Some(username) = username {
-            println!("Received message from @{} in chat {}", username, chat_id);
+            println!("Telegram Bot: Received message from @{} in chat {}", username, chat_id);
             redis.do_send(Command(resp_array!["SET", format!("telegram:user_to_chat:{}", username), format!("{}", chat_id)]));
         }
         redis.do_send(Command(resp_array!["SADD", "telegram:known_chats", format!("{}", chat_id)]));

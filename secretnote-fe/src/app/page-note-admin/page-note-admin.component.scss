@@ -1,0 +1,10 @@
+@import "../../bootstrap-mod";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+
+.invalid-feedback a {
+    color: $red;
+    font-weight: bold;
+}
