@@ -26,7 +26,7 @@ use crate::my_redis_actor::MyRedisActor;
 use crypto::sha2::Sha256;
 use crypto::digest::Digest;
 use std::time::{SystemTime, UNIX_EPOCH};
-use crate::telegram_api::{TelegramActor, telegram_message};
+use crate::telegram_api::{TelegramActor, telegram_message, send_read_confirmation};
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -192,10 +192,14 @@ async fn note_check(web::Path(ident): web::Path<String>, redis: web::Data<Addr<M
 }
 
 #[post("/api/note/retrieve")]
-async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<MyRedisActor>>) -> impl Responder {
+async fn note_retrieve(note: Json<RetrieveNoteRequest>, redis: web::Data<Addr<MyRedisActor>>, telegram: web::Data<Addr<TelegramActor>>) -> impl Responder {
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", &note.ident)])).await;
     if let Ok(Ok(value)) = data {
         if let RespValue::BulkString(vec) = value {
+            let read_confirmation = redis.send(Command(resp_array!["GET", format!("note_settings:read_confirmation:{}", &note.ident)])).await;
+            if let Ok(Ok(RespValue::BulkString(rcvec))) = read_confirmation {
+                send_read_confirmation(std::str::from_utf8(&rcvec).unwrap_or(""), &note.ident, &**redis, &**telegram).await;
+            }
             redis.do_send(Command(resp_array!["DEL", format!("note:{}", &note.ident)]));
             redis.do_send(Command(resp_array!["INCR", "secretnote-stats:note-retrieve-count"]));
             HttpResponse::Ok().header("Cache-Control", "no-cache, no-store")

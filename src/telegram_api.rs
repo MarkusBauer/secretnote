@@ -6,12 +6,59 @@ use crate::my_redis_actor::MyRedisActor;
 use actix::{Addr, Context, Actor, Handler, Message, WrapFuture, ContextFutureSpawner, ActorFuture, AsyncContext};
 use serde::{Serialize, Deserialize};
 use redis_async::resp_array;
+use redis_async::resp::RespValue;
 use actix_web::client::{Client, ClientResponse, SendRequestError, JsonPayloadError};
 use serde_json::Value;
 use futures::{Future};
 use actix_http::{Payload, PayloadStream};
 use actix_http::encoding::Decoder;
 use serde_json::json;
+
+
+pub async fn send_read_confirmation(config: &str, ident: &str, redis: &Addr<MyRedisActor>, telegram: &Addr<TelegramActor>) {
+    if config.starts_with("telegram:") {
+        let chat_id = match config[9..].parse::<i64>() {
+            Ok(x) => x,
+            _ => {
+                if config[9..].starts_with("@") {
+                    let result = redis.send(Command(resp_array!["GET", format!("telegram.user_to_chat:{}", &config[10..])])).await;
+                    if let Ok(Ok(RespValue::BulkString(vec))) = result {
+                        std::str::from_utf8(&vec).unwrap_or("").parse::<i64>().unwrap_or(0)
+                    } else { 0 }
+                } else { 0 }
+            }
+        };
+        telegram.do_send(SendMessage{chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", ident), parse_mode: "MarkdownV2".into()});
+    }
+}
+
+pub fn store_telegram_read_notification(ident: &str, chat: &str, redis: &Addr<MyRedisActor>) {
+    redis.do_send(Command(resp_array!["SET", format!("note_settings:read_confirmation:{}", ident), format!("telegram:{}", chat)]));
+}
+
+fn escape_markdown(s: &str) -> String {
+    let mut s: String = s.into();
+    s = s.replace("\\", "\\\\");
+    s = s.replace("_", "\\_");
+    s = s.replace("*", "\\*");
+    s = s.replace("[", "\\[");
+    s = s.replace("]", "\\]");
+    s = s.replace("(", "\\(");
+    s = s.replace(")", "\\)");
+    s = s.replace("~", "\\~");
+    s = s.replace("`", "\\`");
+    s = s.replace(">", "\\>");
+    s = s.replace("#", "\\#");
+    s = s.replace("+", "\\+");
+    s = s.replace("-", "\\-");
+    s = s.replace("=", "\\=");
+    s = s.replace("|", "\\|");
+    s = s.replace("{", "\\{");
+    s = s.replace("}", "\\}");
+    s = s.replace(".", "\\.");
+    s = s.replace("!", "\\!");
+    return s;
+}
 
 
 #[derive(Serialize)]
@@ -42,9 +89,9 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
         let text = message.get("text").and_then(|txt| txt.as_str()).unwrap_or("");
         if text == "/start" {
             let msg = format!("Welcome to SecretNoteBot - you can now receive read notifications for your messages!\n\
-                               Please use your *chat ID {}* or your *username* \"@{}\" after storing a message.\n\
+                               Please use your *chat ID \"{}\"* or your *username \"@{}\"* after storing a message.\n\
                                You can also send your admin links to this bot.",
-                              chat_id, username.unwrap_or("???")
+                              chat_id, escape_markdown(username.unwrap_or("???"))
             );
             return HttpResponse::Ok().json(TelegramWebhookMessageResponse {
                 method: "sendMessage".into(),
@@ -156,12 +203,7 @@ impl Handler<SendMessage> for TelegramActor {
             .map(|res, _act, _ctx| {
                 if let Err(err) = res {
                     println!("Telegram API error: /sendMessage {:?}", err);
-                } /* else if let Ok(mut ok) = res {
-                    ok.body().into_actor(_act).map(|a, b, c|{
-                        println!("result text = {:?}", a.unwrap());
-                    }).wait(_ctx);
-                    println!("ok: {:?}", ok.status());
-                }*/
+                }
             })
             .wait(ctx);
     }
@@ -195,7 +237,7 @@ impl Handler<Initialize> for TelegramActor {
             }
             act.available = true;
             act.username = username.into();
-            ctx.address().do_send(CheckWebhook{});
+            ctx.address().do_send(CheckWebhook {});
         });
     }
 }
@@ -219,7 +261,7 @@ impl Handler<CheckWebhook> for TelegramActor {
             println!("Telegram Bot: Current webhook: \"{}\", new webhook: \"{}\"", current_url, act.webhook_url);
             if current_url != act.webhook_url {
                 // Set webhook to current url
-                ctx.address().do_send(SetWebhook{webhook_url: act.webhook_url.clone()});
+                ctx.address().do_send(SetWebhook { webhook_url: act.webhook_url.clone() });
             }
         });
     }
