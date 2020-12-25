@@ -564,7 +564,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2180bcc3bae1faf66c6cf6d9f6adfecb904aedbc" datatype="html">
-        <source>This note has already been read (or the link is invalid).</source>
+        <source>This note has expired (or the link is invalid).</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
           <context context-type="linenumber">7</context>

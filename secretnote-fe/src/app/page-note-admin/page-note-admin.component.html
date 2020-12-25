@@ -4,7 +4,8 @@
     </div>&nbsp;
     loading ...
 </div>
-<div *ngIf="state == 'missing'" i18n>This note has already been read (or the link is invalid).</div>
+<div *ngIf="state == 'missing'" i18n>This note has expired (or the link is invalid).</div>
+<div *ngIf="state == 'already_read'" i18n>This note has already been read.</div>
 <div *ngIf="state == 'error'">
     Error.
 </div>

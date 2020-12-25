@@ -142,7 +142,7 @@ struct CheckNoteResponse { ident: String, exists: bool }
 struct AdminNoteRequest { admin_ident: String, command: String, notify: Option<String>, notify_to: Option<String> }
 
 #[derive(Serialize)]
-struct AdminNoteResponse { ident: String, exists: bool, notify: Option<String>, notify_to: Option<String> }
+struct AdminNoteResponse { ident: String, exists: bool, was_valid: bool, notify: Option<String>, notify_to: Option<String> }
 
 #[derive(Deserialize)]
 struct RetrieveNoteRequest { ident: String }
@@ -224,9 +224,14 @@ async fn note_admin_status(web::Path(admin_ident): web::Path<String>, redis: web
     let ident = hash_ident(&admin_ident);
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", &ident)])).await;
     if let Ok(Ok(value)) = data {
-        let mut response = AdminNoteResponse { ident: ident.clone(), exists: false, notify: None, notify_to: None };
+        let mut response = AdminNoteResponse { ident: ident.clone(), exists: false, was_valid: false, notify: None, notify_to: None };
         match value {
-            RespValue::Nil => {}
+            RespValue::Nil => {
+                let data = redis.send(Command(resp_array!["GET", format!("noteadmin:{}", &admin_ident)])).await;
+                if let Ok(Ok(RespValue::BulkString(_))) = data {
+                    response.was_valid = true;
+                }
+            }
             RespValue::BulkString(_) => {
                 response.exists = true;
                 let notify = redis.send(Command(resp_array!["GET", format!("note_settings:read_confirmation:{}", &ident)])).await;

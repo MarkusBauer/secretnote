@@ -24,6 +24,7 @@ interface NoteRetrieveResponse {
 export interface NoteAdminCheckResponse {
     ident: string;
     exists: boolean;
+    was_valid: boolean;
     notify: string;
     notify_to: string;
 }

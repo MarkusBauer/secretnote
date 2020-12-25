@@ -58,7 +58,7 @@ export class PageNoteAdminComponent implements OnInit {
 
     refresh() {
         this.backend.checkNoteAdmin(this.adminIdent).subscribe(status => {
-            this.state = status.exists ? "ready" : "missing";
+            this.state = status.exists ? "ready" : (status.was_valid ? "already_read" : "missing");
             this.noteStatus = status;
             this.telegramNotification = this.noteStatus.notify == "telegram" ? this.noteStatus.notify_to : "";
         }, this.ui.httpErrorHandler);

@@ -395,8 +395,8 @@
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
-      
-      
+
+
       <trans-unit id="e4116a79faccb3c204dd016baca28eb71e5e734b" datatype="html">
         <source>With a second <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>admin link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/> you will be able to see when your note has been read.</source>
         <target>Mit einem <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>administrativen Link<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/> können Sie feststellen wenn Ihre Nachricht gelesen wird.</target>
@@ -808,8 +808,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="2180bcc3bae1faf66c6cf6d9f6adfecb904aedbc" datatype="html">
-        <source>This note has already been read (or the link is invalid).</source>
-        <target>Diese Nachricht wurde bereits gelesen (oder der Link ist ungültig).</target>
+        <source>This note has expired (or the link is invalid).</source>
+        <target>Diese Nachricht ist abgelaufen (oder der Link ist ungültig).</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
           <context context-type="linenumber">7</context>
