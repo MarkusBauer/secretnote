@@ -13,6 +13,9 @@ use futures::{Future};
 use actix_http::{Payload, PayloadStream};
 use actix_http::encoding::Decoder;
 use serde_json::json;
+use regex::Regex;
+use lazy_static::{lazy_static};
+use crate::hash_ident;
 
 
 pub async fn send_read_confirmation(config: &str, ident: &str, redis: &Addr<MyRedisActor>, telegram: &Addr<TelegramActor>) {
@@ -85,8 +88,17 @@ struct TelegramWebhookMessageResponse {
     parse_mode: String,
 }
 
+struct FoundAdminLink { admin_ident: String, contains_secret: bool }
 
-pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>, telegram: web::Data<Addr<TelegramActor>>) -> impl Responder {
+fn get_admin_links_from_text(text: &str) -> Vec<FoundAdminLink> {
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"/note/admin/([A-Za-z0-9_-]{24})(#[A-Za-z0-9_-])?").unwrap();
+    }
+    return RE.captures_iter(text).map(|m| FoundAdminLink{admin_ident: m[1].into(), contains_secret: !m[2].is_empty()}).collect();
+}
+
+
+pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>, _telegram: web::Data<Addr<TelegramActor>>) -> impl Responder {
     let request = match serde_json::from_slice(body.as_ref()) {
         Ok(Object(ok)) => ok,
         _ => {
@@ -103,13 +115,14 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
         }
         redis.do_send(Command(resp_array!["SADD", "telegram:known_chats", format!("{}", chat_id)]));
 
+        let userinfo = if let Some(username) = username {
+            format!("Use your *chat ID \"{}\"* or your *username \"@{}\"* after storing a message\\.", chat_id, escape_markdown(username))
+        } else {
+            format!("Use your *chat ID \"{}\"* after storing a message\\.", chat_id)
+        };
         let text = message.get("text").and_then(|txt| txt.as_str()).unwrap_or("");
         if text == "/start" {
-            let msg = format!("Welcome to SecretNoteBot - you can now receive read notifications for your messages!\n\
-                               Please use your *chat ID \"{}\"* or your *username \"@{}\"* after storing a message.\n\
-                               You can also send your admin links to this bot.",
-                              chat_id, escape_markdown(username.unwrap_or("???"))
-            );
+            let msg = format!("Welcome to SecretNoteBot \\- you can now receive read notifications for your messages\\!\n{}\nYou can also send your admin links to this bot (up to the \\# char)\\.", userinfo);
             return HttpResponse::Ok().json(TelegramWebhookMessageResponse {
                 method: "sendMessage".into(),
                 chat_id,
@@ -117,12 +130,41 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
                 parse_mode: "MarkdownV2".into(),
             });
         }
-        // TODO parse other messages
-        telegram.do_send(SendMessage {
+
+        // parse links from other messages
+        let links = get_admin_links_from_text(text);
+        if links.is_empty() {
+            let msg = format!("Please send me admin links (up to the \\# char) to get read notifications\\.\n{}", &userinfo);
+            return HttpResponse::Ok().json(TelegramWebhookMessageResponse {
+                method: "sendMessage".into(),
+                chat_id,
+                text: msg,
+                parse_mode: "MarkdownV2".into(),
+            });
+        }
+        let mut msg = String::new();
+        for admin_link in links {
+            let x = redis.send(Command(resp_array!["GET", format!("noteadmin:{}", admin_link.admin_ident)])).await;
+            if let Ok(Ok(RespValue::BulkString(_))) = x {
+                let ident = hash_ident(&admin_link.admin_ident);
+                redis.do_send(Command(resp_array!["SET", format!("note_settings:read_confirmation:{}", &ident), format!("telegram:{}", chat_id), "EX", format!("{}", 3600 * 24 * 7)]));
+                msg.push_str(&format!("You'll receive read notifications for message _{}_\\.", escape_markdown(&admin_link.admin_ident)));
+            } else {
+                msg.push_str(&format!("Message _{}_ does not exist\\.", escape_markdown(&admin_link.admin_ident)));
+            }
+            if admin_link.contains_secret {
+                msg.push_str(&format!(" *Warning:* Do not include your keys in these links (don't send everything after the \\# char)\\!"))
+            }
+            msg.push_str("\n");
+        }
+        msg.push_str(&userinfo);
+
+        return HttpResponse::Ok().json(TelegramWebhookMessageResponse {
+            method: "sendMessage".into(),
             chat_id,
-            text: "Sorry, bot could not understand your message.".to_string(),
-            parse_mode: "".to_string(),
-        });//*/
+            text: msg,
+            parse_mode: "MarkdownV2".into(),
+        });
     }
     HttpResponse::Ok().body("ok")
 }
