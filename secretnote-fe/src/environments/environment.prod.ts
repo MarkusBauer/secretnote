@@ -2,5 +2,6 @@ import {buildinfo} from './buildinfo';
 
 export const environment = {
   production: true,
-  build: buildinfo
+  build: buildinfo,
+  telegramBotName: "secret_note_bot"
 };

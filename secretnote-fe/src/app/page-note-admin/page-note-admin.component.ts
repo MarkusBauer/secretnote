@@ -3,6 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {BackendService, NoteAdminCheckResponse} from "../backend.service";
 import {CryptoService} from "../crypto.service";
 import {UiService} from "../ui.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-page-note-admin',
@@ -20,6 +21,7 @@ export class PageNoteAdminComponent implements OnInit {
     noteStatus: NoteAdminCheckResponse;
 
     telegramNotification: string;
+    telegramBotName: string = environment.telegramBotName;
 
     constructor(private route: ActivatedRoute, private backend: BackendService, private crypto: CryptoService, private ui: UiService) {
     }

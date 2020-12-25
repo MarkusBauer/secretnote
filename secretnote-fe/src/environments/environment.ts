@@ -9,7 +9,8 @@ export const environment = {
         build_timestamp: 0,
         git_hash: "00000000",
         version: ""
-    }
+    },
+    telegramBotName: "secret_note_bot"
 };
 
 /*
