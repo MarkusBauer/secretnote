@@ -19,7 +19,10 @@ pub async fn send_read_confirmation(config: &str, ident: &str, redis: &Addr<MyRe
     if config.starts_with("telegram:") {
         let chat_id = get_chat_id(&config[9..], redis).await;
         if let Some(chat_id) = chat_id {
-            telegram.do_send(SendMessage { chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", ident), parse_mode: "MarkdownV2".into() });
+            telegram.do_send(SendMessage { chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", escape_markdown(ident)), parse_mode: "MarkdownV2".into() });
+            redis.do_send(Command(resp_array!["INCR", "secretnote-stats:telegram-notifications"]));
+        } else {
+            println!("[Error]: Invalid Telegram config, can't infer chat ID: \"{}\"", config);
         }
     }
 }

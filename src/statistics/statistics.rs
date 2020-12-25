@@ -18,6 +18,8 @@ fn to_int(rv: RespValue) -> i64 {
     }
 }
 
+fn zero() -> i64 { 0 }
+
 
 #[derive(Serialize, Deserialize, Default)]
 struct StatisticsEntry {
@@ -28,11 +30,15 @@ struct StatisticsEntry {
     note_retrieve_count_total: i64,
     chat_message_count_total: i64,
     chat_message_bytes_total: i64,
+    #[serde(default = "zero")]
+    telegram_notifications_total: i64,
     note_store_count: i64,
     note_store_bytes: i64,
     note_retrieve_count: i64,
     chat_message_count: i64,
     chat_message_bytes: i64,
+    #[serde(default = "zero")]
+    telegram_notifications: i64,
 
     stored_notes_count: i64,
     stored_notes_size: i64,
@@ -87,6 +93,7 @@ async fn main() {
     entry.note_retrieve_count_total = to_int(connection.send::<RespValue>(resp_array!["GET", "secretnote-stats:note-retrieve-count"]).await.expect("note-retrieve-count"));
     entry.chat_message_count_total = to_int(connection.send::<RespValue>(resp_array!["GET", "secretnote-stats:chat-message-count"]).await.expect("chat-message-count"));
     entry.chat_message_bytes_total = to_int(connection.send::<RespValue>(resp_array!["GET", "secretnote-stats:chat-message-bytes"]).await.expect("chat-message-bytes"));
+    entry.telegram_notifications_total = to_int(connection.send::<RespValue>(resp_array!["GET", "secretnote-stats:telegram-notifications"]).await.expect("telegram-notifications"));
 
     // Read last statistics
     entry.note_store_count = entry.note_store_count_total;
@@ -94,6 +101,7 @@ async fn main() {
     entry.note_retrieve_count = entry.note_retrieve_count_total;
     entry.chat_message_count = entry.chat_message_count_total;
     entry.chat_message_bytes = entry.chat_message_bytes_total;
+    entry.telegram_notifications = entry.telegram_notifications_total;
 
     if let Ok(last) = fs::read_to_string("statistics_current.json") {
         if let Ok(last_stats) = serde_json::from_str::<StatisticsEntry>(last.as_str()) {
@@ -102,6 +110,7 @@ async fn main() {
             entry.note_retrieve_count -= last_stats.note_retrieve_count_total;
             entry.chat_message_count -= last_stats.chat_message_count_total;
             entry.chat_message_bytes -= last_stats.chat_message_bytes_total;
+            entry.telegram_notifications -= last_stats.telegram_notifications_total;
         } else {
             eprintln!("Could not parse statistics_current.json");
         }
