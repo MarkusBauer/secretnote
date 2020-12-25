@@ -17,19 +17,34 @@ use serde_json::json;
 
 pub async fn send_read_confirmation(config: &str, ident: &str, redis: &Addr<MyRedisActor>, telegram: &Addr<TelegramActor>) {
     if config.starts_with("telegram:") {
-        let chat_id = match config[9..].parse::<i64>() {
-            Ok(x) => x,
-            _ => {
-                if config[9..].starts_with("@") {
-                    let result = redis.send(Command(resp_array!["GET", format!("telegram.user_to_chat:{}", &config[10..])])).await;
-                    if let Ok(Ok(RespValue::BulkString(vec))) = result {
-                        std::str::from_utf8(&vec).unwrap_or("").parse::<i64>().unwrap_or(0)
-                    } else { 0 }
-                } else { 0 }
-            }
-        };
-        telegram.do_send(SendMessage{chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", ident), parse_mode: "MarkdownV2".into()});
+        let chat_id = get_chat_id(&config[9..], redis);
+        telegram.do_send(SendMessage { chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", ident), parse_mode: "MarkdownV2".into() });
     }
+}
+
+async fn get_chat_id(recipient: &str, redis: &Addr<MyRedisActor>) -> Option<i64> {
+    match recipient.parse::<i64>() {
+        Ok(x) => Some(x),
+        _ => {
+            if recipient.starts_with("@") {
+                let result = redis.send(Command(resp_array!["GET", format!("telegram:user_to_chat:{}", &config[10..])])).await;
+                if let Ok(Ok(RespValue::BulkString(vec))) = result {
+                    std::str::from_utf8(&vec).unwrap_or("").parse::<i64>().ok()
+                } else { None }
+            } else { None }
+        }
+    }
+}
+
+pub async fn check_user_chat_known(recipient: &str, redis: &Addr<MyRedisActor>) -> bool {
+    let chat_id = get_chat_id(recipient, redis);
+    if let chat_id = Ok(chat_id) {
+        let result = redis.send(Command(resp_array!["SISMEMBER", "telegram:known_chats", format!("{}", chat_id)])).await;
+        if let Ok(Ok(RespValue::Integer(result))) = result {
+            return result == 1;
+        }
+    }
+    return false;
 }
 
 fn escape_markdown(s: &str) -> String {
@@ -79,8 +94,9 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
         let username = message.get("chat").and_then(|chat| chat.get("username")).and_then(|username| username.as_str());
         if let Some(username) = username {
             println!("Received message from @{} in chat {}", username, chat_id);
-            redis.do_send(Command(resp_array!["SET", format!("telegram.user_to_chat:{}", username), format!("{}", chat_id)]));
+            redis.do_send(Command(resp_array!["SET", format!("telegram:user_to_chat:{}", username), format!("{}", chat_id)]));
         }
+        redis.do_send(Command(resp_array!["SADD", "telegram:known_chats", format!("{}", chat_id)]));
 
         let text = message.get("text").and_then(|txt| txt.as_str()).unwrap_or("");
         if text == "/start" {

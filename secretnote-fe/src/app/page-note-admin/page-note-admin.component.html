@@ -33,7 +33,8 @@
     <br/>
 
     <p *ngIf="!noteStatus.notify" class="text-muted" i18n>Telegram read notifications have not been configured.</p>
-    <p *ngIf="noteStatus.notify" class="text-muted" i18n>Read notifications will be delivered to Telegram user <em>{{noteStatus.notify_to}}</em>.</p>
+    <p *ngIf="noteStatus.notify && noteStatus.notify_to_valid" class="text-muted" i18n>Read notifications will be delivered to Telegram user <em>{{noteStatus.notify_to}}</em>.</p>
+    <p *ngIf="noteStatus.notify && !noteStatus.notify_to_valid"><strong class="text-danger" i18n>Warning: </strong> <ng-container i18n>Read notifications configured for Telegram user <em>{{noteStatus.notify_to}}</em>, but user has not started the <a href="TODO">SecretNote Bot</a>.</ng-container></p>
     <form (submit)="addTelegramReadNotification(telegramNotification)">
         <div class="form-group">
             <label for="notifyTo" i18n>Enter your Telegram username or chat id to receive read notifications:</label>

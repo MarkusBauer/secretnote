@@ -26,7 +26,7 @@ use crate::my_redis_actor::MyRedisActor;
 use crypto::sha2::Sha256;
 use crypto::digest::Digest;
 use std::time::{SystemTime, UNIX_EPOCH};
-use crate::telegram_api::{TelegramActor, telegram_message, send_read_confirmation};
+use crate::telegram_api::{TelegramActor, telegram_message, send_read_confirmation, check_user_chat_known};
 
 
 fn format_redis_result<T>(result: &Result<Result<RespValue, T>, MailboxError>) -> String {
@@ -142,7 +142,7 @@ struct CheckNoteResponse { ident: String, exists: bool }
 struct AdminNoteRequest { admin_ident: String, command: String, notify: Option<String>, notify_to: Option<String> }
 
 #[derive(Serialize)]
-struct AdminNoteResponse { ident: String, exists: bool, was_valid: bool, notify: Option<String>, notify_to: Option<String> }
+struct AdminNoteResponse { ident: String, exists: bool, was_valid: bool, notify: Option<String>, notify_to: Option<String>, notify_to_valid: bool }
 
 #[derive(Deserialize)]
 struct RetrieveNoteRequest { ident: String }
@@ -224,7 +224,7 @@ async fn note_admin_status(web::Path(admin_ident): web::Path<String>, redis: web
     let ident = hash_ident(&admin_ident);
     let data = redis.send(Command(resp_array!["GET", format!("note:{}", &ident)])).await;
     if let Ok(Ok(value)) = data {
-        let mut response = AdminNoteResponse { ident: ident.clone(), exists: false, was_valid: false, notify: None, notify_to: None };
+        let mut response = AdminNoteResponse { ident: ident.clone(), exists: false, was_valid: false, notify: None, notify_to: None, notify_to_valid: false };
         match value {
             RespValue::Nil => {
                 let data = redis.send(Command(resp_array!["GET", format!("noteadmin:{}", &admin_ident)])).await;
@@ -240,6 +240,7 @@ async fn note_admin_status(web::Path(admin_ident): web::Path<String>, redis: web
                     if let Some(pos) = notify.find(':') {
                         response.notify = Some(notify[..pos].into());
                         response.notify_to = Some(notify[pos + 1..].into());
+                        response.notify_to_valid = check_user_chat_known(&notify[pos + 1..], &*redis);
                     }
                 }
             }

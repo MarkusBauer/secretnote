@@ -27,6 +27,7 @@ export interface NoteAdminCheckResponse {
     was_valid: boolean;
     notify: string;
     notify_to: string;
+    notify_to_valid: boolean;
 }
 
 export interface ChatMessageResponse {
