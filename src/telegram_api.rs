@@ -94,7 +94,7 @@ fn get_admin_links_from_text(text: &str) -> Vec<FoundAdminLink> {
     lazy_static! {
         static ref RE: Regex = Regex::new(r"/note/admin/([A-Za-z0-9_-]{24})(#[A-Za-z0-9_-])?").unwrap();
     }
-    return RE.captures_iter(text).map(|m| FoundAdminLink{admin_ident: m[1].into(), contains_secret: !m[2].is_empty()}).collect();
+    return RE.captures_iter(text).map(|m| FoundAdminLink{admin_ident: m[1].into(), contains_secret: m.get(2).is_some()}).collect();
 }
 
 
@@ -115,14 +115,15 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
         }
         redis.do_send(Command(resp_array!["SADD", "telegram:known_chats", format!("{}", chat_id)]));
 
-        let userinfo = if let Some(username) = username {
-            format!("Use your *chat ID \"{}\"* or your *username \"@{}\"* after storing a message\\.", chat_id, escape_markdown(username))
+        let mut userinfo = if let Some(username) = username {
+            format!("Use your *chat ID \"{}\"* or your *username \"@{}\"* ", chat_id, escape_markdown(username))
         } else {
-            format!("Use your *chat ID \"{}\"* after storing a message\\.", chat_id)
+            format!("Use your *chat ID \"{}\"* ", chat_id)
         };
+        userinfo.push_str("after storing a message\\.");
         let text = message.get("text").and_then(|txt| txt.as_str()).unwrap_or("");
         if text == "/start" {
-            let msg = format!("Welcome to SecretNoteBot \\- you can now receive read notifications for your messages\\!\n{}\nYou can also send your admin links to this bot (up to the \\# char)\\.", userinfo);
+            let msg = format!("Welcome to SecretNoteBot \\- you can now receive read notifications for your messages\\!\n{}\nYou can also send your admin links to this bot \\(up to the \\# char\\)\\.", userinfo);
             return HttpResponse::Ok().json(TelegramWebhookMessageResponse {
                 method: "sendMessage".into(),
                 chat_id,
@@ -134,7 +135,7 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
         // parse links from other messages
         let links = get_admin_links_from_text(text);
         if links.is_empty() {
-            let msg = format!("Please send me admin links (up to the \\# char) to get read notifications\\.\n{}", &userinfo);
+            let msg = format!("Please send me admin links \\(up to the \\# char\\) to get read notifications\\.\n{}", &userinfo);
             return HttpResponse::Ok().json(TelegramWebhookMessageResponse {
                 method: "sendMessage".into(),
                 chat_id,
@@ -153,7 +154,7 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
                 msg.push_str(&format!("Message _{}_ does not exist\\.", escape_markdown(&admin_link.admin_ident)));
             }
             if admin_link.contains_secret {
-                msg.push_str(&format!(" *Warning:* Do not include your keys in these links (don't send everything after the \\# char)\\!"))
+                msg.push_str(&format!(" *Warning:* Do not include your keys in these links \\(don't send everything after the \\# char\\)\\!"))
             }
             msg.push_str("\n");
         }
@@ -295,6 +296,7 @@ impl Handler<Initialize> for TelegramActor {
             }
             act.available = true;
             act.username = username.into();
+            println!("Telegram Bot: available, named \"{}\"", &act.username);
             ctx.address().do_send(CheckWebhook {});
         });
     }
@@ -316,10 +318,12 @@ impl Handler<CheckWebhook> for TelegramActor {
         self.send_api_request(Client::default().get(self.get_url("getWebhookInfo")).send(), ctx, |response, act, ctx| {
             if !response.ok { return; }
             let current_url: String = response.result.unwrap_or(Value::Null).get("url").unwrap_or(&Value::Null).as_str().unwrap_or("").into();
-            println!("Telegram Bot: Current webhook: \"{}\", new webhook: \"{}\"", current_url, act.webhook_url);
             if current_url != act.webhook_url {
                 // Set webhook to current url
+                println!("Telegram Bot: Current webhook: \"{}\", new webhook: \"{}\"", current_url, act.webhook_url);
                 ctx.address().do_send(SetWebhook { webhook_url: act.webhook_url.clone() });
+            } else {
+                println!("Telegram Bot: Webhook already set.");
             }
         });
     }
