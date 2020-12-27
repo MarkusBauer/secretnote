@@ -405,7 +405,7 @@
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9c701192ad93130adeba8667f991ad56562536cf" datatype="html">
+      <trans-unit id="ecac1dcc8965e86764e5d5a30d16b1b0257f65cb" datatype="html">
         <source>Notes are deleted after they have been read once, latest 7 days after creation.</source>
         <target>Nachrichten werden nach einmaligem Lesen zerstört, spätestens aber nach 7 Tagen.</target>
         <context-group purpose="location">
@@ -694,8 +694,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="faq-read" datatype="html">
-        <source>After creating a note you&apos;ll get an admin link. With this link you can check if your note has been read.</source>
-        <target>Nach dem Speichern einer Nachricht bekommst du einen Admin-Link. Mit diesem Link kannst du überprüfen wann deine Nachricht gelesen wurde.</target>
+        <source>
+          After creating a note you&apos;ll get an admin link. With this link you can check if your note has been read.
+          Optionally, you can receive a read notification via <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Telegram<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> from our <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>SecretNote Bot<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.
+        </source>
+        <target>
+          Nach dem Speichern einer Nachricht bekommst du einen Admin-Link. Mit diesem Link kannst du überprüfen wann deine Nachricht gelesen wurde.
+          Optional kannst du eine Benachrichtigung über <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Telegram<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> von unserem <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>SecretNote Bot<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> bekommen.
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
           <context context-type="linenumber">16</context>
@@ -807,12 +813,20 @@
           <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2180bcc3bae1faf66c6cf6d9f6adfecb904aedbc" datatype="html">
+      <trans-unit id="70e2d2b408c91f3cececa7afd2056766aa5c53a1" datatype="html">
         <source>This note has expired (or the link is invalid).</source>
         <target>Diese Nachricht ist abgelaufen (oder der Link ist ungültig).</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
           <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f42cd16ea9d5f670b41d7c8ae226eb7d9e943a28" datatype="html">
+        <source>This note has already been read.</source>
+        <target>Diese Nachricht wurde bereits gelesen.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6d34e5a409ee399147ced1a5705c4ee1068e377b" datatype="html">
@@ -837,6 +851,48 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
           <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e7a95498009e25f62ab56d9a8d2aed61f6979c75" datatype="html">
+        <source>Telegram read notifications have not been configured.</source>
+        <target>Telegram-Lese-Benachrichtigung ist nicht aktiv.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cc89cdd3089320f29929b715c7e2ea7e0863754e" datatype="html">
+        <source>Enter your Telegram username or chat ID to receive read notifications:</source>
+        <target>Gib deinen Telegram-Namen oder deine Chat-ID ein, um eine Lese-Benachrichtigung zu erhalten:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bee649e98506756af999b82d392ed0d10aa85f69" datatype="html">
+        <source>
+          Telegram user <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/><x id="INTERPOLATION" equiv-text="{{noteStatus.notify_to}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> will receive a read notification.
+        </source>
+        <target>
+          Telegram-Nutzer <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/><x id="INTERPOLATION" equiv-text="{{noteStatus.notify_to}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> erhält eine Lese-Bestätigung.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="45a1f9debd84acc5f4d63d03ecba5d0d27f675aa" datatype="html">
+        <source>
+          Telegram user <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/><x id="INTERPOLATION" equiv-text="{{noteStatus.notify_to}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> has not started the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>SecretNote Telegram Bot<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.
+          Connect with the bot now: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>https://t.me/<x id="INTERPOLATION_1" equiv-text="{{telegramBotName}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </source>
+        <target>
+          Telegram-Nutzer <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/><x id="INTERPOLATION" equiv-text="{{noteStatus.notify_to}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> hat den <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>SecretNote Telegram Bot<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> noch nicht gestartet.
+          Verbinde dich jetzt mit dem Bot: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>https://t.me/<x id="INTERPOLATION_1" equiv-text="{{telegramBotName}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-note-admin/page-note-admin.component.html</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="about-text1" datatype="html">
@@ -1016,6 +1072,10 @@
       <trans-unit id="error_link_invalid_key" datatype="html">
         <source>This link is invalid (encryption key corrupted)</source>
         <target>Dieser Link ist ungültig (Schlüssel beschädigt)</target>
+      </trans-unit>
+      <trans-unit id="error_invalid_telegram_user" datatype="html">
+        <source>Invalid telegram username! Use either your Chat ID or your username in the form "@username"</source>
+        <target>Ungültiger Telegram-Nutzer! Nutze deine Chat-ID oder deinen Telegram-Namen im Format "@name"</target>
       </trans-unit>
       <trans-unit id="error_invalid_channelid" datatype="html">
         <source>Invalid channel ID</source>

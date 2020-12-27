@@ -71,7 +71,7 @@ export class PageNoteAdminComponent implements OnInit {
         if (!addr) addr = null;
         else addr = addr.trim();
         if (addr !== null && !addr.match(/^\d+/) && !addr.match(/^@[A-Za-z0-9_]{5,}$/)) {
-            this.ui.error("Invalid telegram username! Use either your Chat ID or your username in the form \"@username\"");
+            this.ui.error($localize`:@@error_invalid_telegram_user:Invalid telegram username! Use either your Chat ID or your username in the form \"@username\"`);
             return;
         }
         // save
