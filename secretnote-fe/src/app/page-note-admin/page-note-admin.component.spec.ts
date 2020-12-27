@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {PageNoteAdminComponent} from './page-note-admin.component';
 import {RouterTestingModule} from "@angular/router/testing";
@@ -8,7 +8,7 @@ describe('PageNoteAdminComponent', () => {
     let component: PageNoteAdminComponent;
     let fixture: ComponentFixture<PageNoteAdminComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PageNoteAdminComponent],
             imports: [RouterTestingModule, HttpClientTestingModule]

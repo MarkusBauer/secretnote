@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {PageChatComponent} from './page-chat.component';
 import {RouterTestingModule} from "@angular/router/testing";
@@ -8,7 +8,7 @@ describe('PageChatComponent', () => {
     let component: PageChatComponent;
     let fixture: ComponentFixture<PageChatComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PageChatComponent],
             imports: [RouterTestingModule, HttpClientTestingModule]

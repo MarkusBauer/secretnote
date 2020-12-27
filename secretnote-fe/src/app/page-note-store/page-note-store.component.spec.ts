@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {PageNoteStoreComponent} from './page-note-store.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
@@ -8,7 +8,7 @@ describe('PageNoteStoreComponent', () => {
     let component: PageNoteStoreComponent;
     let fixture: ComponentFixture<PageNoteStoreComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PageNoteStoreComponent],
             imports: [HttpClientTestingModule, RouterTestingModule],
