@@ -114,6 +114,7 @@ pub async fn telegram_message(body: Bytes, redis: web::Data<Addr<MyRedisActor>>,
             redis.do_send(Command(resp_array!["SET", format!("telegram:user_to_chat:{}", username), format!("{}", chat_id)]));
         }
         redis.do_send(Command(resp_array!["SADD", "telegram:known_chats", format!("{}", chat_id)]));
+        redis.do_send(Command(resp_array!["INCR", "secretnote-stats:telegram-messages"]));
 
         let mut userinfo = if let Some(username) = username {
             format!("Use your *chat ID \"{}\"* or your *username \"@{}\"* ", chat_id, escape_markdown(username))
