@@ -11,6 +11,15 @@ It was mainly developed to learn some Rust basics.
 Website: [https://secretnote.mk-bauer.de](https://secretnote.mk-bauer.de)
 
 
+Command Line Interface
+----------------------
+We provide a command line utility to store and retrieve notes (see release assets). Usage:
+- `echo Message | secretnote-cli` (store a note, return two links. First link is the secret link, second link is the admin link.)
+- `secretnote-cli 'https://secretnote.mk-bauer.de/note/<abc>#<def>'` (retrieve a note previously stored)
+
+For self-hosted instances, use `--host <your-server>`.
+
+
 Host your own instance
 ----------------------
 Either download a release bundle, or use our Docker images. In any case you need a Redis server.
@@ -24,6 +33,8 @@ For configuration SecretNote accepts commandline parameters or environment varia
 - `--redis-db 0` / `SECRETNOTE_REDIS_DB=...` Redis server database number
 - `--redis-auth <...>` / `SECRETNOTE_REDIS_AUTH=...` Redis server AUTH password (optional)
 - `--threads <number of cpus>` / `SECRETNOTE_THREADS=...` Number of worker threads to use
+- `--base-url` / `SECRETNOTE_BASE_URL` The base URL of this service, mainly to configure Telegram Bots 
+- `--telegram-token <token>` / `SECRETNOTE_TELEGRAM_TOKEN=...` Token for the Telegram Bot
 
 Example configuration for docker-compose: 
 ```

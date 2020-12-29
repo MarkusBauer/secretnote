@@ -813,6 +813,28 @@
           <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8789307084f7a2bbe3deb0bdaa776e0044023354" datatype="html">
+        <source>Are there alternative clients?</source>
+        <target>Gibt es alternative Anwendungen?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="faq-clients" datatype="html">
+        <source>
+          We provide a command line client to store and retrieve messages.
+          It can be downloaded from our <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Github Repository<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.
+        </source>
+        <target>
+          Wir stellen eine Kommandozeilen-Anwendung bereit, die Nachrichten speichern und abrufen kann.
+          Sie kann von unserem <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Github-Repository<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> heruntergeladen werden.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page-faq/page-faq.component.html</context>
+          <context context-type="linenumber">54,56</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="70e2d2b408c91f3cececa7afd2056766aa5c53a1" datatype="html">
         <source>This note has expired (or the link is invalid).</source>
         <target>Diese Nachricht ist abgelaufen (oder der Link ist ungültig).</target>
