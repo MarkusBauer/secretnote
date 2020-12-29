@@ -30,19 +30,16 @@ export class CryptoService {
     private static encrypt(p: any, keystring: string): any {
         let key = sjcl.codec.base64url.toBits(keystring);
         let cipher = new sjcl.cipher.aes(key);
-        let iv = sjcl.random.randomWords(4, 0);
+        let iv = sjcl.random.randomWords(3, 0);
         let c = sjcl.mode.gcm.encrypt(cipher, p, iv);
         return sjcl.bitArray.concat(iv, c);
     }
 
     private static decrypt(c_and_iv: any, keystring: string): any {
         let key = sjcl.codec.base64url.toBits(keystring);
-        console.log("size_c_and_iv =", sjcl.bitArray.bitLength(c_and_iv)/8);
-        console.log("key =", sjcl.bitArray.bitLength(key), sjcl.codec.hex.fromBits(key));
         let cipher = new sjcl.cipher.aes(key);
-        let iv = sjcl.bitArray.bitSlice(c_and_iv, 0, 128);
-        let c = sjcl.bitArray.bitSlice(c_and_iv, 128, sjcl.bitArray.bitLength(c_and_iv));
-        console.log("iv =", sjcl.bitArray.bitLength(iv), sjcl.codec.hex.fromBits(iv));
+        let iv = sjcl.bitArray.bitSlice(c_and_iv, 0, 96);
+        let c = sjcl.bitArray.bitSlice(c_and_iv, 96, sjcl.bitArray.bitLength(c_and_iv));
         return sjcl.mode.gcm.decrypt(cipher, c, iv);
     }
 
