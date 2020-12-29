@@ -7,27 +7,29 @@ use serde::{Deserialize, Serialize};
 use aes_gcm::aead::{Aead, NewAead, generic_array::GenericArray};
 
 
-
+#[allow(dead_code)]
 fn to_hex(bytes: &[u8]) -> String {
     bytes.iter().map(|x| format!("{:02x}", x)).collect::<String>()
 }
 
+
+#[derive(Serialize, Deserialize)]
+pub struct Note { text: String }
+
 #[derive(Serialize)]
-pub struct Note {
-    /// base64-encoded crypted data
-    data: String
-}
+pub struct NoteRequest { data: String }
 
 #[derive(Deserialize)]
 pub struct NoteResponse { ident: String, admin_ident: String }
 
 struct NoteLinks {
     public_link: String,
-    admin_link: String
+    admin_link: String,
 }
 
 
-async fn secretnote_note_store(host: &str, text: &Vec<u8>) -> NoteLinks {
+async fn secretnote_note_store(host: &str, text: &str) -> NoteLinks {
+    let data = serde_json::to_vec(&Note { text: text.into() }).expect("JSON serialize failed");
     // encrypt
     let mut gen = OsRng::default();
     let mut key = [0u8; 16];
@@ -35,18 +37,11 @@ async fn secretnote_note_store(host: &str, text: &Vec<u8>) -> NoteLinks {
     gen.fill_bytes(&mut key);
     gen.fill_bytes(&mut iv);
     let cipher = Aes128Gcm::new(&GenericArray::from(key));
-    let mut c = cipher.encrypt(&GenericArray::from(iv), text.as_slice()).expect("encryption failed");
+    let mut c = cipher.encrypt(&GenericArray::from(iv), data.as_slice()).expect("encryption failed");
     let mut ciphertext = Vec::from(iv);
-    ciphertext.push(0);
-    ciphertext.push(0);
-    ciphertext.push(0);
-    ciphertext.push(0);
     ciphertext.append(&mut c);
-    println!("key = {}", to_hex(key.as_ref()));
-    println!("iv  = {}", to_hex(iv.as_ref()));
-    println!("c   = {}", to_hex(ciphertext.as_ref()));
     // submit
-    let req = Note{data: base64::encode(ciphertext)};
+    let req = NoteRequest { data: base64::encode(ciphertext) };
     let mut url: String = host.trim_end_matches("/").into();
     url.push_str("/api/note/store");
     let client = reqwest::Client::new();
@@ -57,10 +52,10 @@ async fn secretnote_note_store(host: &str, text: &Vec<u8>) -> NoteLinks {
     }
     let body: NoteResponse = response.json().await.expect("Invalid JSON");
     // generate URLs
-    return NoteLinks{
+    return NoteLinks {
         public_link: format!("{}/note/{}#{}", host.trim_end_matches("/"), body.ident, base64::encode_config(key, base64::URL_SAFE_NO_PAD)),
         admin_link: format!("{}/note/admin/{}#{}", host.trim_end_matches("/"), body.admin_ident, base64::encode_config(key, base64::URL_SAFE_NO_PAD)),
-    }
+    };
 }
 
 
@@ -78,8 +73,8 @@ async fn main() {
 
 
     // Store stdin as note
-    let mut buffer: Vec<u8> = vec!();
-    io::stdin().read_to_end(&mut buffer).expect("Could not read from stdin");
+    let mut buffer = String::new();
+    io::stdin().read_to_string(&mut buffer).expect("Could not read from stdin");
     let links = secretnote_note_store(host, &buffer).await;
     println!("{}", &links.public_link);
     println!("{}", &links.admin_link);
