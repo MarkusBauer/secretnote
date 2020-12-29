@@ -5,6 +5,8 @@ use rand::rngs::OsRng;
 use rand::RngCore;
 use serde::{Deserialize, Serialize};
 use aes_gcm::aead::{Aead, NewAead, generic_array::GenericArray};
+use regex::Regex;
+use lazy_static::{lazy_static};
 
 
 #[allow(dead_code)]
@@ -21,6 +23,12 @@ pub struct NoteRequest { data: String }
 
 #[derive(Deserialize)]
 pub struct NoteResponse { ident: String, admin_ident: String }
+
+#[derive(Serialize)]
+struct RetrieveNoteRequest { ident: String }
+
+#[derive(Deserialize)]
+struct RetrieveNoteResponse { #[allow(dead_code)] ident: String, data: String }
 
 struct NoteLinks {
     public_link: String,
@@ -59,6 +67,41 @@ async fn secretnote_note_store(host: &str, text: &str) -> NoteLinks {
 }
 
 
+struct ParsedNoteUrl { host: String, ident: String, key: String }
+
+fn secretnote_parse_note_url(url: &str) -> Option<ParsedNoteUrl> {
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"^(https?://[^/]+)/note/([A-Za-z0-9_-]{28})#([A-Za-z0-9_-]+)$").unwrap();
+    }
+    if let Some(cap) = RE.captures(url) {
+        Some(ParsedNoteUrl{host: cap[1].into(), ident: cap[2].into(), key: cap[3].into()})
+    } else {
+        None
+    }
+}
+
+async fn secretnote_note_retrieve(link: &ParsedNoteUrl) -> String {
+    // Parse key
+    let key = base64::decode_config(link.key.as_str(), base64::URL_SAFE_NO_PAD).expect("Invalid key given");
+    let cipher = Aes128Gcm::new(&GenericArray::from_slice(key.as_slice()));
+    // Retrieve link
+    let req = RetrieveNoteRequest { ident: (&link.ident).into() };
+    let mut url: String = link.host.trim_end_matches("/").into();
+    url.push_str("/api/note/retrieve");
+    let client = reqwest::Client::new();
+    let response = client.post(&url).json(&req).send().await.expect("Could not reach server");
+    if response.status() != 200 {
+        panic!("Server response {}", response.status());
+    }
+    let body: RetrieveNoteResponse = response.json().await.expect("Invalid JSON");
+    // Decrypt
+    let c_and_iv = base64::decode(body.data.as_str()).unwrap();
+    let p = cipher.decrypt(&GenericArray::from_slice(&c_and_iv.as_slice()[..12]), &c_and_iv.as_slice()[12..]).expect("Decryption failed");
+    let data: Note = serde_json::from_slice(p.as_slice()).expect("Invalid JSON after decryption");
+    return data.text;
+}
+
+
 #[tokio::main]
 async fn main() {
     let matches = clap::App::new("SecretNote CLI")
@@ -68,14 +111,24 @@ async fn main() {
             .value_name("HOST")
             .about("Set the SecretNote host to use")
             .takes_value(true))
+        .arg(clap::Arg::new("URL")
+            .about("A note URL to retrieve"))
         .get_matches();
     let host = matches.value_of("host").unwrap_or("https://secretnote.mk-bauer.de");
+    let url = matches.value_of("URL");
 
+    if let Some(url) = url {
+        // Retrieve note from url
+        let parsed_url = secretnote_parse_note_url(url).expect("Invalid URL!");
+        let text = secretnote_note_retrieve(&parsed_url).await;
+        println!("{}", text);
 
-    // Store stdin as note
-    let mut buffer = String::new();
-    io::stdin().read_to_string(&mut buffer).expect("Could not read from stdin");
-    let links = secretnote_note_store(host, &buffer).await;
-    println!("{}", &links.public_link);
-    println!("{}", &links.admin_link);
+    } else {
+        // Store stdin as note
+        let mut buffer = String::new();
+        io::stdin().read_to_string(&mut buffer).expect("Could not read from stdin");
+        let links = secretnote_note_store(host, &buffer).await;
+        println!("{}", &links.public_link);
+        println!("{}", &links.admin_link);
+    }
 }
