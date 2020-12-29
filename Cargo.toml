@@ -14,6 +14,7 @@ actix-http = "^2.2.0"
 actix-utils = "^2.0.0"
 actix-web = { version = "^3.3.2", features = ["rustls"] }
 actix-web-actors = "^3.0.0"
+aes-gcm = "0.8.0"
 backoff = "^0.2.1"
 base64 = "^0.12.3"
 bytes = "^0.5.6"
@@ -27,6 +28,7 @@ num_cpus = "^1.13.0"
 rand = "^0.7.3"
 redis-async = "^0.6.3"
 regex = "^1.4.2"
+reqwest = {version = "^0.10.10", features = ["json"]}
 rust-crypto = "^0.2"
 rustls = "^0.18.1"
 serde = "^1.0.118"
@@ -45,3 +47,8 @@ opt-level = 'z' # 8.6MB => 8.6MB
 [[bin]]
 name = "secretnote-statistics-exporter"
 path = "src/statistics/statistics.rs"
+
+
+[[bin]]
+name = "secretnote-cli"
+path = "src/cli/cli.rs"

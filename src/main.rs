@@ -127,13 +127,13 @@ async fn chat_messages(web::Path(channel): web::Path<String>, body: Json<ChatMes
 
 
 #[derive(Deserialize)]
-struct Note {
+pub struct Note {
     /// base64-encoded crypted data
     data: String
 }
 
 #[derive(Serialize)]
-struct NoteResponse { ident: String, admin_ident: String }
+pub struct NoteResponse { ident: String, admin_ident: String }
 
 #[derive(Serialize)]
 struct CheckNoteResponse { ident: String, exists: bool }
