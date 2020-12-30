@@ -28,7 +28,7 @@ num_cpus = "^1.13.0"
 rand = "^0.7.3"
 redis-async = "^0.6.3"
 regex = "^1.4.2"
-reqwest = {version = "^0.10.10", features = ["json"]}
+reqwest = {version = "^0.10.10", features = ["json", "rustls-tls"], default-features = false}
 rust-crypto = "^0.2"
 rustls = "^0.18.1"
 serde = "^1.0.118"
