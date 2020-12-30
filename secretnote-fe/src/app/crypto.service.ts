@@ -40,7 +40,19 @@ export class CryptoService {
         let cipher = new sjcl.cipher.aes(key);
         let iv = sjcl.bitArray.bitSlice(c_and_iv, 0, 96);
         let c = sjcl.bitArray.bitSlice(c_and_iv, 96, sjcl.bitArray.bitLength(c_and_iv));
-        return sjcl.mode.gcm.decrypt(cipher, c, iv);
+        try {
+            return sjcl.mode.gcm.decrypt(cipher, c, iv);
+        } catch (e) {
+            if (e instanceof sjcl.exception.corrupt) {
+                // Legacy encryption scheme used a 128bit IV instead of a 96bit IV. IVs >96 bits do not increase security, as they get hashed to a 96bit value anyways.
+                // This workaround allows the routine to decrypt messages from the legacy scheme:
+                // If the decryption with current scheme fails because tag is invalid (a symptom of wrong IV), then (and only then) we apply the legacy decryption.
+                let iv = sjcl.bitArray.bitSlice(c_and_iv, 0, 128);
+                let c = sjcl.bitArray.bitSlice(c_and_iv, 128, sjcl.bitArray.bitLength(c_and_iv));
+                return sjcl.mode.gcm.decrypt(cipher, c, iv);
+            }
+            throw e;
+        }
     }
 
     encryptNote(note: NoteContent, keystring: string): string {
