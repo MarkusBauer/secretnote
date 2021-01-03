@@ -1,4 +1,4 @@
-use actix_redis::Command;
+use actix_redis::{Command};
 use actix_web::{HttpResponse, web, Responder};
 use serde_json::value::Value::Object;
 use bytes::Bytes;
@@ -22,7 +22,7 @@ pub async fn send_read_confirmation(config: &str, ident: &str, redis: &Addr<MyRe
     if config.starts_with("telegram:") {
         let chat_id = get_chat_id(&config[9..], redis).await;
         if let Some(chat_id) = chat_id {
-            telegram.do_send(SendMessage { chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", escape_markdown(ident)), parse_mode: "MarkdownV2".into() });
+            telegram.do_send(SendMessage { chat_id, text: format!("Activity at SecretNote: Your message with ID _{}_ has just been read\\.", escape_markdown(ident)), parse_mode: "MarkdownV2".into(), redis_addr: redis.clone() });
             redis.do_send(Command(resp_array!["INCR", "secretnote-stats:telegram-notifications"]));
         } else {
             println!("[Error]: Invalid Telegram config, can't infer chat ID: \"{}\"", config);
@@ -241,12 +241,22 @@ impl Actor for TelegramActor {
 }
 
 
-#[derive(Debug)]
+//#[derive(Debug)]
 #[derive(Serialize)]
 pub struct SendMessage {
     pub chat_id: i64,
     pub text: String,
     pub parse_mode: String,
+    #[serde(skip_serializing)]
+    pub redis_addr: Addr<MyRedisActor>
+}
+
+#[derive(PartialEq)]
+enum SendMessageResult {
+    Success,
+    NetworkError,
+    Blocked,
+    UnknownError
 }
 
 impl Message for SendMessage {
@@ -256,14 +266,35 @@ impl Message for SendMessage {
 impl Handler<SendMessage> for TelegramActor {
     type Result = ();
 
+    // None => network error, Some(true) => success, Some(false) => bot has been blocked
     fn handle(&mut self, msg: SendMessage, ctx: &mut Context<Self>) {
         // Send a Telegram message
         let url = self.get_url("sendMessage");
+        let chat_id = msg.chat_id;
+        let redis = msg.redis_addr.clone();
         Client::default().post(&url).content_type("application/json; charset=utf-8").send_json(&msg)
             .into_actor(self)
             .map(|res, _act, _ctx| {
-                if let Err(err) = res {
-                    println!("Telegram API error: /sendMessage {:?}", err);
+                match res {
+                    Err(err) => {
+                        println!("Telegram network error: /sendMessage {:?}", err);
+                        SendMessageResult::NetworkError
+                    }
+                    Ok(res) => {
+                        if res.status() == 200 {
+                            SendMessageResult::Success
+                        } else if res.status() == 403 {
+                            SendMessageResult::Blocked
+                        } else {
+                            println!("Telegram API error: /sendMessage status {:?}", res.status());
+                            SendMessageResult::UnknownError
+                        }
+                    }
+                }
+            })
+            .map(move |res, _act, _ctx| {
+                if res == SendMessageResult::Blocked {
+                    redis.do_send(Command(resp_array!["SREM", "telegram:known_chats", format!("{}", chat_id)]))
                 }
             })
             .wait(ctx);
